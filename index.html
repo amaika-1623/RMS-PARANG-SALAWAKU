@@ -48,106 +48,18 @@
             letter-spacing: 1px;
         }
 
-        /* ANALOGE RMS KLOK CONTAINER */
+        /* JOUW ECHTE WIJZERPLAAT AFBEELDING */
         .clock-container {
             position: relative;
-            width: 270px;
-            height: 270px;
+            width: 280px;
+            height: 280px;
             margin: 10px auto;
             border-radius: 50%;
-            background: radial-gradient(circle, #2a1f10 0%, #0d0904 100%);
+            background-image: url('Clock-face.png');
+            background-size: cover;
+            background-position: center;
             border: 4px solid #d4af37;
-            box-shadow: inset 0 0 15px #000, 0 0 12px rgba(212, 175, 55, 0.4);
-        }
-
-        /* Gouden Cijfers op de Wijzerplaat */
-        .clock-number {
-            position: absolute;
-            font-weight: bold;
-            font-size: 18px;
-            color: #f3e5ab;
-            text-shadow: 1px 1px 3px #000;
-            transform: translate(-50%, -50%);
-        }
-
-        .clock-face-details {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .text-top {
-            position: absolute;
-            top: 50px;
-            font-size: 10px;
-            letter-spacing: 1px;
-            color: #f3e5ab;
-            font-weight: bold;
-        }
-        .text-mena {
-            position: absolute;
-            top: 66px;
-            font-size: 14px;
-            font-weight: bold;
-            color: #f3e5ab;
-            letter-spacing: 2px;
-        }
-        
-        /* RMS Vlag Vleugels */
-        .flag-emblem {
-            position: absolute;
-            top: 92px;
-            width: 150px;
-            height: 38px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .wing-left, .wing-right {
-            width: 65px;
-            height: 28px;
-            display: flex;
-            flex-direction: column;
-            border-radius: 4px;
-            overflow: hidden;
-            box-shadow: 0 0 4px rgba(0,0,0,0.8);
-        }
-        .wing-left { transform: skewY(12deg); }
-        .wing-right { transform: skewY(-12deg); }
-
-        .stripe-blue { background-color: #0033cc; height: 7px; }
-        .stripe-white { background-color: #ffffff; height: 7px; }
-        .stripe-green { background-color: #008800; height: 7px; }
-        .stripe-red { background-color: #cc0000; height: 7px; }
-
-        .text-numbers {
-            position: absolute;
-            top: 136px;
-            width: 120px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            font-weight: bold;
-            color: #f3e5ab;
-        }
-        .text-muria {
-            position: absolute;
-            top: 156px;
-            font-size: 14px;
-            font-weight: bold;
-            color: #f3e5ab;
-            letter-spacing: 2px;
-        }
-        .text-date {
-            position: absolute;
-            top: 176px;
-            font-size: 10px;
-            color: #c5a059;
-            letter-spacing: 1px;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
         }
 
         /* Wijzers */
@@ -166,17 +78,18 @@
         .center-dot {
             position: absolute;
             top: 50%; left: 50%;
-            width: 14px; height: 14px;
-            background: radial-gradient(circle, #aa0000 0%, #550000 100%);
+            width: 12px; height: 12px;
+            background: radial-gradient(circle, #ffcc00 0%, #8b0000 100%);
             border: 2px solid #d4af37;
             border-radius: 50%;
-            margin: -8px 0 0 -8px;
+            margin: -6px 0 0 -6px;
             z-index: 12;
         }
 
-        /* DIGITALE TIJD STYLING ONDER ABORU */
+        /* DIGITALE TIJD & DATUM SECTIE */
         .digital-time-section {
-            margin-top: 10px;
+            margin-top: 12px;
+            padding: 5px;
         }
         .aboru-title {
             font-size: 22px;
@@ -256,59 +169,17 @@
     <h1>MENA MURIA</h1>
     <div class="subtitle">KLOK • RADIO STREAM • EEUWKALENDER</div>
 
-    <!-- ANALOGE RMS KLOK -->
+    <!-- ANALOGE KLOK MET CLOCK-FACE.PNG -->
     <div class="section-box">
         <div class="clock-container">
-            <!-- Cijfers 1 t/m 12 -->
-            <div class="clock-number" style="top: 10%; left: 50%;">12</div>
-            <div class="clock-number" style="top: 15%; left: 71%;">1</div>
-            <div class="clock-number" style="top: 29%; left: 86%;">2</div>
-            <div class="clock-number" style="top: 50%; left: 91%;">3</div>
-            <div class="clock-number" style="top: 71%; left: 86%;">4</div>
-            <div class="clock-number" style="top: 85%; left: 71%;">5</div>
-            <div class="clock-number" style="top: 90%; left: 50%;">6</div>
-            <div class="clock-number" style="top: 85%; left: 29%;">7</div>
-            <div class="clock-number" style="top: 71%; left: 14%;">8</div>
-            <div class="clock-number" style="top: 50%; left: 9%;">9</div>
-            <div class="clock-number" style="top: 29%; left: 14%;">10</div>
-            <div class="clock-number" style="top: 15%; left: 29%;">11</div>
-
-            <!-- Teksten & RMS Vlag -->
-            <div class="clock-face-details">
-                <div class="text-top">LEA LOHI SAMASURU</div>
-                <div class="text-mena">★ MENA ★</div>
-                
-                <div class="flag-emblem">
-                    <div class="wing-left">
-                        <div class="stripe-blue"></div>
-                        <div class="stripe-white"></div>
-                        <div class="stripe-green"></div>
-                        <div class="stripe-red"></div>
-                    </div>
-                    <div class="wing-right">
-                        <div class="stripe-blue"></div>
-                        <div class="stripe-white"></div>
-                        <div class="stripe-green"></div>
-                        <div class="stripe-red"></div>
-                    </div>
-                </div>
-
-                <div class="text-numbers">
-                    <span>25</span>
-                    <span>04</span>
-                </div>
-                <div class="text-muria">MURIA</div>
-                <div class="text-date">25-04-1950</div>
-            </div>
-
-            <!-- Wijzers -->
+            <!-- Analoge wijzers draaien hier overheen -->
             <div class="hand hour-hand" id="hourHand"></div>
             <div class="hand minute-hand" id="minuteHand"></div>
             <div class="hand second-hand" id="secondHand"></div>
             <div class="center-dot"></div>
         </div>
 
-        <!-- ABORU EN DIGITALE TIJD ZOALS OP JE AFBEELDING -->
+        <!-- ABORU & DIGITALE TIJD -->
         <div class="digital-time-section">
             <div class="aboru-title">ABORU</div>
             <div class="date-line" id="digitalDateOnly">Laden...</div>
@@ -423,7 +294,7 @@
         }
     }
 
-    // 1. Klok & Live Tijd + Datum
+    // 1. Klok, Datum, Tijd en Wekkercontrole
     function updateClock() {
         const now = new Date();
         const seconds = now.getSeconds();
