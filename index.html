@@ -48,15 +48,16 @@
             letter-spacing: 1px;
         }
 
-        /* INGEZOOMT OM DE BUITENSTE RAND VAN DE AFBEELDING WEG TE SNIJDEN */
+        /* KLOK STRAK AFGESNEDEN ZONDER GELE RAND */
         .clock-container {
             position: relative;
             width: 280px;
             height: 280px;
             margin: 10px auto;
             border-radius: 50%;
+            overflow: hidden; /* Snijdt alle buitenste randen van de afbeelding strak rond af */
             background-image: url('clock-face.png');
-            background-size: 130%; /* Zoomt in zodat de rand van de afbeelding wegvalt */
+            background-size: 145%; /* Zoomt in zodat de buitenrand definitief verdwijnt */
             background-position: center;
             background-repeat: no-repeat;
             border: none;
