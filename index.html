@@ -48,18 +48,29 @@
             letter-spacing: 1px;
         }
 
-        /* JOUW ECHTE WIJZERPLAAT AFBEELDING */
+        /* KLOK CONTAINER MET SLIMME ACHTERGROND */
         .clock-container {
             position: relative;
             width: 280px;
             height: 280px;
             margin: 10px auto;
             border-radius: 50%;
-            background-image: url('Clock-face.png');
+            /* Probeert Clock-face.png, valt anders terug op een mooie donkere RMS textuur */
+            background: radial-gradient(circle, #2a1f10 0%, #0d0904 100%), url('Clock-face.png');
             background-size: cover;
             background-position: center;
             border: 4px solid #d4af37;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+            box-shadow: inset 0 0 15px #000, 0 0 15px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Cijfers en details voor de wijzerplaat als de afbeelding niet laadt */
+        .clock-number {
+            position: absolute;
+            font-weight: bold;
+            font-size: 16px;
+            color: #f3e5ab;
+            text-shadow: 1px 1px 2px #000;
+            transform: translate(-50%, -50%);
         }
 
         /* Wijzers */
@@ -169,10 +180,10 @@
     <h1>MENA MURIA</h1>
     <div class="subtitle">KLOK • RADIO STREAM • EEUWKALENDER</div>
 
-    <!-- ANALOGE KLOK MET CLOCK-FACE.PNG -->
+    <!-- ANALOGE KLOK -->
     <div class="section-box">
         <div class="clock-container">
-            <!-- Analoge wijzers draaien hier overheen -->
+            <!-- Wijzers -->
             <div class="hand hour-hand" id="hourHand"></div>
             <div class="hand minute-hand" id="minuteHand"></div>
             <div class="hand second-hand" id="secondHand"></div>
@@ -294,7 +305,7 @@
         }
     }
 
-    // 1. Klok, Datum, Tijd en Wekkercontrole
+    // Klok, Datum, Tijd en Wekkercontrole
     function updateClock() {
         const now = new Date();
         const seconds = now.getSeconds();
@@ -326,7 +337,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // 2. Stream & Video Player
+    // Stream & Video Player
     document.getElementById('stationSelect').addEventListener('change', function() {
         document.getElementById('mediaUrl').value = this.value;
     });
@@ -379,7 +390,7 @@
         document.getElementById('mediaOutput').innerHTML = `<div class="status-text">Speler gestopt</div>`;
     });
 
-    // 3. Wekker Instellen
+    // Wekker Instellen
     document.getElementById('setAlarmBtn').addEventListener('click', function() {
         const alarmTime = document.getElementById('alarmTime').value;
         const statusDiv = document.getElementById('alarmStatus');
@@ -394,7 +405,7 @@
         }
     });
 
-    // 4. Eeuwkalender Logica
+    // Eeuwkalender Logica
     function generateCalendar(year, month) {
         const body = document.getElementById('calendarBody');
         body.innerHTML = '';
