@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mena Muria Klok & Eeuwkalender</title>
+    <style>
+        body {
+            background-color: #0b0804;
+            color: #d4af37;
+            font-family: 'Times New Roman', serif, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 10px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            border: 1px solid #d4af37;
+            border-radius: 12px;
+            padding: 15px;
+            background: #110d06;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+        h1 {
+            font-size: 20px;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            color: #f3e5ab;
+        }
+        .subtitle {
+            font-size: 11px;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            color: #c5a059;
+        }
+        .section-box {
+            border: 1px solid #d4af37;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 15px;
+            background: #0f0a05;
+        }
+        .section-title {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        /* JOUW ORIGINELE GRAFISCHE KLOK ACHTERGROND */
+        .clock-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 10px auto;
+            border-radius: 50%;
+            /* Vervang 'jouw-klok-achtergrond.jpg' eventueel door de exacte bestandsnaam van je wijzerplaat-afbeelding */
+            background-image: url('jouw-klok-achtergrond.jpg');
+            background-size: cover;
+            background-position: center;
+            border: 4px solid #d4af37;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Wijzers van de klok */
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            background: #d4af37;
+            border-radius: 4px;
+            z-index: 10;
+        }
+        .hour-hand { width: 4px; height: 60px; background: #e6c567; margin-left: -2px; }
+        .minute-hand { width: 3px; height: 85px; background: #e6c567; margin-left: -1.5px; }
+        .second-hand { width: 1px; height: 95px; background: #ff3333; margin-left: -0.5px; z-index: 11; }
+        .center-dot {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 12px; height: 12px;
+            background: radial-gradient(circle, #ffcc00 0%, #8b0000 100%);
+            border: 2px solid #d4af37;
+            border-radius: 50%;
+            margin: -6px 0 0 -6px;
+            z-index: 12;
+        }
+
+        /* EXACTE STIJL VOOR DE DIGITALE TIJD ONDER DE KLOK */
+        .digital-time-section {
+            margin-top: 15px;
+            padding: 10px;
+        }
+        .aboru-title {
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: #d4af37;
+            margin-bottom: 8px;
+            text-shadow: 1px 1px 3px #000;
+        }
+        .date-line {
+            font-size: 13px;
+            color: #e6c567;
+            margin-bottom: 4px;
+        }
+        .time-line {
+            font-size: 26px;
+            font-weight: bold;
+            color: #f3e5ab;
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+        }
+
+        /* Formulieren & Knoppen */
+        select, input[type="text"], input[type="number"], input[type="time"], button {
+            background-color: #1a1205;
+            color: #f3e5ab;
+            border: 1px solid #d4af37;
+            padding: 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin: 4px 0;
+            box-sizing: border-box;
+        }
+        select, input[type="text"], input[type="time"] { width: 100%; }
+        button {
+            cursor: pointer;
+            font-weight: bold;
+            background: linear-gradient(to bottom, #d4af37, #aa820a);
+            color: #0b0804;
+        }
+        button:hover { opacity: 0.9; }
+
+        iframe {
+            border-radius: 6px;
+            border: 1px solid #d4af37;
+            width: 100%;
+            height: 180px;
+        }
+        .status-text {
+            font-size: 11px;
+            font-style: italic;
+            margin-top: 5px;
+            color: #c5a059;
+        }
+        table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 5px;
+            font-size: 12px;
+            text-align: center;
+        }
+        th { color: #f3e5ab; }
+        td.today-cell {
+            background: #d4af37;
+            color: #0b0804;
+            font-weight: bold;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>MENA MURIA</h1>
+    <div class="subtitle">KLOK • RADIO STREAM • EEUWKALENDER</div>
+
+    <!-- ANALOGE KLOK MET JOUW GRAFISCHE WIJZERPLAAT -->
+    <div class="section-box">
+        <div class="clock-container">
+            <!-- Analoge wijzers draaien hier overheen -->
+            <div class="hand hour-hand" id="hourHand"></div>
+            <div class="hand minute-hand" id="minuteHand"></div>
+            <div class="hand second-hand" id="secondHand"></div>
+            <div class="center-dot"></div>
+        </div>
+
+        <!-- ABORU & DIGITALE TIJD WEERGAVE EXACT ALS OP DE FOTO -->
+        <div class="digital-time-section">
+            <div class="aboru-title">ABORU</div>
+            <div class="date-line" id="digitalDateOnly">Laden...</div>
+            <div class="time-line" id="digitalTimeOnly">00:00:00</div>
+        </div>
+    </div>
+
+    <!-- STREAM & RADIO SPELER SECTIE -->
+    <div class="section-box">
+        <div class="section-title">📻 STREAM PLAYER</div>
+        
+        <select id="stationSelect">
+            <option value="https://youtu.be/TEhNMG2du8k">YouTube Stream (Voorbeeld)</option>
+            <option value="https://icecast.omroep.nl/radio1-bb-mp3">Radio 1 (Audio)</option>
+        </select>
+
+        <input type="text" id="mediaUrl" value="https://youtu.be/TEhNMG2du8k" placeholder="Plak YouTube of Stream URL..." />
+        
+        <div style="display: flex; gap: 5px;">
+            <button id="playBtn" style="flex: 1;">▶ Play</button>
+            <button id="stopBtn" style="flex: 1;">⏹ Stop</button>
+        </div>
+
+        <div id="mediaOutput">
+            <div class="status-text" id="playerStatus">Speler gereed</div>
+        </div>
+    </div>
+
+    <!-- WEKKER / ALARM SECTIE -->
+    <div class="section-box">
+        <div class="section-title">⏰ WEKKER / ALARM</div>
+        <div style="display: flex; gap: 5px;">
+            <input type="time" id="alarmTime" value="07:00" style="flex: 2;" />
+            <button id="setAlarmBtn" style="flex: 1;">Zet Wekker</button>
+        </div>
+        <div class="status-text" id="alarmStatus">Geen wekker ingesteld</div>
+    </div>
+
+    <!-- EEUWKALENDER SECTIE -->
+    <div class="section-box">
+        <div class="section-title">📅 EEUWKALENDER</div>
+        <div style="display: flex; gap: 5px; justify-content: center; margin-bottom: 8px;">
+            <button id="todayBtn">Vandaag</button>
+        </div>
+        <div style="display: flex; gap: 5px;">
+            <select id="monthSelect" style="flex: 2;">
+                <option value="0">Januari</option>
+                <option value="1">Februari</option>
+                <option value="2">Maart</option>
+                <option value="3">April</option>
+                <option value="4">Mei</option>
+                <option value="5">Juni</option>
+                <option value="6">Juli</option>
+                <option value="7">Augustus</option>
+                <option value="8">September</option>
+                <option value="9">Oktober</option>
+                <option value="10">November</option>
+                <option value="11">December</option>
+            </select>
+            <input type="number" id="yearInput" style="flex: 1; text-align: center;" />
+        </div>
+        <button id="goToYearBtn" style="width: 100%; margin-top: 5px;">Ga naar jaar</button>
+        
+        <div id="calendarContainer" style="margin-top: 10px;">
+            <div style="font-size: 13px; font-weight: bold; color: #f3e5ab;" id="calMonthYearTitle">Laden...</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="color: #f3e5ab;">Ma</th>
+                        <th>Di</th>
+                        <th>Wo</th>
+                        <th>Do</th>
+                        <th>Vr</th>
+                        <th style="color: #ff9999;">Za</th>
+                        <th style="color: #ff9999;">Zo</th>
+                    </tr>
+                </thead>
+                <tbody id="calendarBody">
+                    <!-- Kalender dagen -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="status-text" id="selectedDateInfo" style="margin-top: 10px; border-top: 1px dashed #d4af37; padding-top: 5px;">
+            Geselecteerde datum: Laden...
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let activeAlarm = null;
+    const months = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
+
+    function playAlarmSound() {
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+            gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 1.5);
+        } catch (e) {
+            console.log("Audio niet ondersteund");
+        }
+    }
+
+    // Klok, Datum, Tijd en Wekker logica
+    function updateClock() {
+        const now = new Date();
+        const seconds = now.getSeconds();
+        const minutes = now.getMinutes();
+        const hours = now.getHours();
+
+        const secondDeg = seconds * 6;
+        const minuteDeg = minutes * 6 + seconds * 0.1;
+        const hourDeg = (hours % 12) * 30 + minutes * 0.5;
+
+        document.getElementById('secondHand').style.transform = `rotate(${secondDeg}deg)`;
+        document.getElementById('minuteHand').style.transform = `rotate(${minuteDeg}deg)`;
+        document.getElementById('hourHand').style.transform = `rotate(${hourDeg}deg)`;
+
+        // Datum weergave (bijv. woensdag 14 oktober 2026)
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('digitalDateOnly').innerText = now.toLocaleDateString('nl-NL', options);
+
+        // Grote tijd weergave (HH:MM:SS)
+        const timeString = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+        document.getElementById('digitalTimeOnly').innerText = timeString;
+
+        // Wekker controle
+        const alarmCheckString = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
+        if (activeAlarm && activeAlarm === alarmCheckString && seconds === 0) {
+            playAlarmSound();
+            document.getElementById('alarmStatus').innerText = `🔔 WEKKER GAAT AF (${alarmCheckString})!`;
+            document.getElementById('alarmStatus').style.color = "#ff4444";
+            document.getElementById('playBtn').click();
+        }
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Stream & Video Player
+    document.getElementById('stationSelect').addEventListener('change', function() {
+        document.getElementById('mediaUrl').value = this.value;
+    });
+
+    document.getElementById('playBtn').addEventListener('click', function() {
+        const urlInput = document.getElementById('mediaUrl').value.trim();
+        const outputDiv = document.getElementById('mediaOutput');
+        
+        if (!urlInput) {
+            outputDiv.innerHTML = `<div class="status-text" style="color:red;">Voer een URL in</div>`;
+            return;
+        }
+
+        if (urlInput.includes("youtube.com") || urlInput.includes("youtu.be")) {
+            let videoId = "";
+            if (urlInput.includes("youtu.be/")) {
+                videoId = urlInput.split("youtu.be/")[1].split("?")[0].split("&")[0];
+            } else if (urlInput.includes("watch?v=")) {
+                videoId = urlInput.split("watch?v=")[1].split("&")[0];
+            }
+            
+            if (videoId) {
+                outputDiv.innerHTML = `
+                    <div style="margin-top:10px;">
+                        <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                        <div class="status-text">Live videostream actief</div>
+                    </div>
+                `;
+            } else {
+                outputDiv.innerHTML = `<div class="status-text" style="color:red;">Kon YouTube ID niet verwerken</div>`;
+            }
+        } else {
+            outputDiv.innerHTML = `
+                <div style="margin-top:10px;">
+                    <audio id="audioStream" controls autoplay style="width:100%;">
+                        <source src="${urlInput}" type="audio/mpeg">
+                        Browser ondersteunt dit audio-element niet.
+                    </audio>
+                    <div class="status-text">Audiostream actief</div>
+                </div>
+            `;
+        }
+    });
+
+    document.getElementById('stopBtn').addEventListener('click', function() {
+        document.getElementById('mediaOutput').innerHTML = `<div class="status-text">Speler gestopt</div>`;
+    });
+
+    // Wekker Instellen
+    document.getElementById('setAlarmBtn').addEventListener('click', function() {
+        const alarmTime = document.getElementById('alarmTime').value;
+        const statusDiv = document.getElementById('alarmStatus');
+        if (alarmTime) {
+            activeAlarm = alarmTime;
+            statusDiv.innerText = `Wekker ingesteld om ${alarmTime} uur`;
+            statusDiv.style.color = "#f3e5ab";
+        } else {
+            activeAlarm = null;
+            statusDiv.innerText = `Geen wekker ingesteld`;
+            statusDiv.style.color = "#c5a059";
+        }
+    });
+
+    // Eeuwkalender Logica
+    function generateCalendar(year, month) {
+        const body = document.getElementById('calendarBody');
+        body.innerHTML = '';
+        
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth();
+        const currentDate = today.getDate();
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        
+        let startDay = firstDay.getDay() - 1;
+        if (startDay === -1) startDay = 6;
+        
+        let date = 1;
+        let html = '';
+
+        document.getElementById('monthSelect').value = month;
+        document.getElementById('yearInput').value = year;
+        document.getElementById('calMonthYearTitle').innerText = `${months[month]} ${year}`;
+
+        for (let i = 0; i < 6; i++) {
+            let row = '<tr>';
+            for (let j = 0; j < 7; j++) {
+                if (i === 0 && j < startDay) {
+                    row += '<td></td>';
+                } else if (date > lastDay.getDate()) {
+                    row += '<td></td>';
+                } else {
+                    let isToday = (date === currentDate && month === currentMonth && year === currentYear);
+                    let classAttr = isToday ? 'class="today-cell"' : '';
+                    row += `<td ${classAttr}>${date}</td>`;
+                    date++;
+                }
+            }
+            row += '</tr>';
+            html += row;
+            if (date > lastDay.getDate()) break;
+        }
+        body.innerHTML = html;
+
+        const selDate = new Date(year, month, (year === currentYear && month === currentMonth) ? currentDate : 1);
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('selectedDateInfo').innerText = "Geselecteerde datum: " + selDate.toLocaleDateString('nl-NL', options);
+    }
+
+    document.getElementById('goToYearBtn').addEventListener('click', function() {
+        const m = parseInt(document.getElementById('monthSelect').value);
+        const y = parseInt(document.getElementById('yearInput').value);
+        generateCalendar(y, m);
+    });
+
+    document.getElementById('todayBtn').addEventListener('click', function() {
+        const now = new Date();
+        generateCalendar(now.getFullYear(), now.getMonth());
+    });
+
+    const now = new Date();
+    generateCalendar(now.getFullYear(), now.getMonth());
+</script>
+
+</body>
+</html>
