@@ -57,7 +57,7 @@
             border-radius: 50%;
             background-image: url('clock-face.png');
             background-size: 110%;
-            background-position: center 55%; /* Exact afgesteld zodat de wijzerplaat gecentreerd staat onder de wijzers */
+            background-position: center 55%;
             background-repeat: no-repeat;
             border: 4px solid #d4af37;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.6), 0 0 15px rgba(212, 175, 55, 0.5);
@@ -111,6 +111,22 @@
             color: #f3e5ab;
             letter-spacing: 2px;
             text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        /* DAGELIJKSE BIJBELTEKST STYLING */
+        .bible-verse {
+            font-style: italic;
+            font-size: 13px;
+            color: #f3e5ab;
+            line-height: 1.4;
+            padding: 8px 5px;
+        }
+        .bible-ref {
+            font-size: 11px;
+            font-weight: bold;
+            color: #d4af37;
+            margin-top: 4px;
+            font-style: normal;
         }
 
         /* Formulieren & Knoppen */
@@ -184,6 +200,13 @@
             <div class="date-line" id="digitalDateOnly">Laden...</div>
             <div class="time-line" id="digitalTimeOnly">00:00:00</div>
         </div>
+    </div>
+
+    <!-- DAGELIJKS WOORD UIT DE BIJBEL -->
+    <div class="section-box">
+        <div class="section-title">📖 DAGELIJKS WOORD</div>
+        <div class="bible-verse" id="bibleVerseText">Laden van dagtekst...</div>
+        <div class="bible-ref" id="bibleVerseRef"></div>
     </div>
 
     <!-- STREAM & RADIO SPELER SECTIE -->
@@ -273,6 +296,37 @@
     let activeAlarm = null;
     const months = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
 
+    // Verzameling dagelijkse Bijbelteksten
+    const bibleVerses = [
+        { text: "De HEERE is mijn Herder, mij zal niets ontbreken.", ref: "Psalm 23:1" },
+        { text: "Uw woord is een lamp voor mijn voet en een licht op mijn pad.", ref: "Psalm 119:105" },
+        { text: "Vertrouw op de HEERE met heel je hart, en steun op je eigen inzicht niet.", ref: "Spreuken 3:5" },
+        { text: "Wees niet bevreesd, want Ik ben met u; wees niet ontsteld, want Ik ben uw God.", ref: "Jesaja 41:10" },
+        { text: "De vreugde van de HEERE is uw kracht.", ref: "Nehemia 8:11" },
+        { text: "Want alzo lief heeft God de wereld gehad, dat Hij Zijn eniggeboren Zoon gegeven heeft.", ref: "Johannes 3:16" },
+        { text: "Ik vermag alle dingen door Christus, Die mij kracht geeft.", ref: "Filippenzen 4:13" },
+        { text: "Wees in geen ding bezorgd, maar laat uw verlangens in alles door bidden en smeken bekend worden bij God.", ref: "Filippenzen 4:6" },
+        { text: "De HEERE is mijn licht en mijn heil, voor wie zou ik vrezen?", ref: "Psalm 27:1" },
+        { text: "Zo zoek eerst het Koninkrijk van God en Zijn gerechtigheid, en al deze dingen zullen u erbij gegeven worden.", ref: "Mattheüs 6:33" },
+        { text: "Komt herwaarts tot Mij, allen die vermoeid en belast zijt, en Ik zal u rust geven.", ref: "Mattheüs 11:28" },
+        { text: "Wees sterk en moedig, schrik niet en wees niet ontsteld, want de HEERE, uw God, is met u.", ref: "Jozua 1:9" },
+        { text: "En wij weten dat voor hen die God liefhebben, alle dingen meewerken ten goede.", ref: "Romeinen 8:28" },
+        { text: "Liefde is geduldig, liefde is vriendelijk.", ref: "1 Korinthiërs 13:4" }
+    ];
+
+    function updateDailyVerse() {
+        const today = new Date();
+        // Bereken dag van het jaar voor roterende selectie
+        const start = new Date(today.getFullYear(), 0, 0);
+        const diff = today - start;
+        const oneDay = 1000 * 60 * 60 * 24;
+        const dayOfYear = Math.floor(diff / oneDay);
+        
+        const index = dayOfYear % bibleVerses.length;
+        document.getElementById('bibleVerseText').innerText = `"${bibleVerses[index].text}"`;
+        document.getElementById('bibleVerseRef').innerText = `— ${bibleVerses[index].ref}`;
+    }
+
     function playAlarmSound() {
         try {
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -323,6 +377,7 @@
     }
     setInterval(updateClock, 1000);
     updateClock();
+    updateDailyVerse();
 
     document.getElementById('stationSelect').addEventListener('change', function() {
         document.getElementById('mediaUrl').value = this.value;
