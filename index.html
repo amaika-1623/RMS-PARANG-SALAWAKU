@@ -215,11 +215,12 @@
         <div class="section-title">📻 STREAM PLAYER</div>
         
         <select id="stationSelect">
+            <option value="https://youtu.be/TXWzTSgXUfg">Wekker Muziek (YouTube)</option>
             <option value="https://youtu.be/TEhNMG2du8k">YouTube Stream (Voorbeeld)</option>
             <option value="https://icecast.omroep.nl/radio1-bb-mp3">Radio 1 (Audio)</option>
         </select>
 
-        <input type="text" id="mediaUrl" value="https://youtu.be/TEhNMG2du8k" placeholder="Plak YouTube of Stream URL..." />
+        <input type="text" id="mediaUrl" value="https://youtu.be/TXWzTSgXUfg" placeholder="Plak YouTube of Stream URL..." />
         
         <div style="display: flex; gap: 5px;">
             <button id="playBtn" style="flex: 1;">▶ Play</button>
@@ -316,7 +317,6 @@
 
     function updateDailyVerse() {
         const today = new Date();
-        // Bereken exact de dag van het jaar op basis van de kalenderdatum (synchroon met de kalender)
         const start = new Date(today.getFullYear(), 0, 1);
         const diff = today - start;
         const oneDay = 1000 * 60 * 60 * 24;
@@ -341,7 +341,7 @@
             gainNode.connect(audioCtx.destination);
 
             oscillator.start();
-            oscillator.stop(audioCtx.currentTime + 1.5);
+            oscillator.stop(audioCtx.currentTime + 1.0);
         } catch (e) {
             console.log("Audio niet ondersteund");
         }
@@ -367,7 +367,6 @@
         const timeString = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
         document.getElementById('digitalTimeOnly').innerText = timeString;
 
-        // Controleer of de dag is gewisseld om het dagelijks woord automatisch te verversen
         if (hours === 0 && minutes === 0 && seconds === 0) {
             updateDailyVerse();
         }
@@ -375,9 +374,12 @@
         const alarmCheckString = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
         if (activeAlarm && activeAlarm === alarmCheckString && seconds === 0) {
             playAlarmSound();
+            // Stel automatisch de wekkermuziek in en start de speler
+            document.getElementById('mediaUrl').value = "https://youtu.be/TXWzTSgXUfg";
+            document.getElementById('playBtn').click();
+            
             document.getElementById('alarmStatus').innerText = `🔔 WEKKER GAAT AF (${alarmCheckString})!`;
             document.getElementById('alarmStatus').style.color = "#ff4444";
-            document.getElementById('playBtn').click();
         }
     }
 
@@ -461,7 +463,7 @@
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                             allowfullscreen>
                         </iframe>
-                        <div class="status-text">Live videostream actief</div>
+                        <div class="status-text">Wekkermuziek actief</div>
                     </div>
                 `;
             } else {
