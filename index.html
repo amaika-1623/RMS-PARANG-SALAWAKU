@@ -55,10 +55,10 @@
             height: 280px;
             margin: 10px auto;
             border-radius: 50%;
-            overflow: hidden; /* Snijdt alle rechthoekige hoeken en vuile randjes strak rond af */
+            overflow: hidden;
             background-image: url('clock-face.png');
-            background-size: 116%; /* Schaling zodat de hele wijzerplaat inclusief alle teksten past */
-            background-position: center 46%; /* Zorgt dat LEA LOHI SAMASURU bovenin er precies op staat */
+            background-size: 116%;
+            background-position: center 46%;
             background-repeat: no-repeat;
             border: none;
             box-shadow: none;
@@ -316,7 +316,8 @@
 
     function updateDailyVerse() {
         const today = new Date();
-        const start = new Date(today.getFullYear(), 0, 0);
+        // Bereken exact de dag van het jaar op basis van de kalenderdatum (synchroon met de kalender)
+        const start = new Date(today.getFullYear(), 0, 1);
         const diff = today - start;
         const oneDay = 1000 * 60 * 60 * 24;
         const dayOfYear = Math.floor(diff / oneDay);
@@ -365,6 +366,11 @@
 
         const timeString = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
         document.getElementById('digitalTimeOnly').innerText = timeString;
+
+        // Controleer of de dag is gewisseld om het dagelijks woord automatisch te verversen
+        if (hours === 0 && minutes === 0 && seconds === 0) {
+            updateDailyVerse();
+        }
 
         const alarmCheckString = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
         if (activeAlarm && activeAlarm === alarmCheckString && seconds === 0) {
@@ -509,4 +515,3 @@
 
 </body>
 </html>
-
