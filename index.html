@@ -48,16 +48,17 @@
             letter-spacing: 1px;
         }
 
-        /* VOLLEDIGE WIJZERPLAAT INCLUSIEF LEA LOHI SAMASURU */
+        /* PERFECTE RONDE KLOK - ZONDER VUIL RANDJE - MET LEA LOHI SAMASURU */
         .clock-container {
             position: relative;
             width: 280px;
             height: 280px;
             margin: 10px auto;
             border-radius: 50%;
+            overflow: hidden; /* Snijdt alle rechthoekige hoeken en vuile randjes strak rond af */
             background-image: url('clock-face.png');
-            background-size: contain; /* Zorgt dat de gehele afbeelding met alle teksten er volledig op past */
-            background-position: center;
+            background-size: 116%; /* Schaling zodat de hele wijzerplaat inclusief alle teksten past */
+            background-position: center 46%; /* Zorgt dat LEA LOHI SAMASURU bovenin er precies op staat */
             background-repeat: no-repeat;
             border: none;
             box-shadow: none;
@@ -373,6 +374,54 @@
             document.getElementById('playBtn').click();
         }
     }
+
+    function generateCalendar(year, month) {
+        const body = document.getElementById('calendarBody');
+        body.innerHTML = '';
+        
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth();
+        const currentDate = today.getDate();
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        
+        let startDay = firstDay.getDay() - 1;
+        if (startDay === -1) startDay = 6;
+        
+        let date = 1;
+        let html = '';
+
+        document.getElementById('monthSelect').value = month;
+        document.getElementById('yearInput').value = year;
+        document.getElementById('calMonthYearTitle').innerText = `${months[month]} ${year}`;
+
+        for (let i = 0; i < 6; i++) {
+            let row = '<tr>';
+            for (let j = 0; j < 7; j++) {
+                if (i === 0 && j < startDay) {
+                    row += '<td></td>';
+                } else if (date > lastDay.getDate()) {
+                    row += '<td></td>';
+                } else {
+                    let isToday = (date === currentDate && month === currentMonth && year === currentYear);
+                    let classAttr = isToday ? 'class="today-cell"' : '';
+                    row += `<td ${classAttr}>${date}</td>`;
+                    date++;
+                }
+            }
+            row += '</tr>';
+            html += row;
+            if (date > lastDay.getDate()) break;
+        }
+        body.innerHTML = html;
+
+        const selDate = new Date(year, month, (year === currentYear && month === currentMonth) ? currentDate : 1);
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('selectedDateInfo').innerText = "Geselecteerde datum: " + selDate.toLocaleDateString('nl-NL', options);
+    }
+
     setInterval(updateClock, 1000);
     updateClock();
     updateDailyVerse();
@@ -442,53 +491,6 @@
             statusDiv.style.color = "#c5a059";
         }
     });
-
-    function generateCalendar(year, month) {
-        const body = document.getElementById('calendarBody');
-        body.innerHTML = '';
-        
-        const today = new Date();
-        const currentYear = today.getFullYear();
-        const currentMonth = today.getMonth();
-        const currentDate = today.getDate();
-
-        const firstDay = new Date(year, month, 1);
-        const lastDay = new Date(year, month + 1, 0);
-        
-        let startDay = firstDay.getDay() - 1;
-        if (startDay === -1) startDay = 6;
-        
-        let date = 1;
-        let html = '';
-
-        document.getElementById('monthSelect').value = month;
-        document.getElementById('yearInput').value = year;
-        document.getElementById('calMonthYearTitle').innerText = `${months[month]} ${year}`;
-
-        for (let i = 0; i < 6; i++) {
-            let row = '<tr>';
-            for (let j = 0; j < 7; j++) {
-                if (i === 0 && j < startDay) {
-                    row += '<td></td>';
-                } else if (date > lastDay.getDate()) {
-                    row += '<td></td>';
-                } else {
-                    let isToday = (date === currentDate && month === currentMonth && year === currentYear);
-                    let classAttr = isToday ? 'class="today-cell"' : '';
-                    row += `<td ${classAttr}>${date}</td>`;
-                    date++;
-                }
-            }
-            row += '</tr>';
-            html += row;
-            if (date > lastDay.getDate()) break;
-        }
-        body.innerHTML = html;
-
-        const selDate = new Date(year, month, (year === currentYear && month === currentMonth) ? currentDate : 1);
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('selectedDateInfo').innerText = "Geselecteerde datum: " + selDate.toLocaleDateString('nl-NL', options);
-    }
 
     document.getElementById('goToYearBtn').addEventListener('click', function() {
         const m = parseInt(document.getElementById('monthSelect').value);
