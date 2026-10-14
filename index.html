@@ -48,7 +48,7 @@
             letter-spacing: 1px;
         }
 
-        /* PUUR DE KLOK ZONDER GELE BUITENCIRKEL */
+        /* INGEZOOMT OM DE BUITENSTE RAND VAN DE AFBEELDING WEG TE SNIJDEN */
         .clock-container {
             position: relative;
             width: 280px;
@@ -56,11 +56,11 @@
             margin: 10px auto;
             border-radius: 50%;
             background-image: url('clock-face.png');
-            background-size: cover; /* Vult de volledige ruimte zonder rand */
+            background-size: 130%; /* Zoomt in zodat de rand van de afbeelding wegvalt */
             background-position: center;
             background-repeat: no-repeat;
-            border: none; /* Gele buitenrand weggehaald */
-            box-shadow: none; /* Buitenschaduw weggehaald voor een puur effect */
+            border: none;
+            box-shadow: none;
         }
 
         /* Antieke Wijzers */
