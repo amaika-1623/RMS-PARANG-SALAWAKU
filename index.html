@@ -391,3 +391,119 @@
         }
 
         if (urlInput.includes("youtube.com") || urlInput.includes("youtu.be")) {
+            let videoId = "";
+            if (urlInput.includes("youtu.be/")) {
+                videoId = urlInput.split("youtu.be/")[1].split("?")[0].split("&")[0];
+            } else if (urlInput.includes("watch?v=")) {
+                videoId = urlInput.split("watch?v=")[1].split("&")[0];
+            }
+            
+            if (videoId) {
+                outputDiv.innerHTML = `
+                    <div style="margin-top:10px;">
+                        <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                        <div class="status-text">Live videostream actief</div>
+                    </div>
+                `;
+            } else {
+                outputDiv.innerHTML = `<div class="status-text" style="color:red;">Kon YouTube ID niet verwerken</div>`;
+            }
+        } else {
+            outputDiv.innerHTML = `
+                <div style="margin-top:10px;">
+                    <audio id="audioStream" controls autoplay style="width:100%;">
+                        <source src="${urlInput}" type="audio/mpeg">
+                        Browser ondersteunt dit audio-element niet.
+                    </audio>
+                    <div class="status-text">Audiostream actief</div>
+                </div>
+            `;
+        }
+    });
+
+    document.getElementById('stopBtn').addEventListener('click', function() {
+        document.getElementById('mediaOutput').innerHTML = `<div class="status-text">Speler gestopt</div>`;
+    });
+
+    document.getElementById('setAlarmBtn').addEventListener('click', function() {
+        const alarmTime = document.getElementById('alarmTime').value;
+        const statusDiv = document.getElementById('alarmStatus');
+        if (alarmTime) {
+            activeAlarm = alarmTime;
+            statusDiv.innerText = `Wekker ingesteld om ${alarmTime} uur`;
+            statusDiv.style.color = "#f3e5ab";
+        } else {
+            activeAlarm = null;
+            statusDiv.innerText = `Geen wekker ingesteld`;
+            statusDiv.style.color = "#c5a059";
+        }
+    });
+
+    function generateCalendar(year, month) {
+        const body = document.getElementById('calendarBody');
+        body.innerHTML = '';
+        
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth();
+        const currentDate = today.getDate();
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        
+        let startDay = firstDay.getDay() - 1;
+        if (startDay === -1) startDay = 6;
+        
+        let date = 1;
+        let html = '';
+
+        document.getElementById('monthSelect').value = month;
+        document.getElementById('yearInput').value = year;
+        document.getElementById('calMonthYearTitle').innerText = `${months[month]} ${year}`;
+
+        for (let i = 0; i < 6; i++) {
+            let row = '<tr>';
+            for (let j = 0; j < 7; j++) {
+                if (i === 0 && j < startDay) {
+                    row += '<td></td>';
+                } else if (date > lastDay.getDate()) {
+                    row += '<td></td>';
+                } else {
+                    let isToday = (date === currentDate && month === currentMonth && year === currentYear);
+                    let classAttr = isToday ? 'class="today-cell"' : '';
+                    row += `<td ${classAttr}>${date}</td>`;
+                    date++;
+                }
+            }
+            row += '</tr>';
+            html += row;
+            if (date > lastDay.getDate()) break;
+        }
+        body.innerHTML = html;
+
+        const selDate = new Date(year, month, (year === currentYear && month === currentMonth) ? currentDate : 1);
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('selectedDateInfo').innerText = "Geselecteerde datum: " + selDate.toLocaleDateString('nl-NL', options);
+    }
+
+    document.getElementById('goToYearBtn').addEventListener('click', function() {
+        const m = parseInt(document.getElementById('monthSelect').value);
+        const y = parseInt(document.getElementById('yearInput').value);
+        generateCalendar(y, m);
+    });
+
+    document.getElementById('todayBtn').addEventListener('click', function() {
+        const now = new Date();
+        generateCalendar(now.getFullYear(), now.getMonth());
+    });
+
+    const now = new Date();
+    generateCalendar(now.getFullYear(), now.getMonth());
+</script>
+
+</body>
+</html>
