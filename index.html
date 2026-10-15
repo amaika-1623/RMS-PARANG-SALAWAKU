@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-<link rel="manifest" href="manifest.json">
     <meta charset="UTF-8">
+    <link rel="manifest" href="manifest.json">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mena Muria Klok & Eeuwkalender</title>
     <style>
@@ -49,7 +49,7 @@
             letter-spacing: 1px;
         }
 
-        /* PERFECTE RONDE KLOK */
+        /* RONDE KLOK */
         .clock-container {
             position: relative;
             width: 280px;
@@ -65,7 +65,7 @@
             box-shadow: none;
         }
 
-        /* Antieke Wijzers */
+        /* Wijzers */
         .hand {
             position: absolute;
             bottom: 50%;
@@ -89,7 +89,7 @@
             z-index: 12;
         }
 
-        /* DIGITALE TIJD & DATUM SECTIE */
+        /* DIGITALE TIJD & DATUM */
         .digital-time-section {
             margin-top: 12px;
             padding: 5px;
@@ -122,6 +122,7 @@
             color: #f3e5ab;
             line-height: 1.4;
             padding: 8px 5px;
+            min-height: 40px;
         }
         .bible-ref {
             font-size: 11px;
@@ -131,7 +132,7 @@
             font-style: normal;
         }
 
-        /* Formulieren & Knoppen */
+        /* Knoppen & Formulieren */
         select, input[type="text"], input[type="number"], input[type="time"], button, .link-button {
             background-color: #1a1205;
             color: #f3e5ab;
@@ -184,7 +185,6 @@
             border-radius: 50%;
         }
 
-        /* MINI TV CONTAINER */
         #tvPlayerContainer {
             display: none;
             margin-top: 10px;
@@ -220,7 +220,7 @@
         <div class="bible-ref" id="bibleVerseRef"></div>
     </div>
 
-    <!-- STREAM & RADIO SPELER SECTIE -->
+    <!-- STREAM & RADIO SPELER -->
     <div class="section-box">
         <div class="section-title">📻 STREAM PLAYER</div>
         
@@ -252,7 +252,7 @@
         <div class="status-text" id="alarmStatus">Geen wekker ingesteld</div>
     </div>
 
-    <!-- INGEBOUWDE MINI TV SECTIE -->
+    <!-- MINI TV SECTIE -->
     <div class="section-box">
         <div class="section-title">📺 MINI TV & LINKS</div>
         <div style="display: flex; gap: 5px;">
@@ -260,7 +260,6 @@
             <a href="https://share.google/OjtH32V2ynojkQ1mW" target="_blank" class="link-button" style="flex: 1;">📘 Facebook</a>
         </div>
 
-        <!-- TV SCHERMPJE DIE ONDERAAN TEVOORSCHIJN KOMT -->
         <div id="tvPlayerContainer">
             <button id="closeTvBtn" style="background:#8b0000; color:#fff; width:100%; margin-bottom:5px;">✖ Sluit Mini TV</button>
             <iframe id="tvIframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -321,6 +320,7 @@
 
 <script>
     let activeAlarm = null;
+    let currentVerseDay = null;
     const months = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
 
     const bibleVerses = [
@@ -337,19 +337,30 @@
         { text: "Komt herwaarts tot Mij, allen die vermoeid en belast zijt, en Ik zal u rust geven.", ref: "Mattheüs 11:28" },
         { text: "Wees sterk en moedig, schrik niet en wees niet ontsteld, want de HEERE, uw God, is met u.", ref: "Jozua 1:9" },
         { text: "En wij weten dat voor hen die God liefhebben, alle dingen meewerken ten goede.", ref: "Romeinen 8:28" },
-        { text: "Liefde is geduldig, liefde is vriendelijk.", ref: "1 Korinthiërs 13:4" }
+        { text: "Liefde is geduldig, liefde is vriendelijk.", ref: "1 Korinthiërs 13:4" },
+        { text: "God is ons een toevlucht en sterkte, zeer beproefd bevonden als hulp in benauwdheden.", ref: "Psalm 46:2" },
+        { text: "U zult de waarheid kennen, en de waarheid zal u vrijmaken.", ref: "Johannes 8:32" },
+        { text: "Zij die de HEERE verwachten, zullen hun kracht vernieuwen, zij zullen hun vleugels uitslaan als arenden.", ref: "Jesaja 40:31" },
+        { text: "Werp al uw zorgen op Hem, want Hij zorgt voor u.", ref: "1 Petrus 5:7" },
+        { text: "Dit is de dag die de HEERE gemaakt heeft; laten wij daarin verheugd en verblijd zijn.", ref: "Psalm 118:24" },
+        { text: "Gezegend is de mens die op de HEERE vertrouwt, wiens vertrouwen de HEERE is.", ref: "Jeremia 17:7" }
     ];
 
+    /* BIJBELTEKST UNIEK BEREKENEN OP BASIS VAN DE HUIDIGE DATUM */
     function updateDailyVerse() {
         const today = new Date();
-        const start = new Date(today.getFullYear(), 0, 1);
-        const diff = today - start;
+        const startOfYear = new Date(today.getFullYear(), 0, 0);
+        const diff = today - startOfYear;
         const oneDay = 1000 * 60 * 60 * 24;
         const dayOfYear = Math.floor(diff / oneDay);
         
-        const index = dayOfYear % bibleVerses.length;
-        document.getElementById('bibleVerseText').innerText = `"${bibleVerses[index].text}"`;
-        document.getElementById('bibleVerseRef').innerText = `— ${bibleVerses[index].ref}`;
+        // Controleer of de dag veranderd is
+        if (currentVerseDay !== dayOfYear) {
+            currentVerseDay = dayOfYear;
+            const index = dayOfYear % bibleVerses.length;
+            document.getElementById('bibleVerseText').innerText = `"${bibleVerses[index].text}"`;
+            document.getElementById('bibleVerseRef').innerText = `— ${bibleVerses[index].ref}`;
+        }
     }
 
     function playAlarmSound() {
@@ -392,9 +403,8 @@
         const timeString = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
         document.getElementById('digitalTimeOnly').innerText = timeString;
 
-        if (hours === 0 && minutes === 0 && seconds === 0) {
-            updateDailyVerse();
-        }
+        // Controleer continu of de dagtekst bijgewerkt moet worden
+        updateDailyVerse();
 
         const alarmCheckString = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
         if (activeAlarm && activeAlarm === alarmCheckString && seconds === 0) {
@@ -456,7 +466,6 @@
 
     setInterval(updateClock, 1000);
     updateClock();
-    updateDailyVerse();
 
     document.getElementById('stationSelect').addEventListener('change', function() {
         document.getElementById('mediaUrl').value = this.value;
@@ -510,7 +519,6 @@
         document.getElementById('mediaOutput').innerHTML = `<div class="status-text">Speler gestopt</div>`;
     });
 
-    /* INGEBOUWDE MINI TV LOGICA */
     document.getElementById('showYtTvBtn').addEventListener('click', function() {
         const container = document.getElementById('tvPlayerContainer');
         const iframe = document.getElementById('tvIframe');
