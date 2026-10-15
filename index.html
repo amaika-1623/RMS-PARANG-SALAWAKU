@@ -157,7 +157,7 @@
             border-radius: 6px;
             border: 1px solid #d4af37;
             width: 100%;
-            height: 180px;
+            height: 200px;
         }
         .status-text {
             font-size: 11px;
@@ -181,6 +181,12 @@
             color: #0b0804;
             font-weight: bold;
             border-radius: 50%;
+        }
+
+        /* MINI TV CONTAINER */
+        #tvPlayerContainer {
+            display: none;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -245,12 +251,18 @@
         <div class="status-text" id="alarmStatus">Geen wekker ingesteld</div>
     </div>
 
-    <!-- SNELLE LINK KNOPPEN (YOUTUBE & FACEBOOK) -->
+    <!-- INGEBOUWDE MINI TV SECTIE -->
     <div class="section-box">
-        <div class="section-title">🔗 SNELLE LINKS</div>
-        <div style="display: flex; gap: 8px;">
-            <a href="https://www.youtube.com/" target="_blank" class="link-button" style="flex: 1;">📺 YouTube</a>
+        <div class="section-title">📺 MINI TV & LINKS</div>
+        <div style="display: flex; gap: 5px;">
+            <button id="showYtTvBtn" style="flex: 1;">📺 YouTube TV</button>
             <a href="https://share.google/OjtH32V2ynojkQ1mW" target="_blank" class="link-button" style="flex: 1;">📘 Facebook</a>
+        </div>
+
+        <!-- TV SCHERMPJE DIE ONDERAAN TEVOORSCHIJN KOMT -->
+        <div id="tvPlayerContainer">
+            <button id="closeTvBtn" style="background:#8b0000; color:#fff; width:100%; margin-bottom:5px;">✖ Sluit Mini TV</button>
+            <iframe id="tvIframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
     </div>
 
@@ -495,6 +507,21 @@
 
     document.getElementById('stopBtn').addEventListener('click', function() {
         document.getElementById('mediaOutput').innerHTML = `<div class="status-text">Speler gestopt</div>`;
+    });
+
+    /* INGEBOUWDE MINI TV LOGICA */
+    document.getElementById('showYtTvBtn').addEventListener('click', function() {
+        const container = document.getElementById('tvPlayerContainer');
+        const iframe = document.getElementById('tvIframe');
+        iframe.src = "https://www.youtube.com/embed/TXWzTSgXUfg?autoplay=1";
+        container.style.display = 'block';
+    });
+
+    document.getElementById('closeTvBtn').addEventListener('click', function() {
+        const container = document.getElementById('tvPlayerContainer');
+        const iframe = document.getElementById('tvIframe');
+        iframe.src = "";
+        container.style.display = 'none';
     });
 
     document.getElementById('setAlarmBtn').addEventListener('click', function() {
