@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mena Muria Klok & Eeuwkalender</title>
     <style>
@@ -346,7 +348,6 @@
         { text: "Gezegend is de mens die op de HEERE vertrouwt, wiens vertrouwen de HEERE is.", ref: "Jeremia 17:7" }
     ];
 
-    /* BIJBELTEKST UNIEK BEREKENEN OP BASIS VAN DE HUIDIGE DATUM */
     function updateDailyVerse() {
         const today = new Date();
         const startOfYear = new Date(today.getFullYear(), 0, 0);
@@ -354,7 +355,6 @@
         const oneDay = 1000 * 60 * 60 * 24;
         const dayOfYear = Math.floor(diff / oneDay);
         
-        // Controleer of de dag veranderd is
         if (currentVerseDay !== dayOfYear) {
             currentVerseDay = dayOfYear;
             const index = dayOfYear % bibleVerses.length;
@@ -403,7 +403,6 @@
         const timeString = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
         document.getElementById('digitalTimeOnly').innerText = timeString;
 
-        // Controleer continu of de dagtekst bijgewerkt moet worden
         updateDailyVerse();
 
         const alarmCheckString = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
@@ -460,107 +459,4 @@
         body.innerHTML = html;
 
         const selDate = new Date(year, month, (year === currentYear && month === currentMonth) ? currentDate : 1);
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('selectedDateInfo').innerText = "Geselecteerde datum: " + selDate.toLocaleDateString('nl-NL', options);
-    }
-
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    document.getElementById('stationSelect').addEventListener('change', function() {
-        document.getElementById('mediaUrl').value = this.value;
-    });
-
-    document.getElementById('playBtn').addEventListener('click', function() {
-        const urlInput = document.getElementById('mediaUrl').value.trim();
-        const outputDiv = document.getElementById('mediaOutput');
-        
-        if (!urlInput) {
-            outputDiv.innerHTML = `<div class="status-text" style="color:red;">Voer een URL in</div>`;
-            return;
-        }
-
-        if (urlInput.includes("youtube.com") || urlInput.includes("youtu.be")) {
-            let videoId = "";
-            if (urlInput.includes("youtu.be/")) {
-                videoId = urlInput.split("youtu.be/")[1].split("?")[0].split("&")[0];
-            } else if (urlInput.includes("watch?v=")) {
-                videoId = urlInput.split("watch?v=")[1].split("&")[0];
-            }
-            
-            if (videoId) {
-                outputDiv.innerHTML = `
-                    <div style="margin-top:10px;">
-                        <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                        </iframe>
-                        <div class="status-text">Video actief</div>
-                    </div>
-                `;
-            } else {
-                outputDiv.innerHTML = `<div class="status-text" style="color:red;">Kon YouTube ID niet verwerken</div>`;
-            }
-        } else {
-            outputDiv.innerHTML = `
-                <div style="margin-top:10px;">
-                    <audio id="audioStream" controls autoplay style="width:100%;">
-                        <source src="${urlInput}" type="audio/mpeg">
-                        Browser ondersteunt dit audio-element niet.
-                    </audio>
-                    <div class="status-text">Audiostream actief</div>
-                </div>
-            `;
-        }
-    });
-
-    document.getElementById('stopBtn').addEventListener('click', function() {
-        document.getElementById('mediaOutput').innerHTML = `<div class="status-text">Speler gestopt</div>`;
-    });
-
-    document.getElementById('showYtTvBtn').addEventListener('click', function() {
-        const container = document.getElementById('tvPlayerContainer');
-        const iframe = document.getElementById('tvIframe');
-        iframe.src = "https://www.youtube.com/embed/TXWzTSgXUfg?autoplay=1";
-        container.style.display = 'block';
-    });
-
-    document.getElementById('closeTvBtn').addEventListener('click', function() {
-        const container = document.getElementById('tvPlayerContainer');
-        const iframe = document.getElementById('tvIframe');
-        iframe.src = "";
-        container.style.display = 'none';
-    });
-
-    document.getElementById('setAlarmBtn').addEventListener('click', function() {
-        const alarmTime = document.getElementById('alarmTime').value;
-        const statusDiv = document.getElementById('alarmStatus');
-        if (alarmTime) {
-            activeAlarm = alarmTime;
-            statusDiv.innerText = `Wekker ingesteld om ${alarmTime} uur`;
-            statusDiv.style.color = "#f3e5ab";
-        } else {
-            activeAlarm = null;
-            statusDiv.innerText = `Geen wekker ingesteld`;
-            statusDiv.style.color = "#c5a059";
-        }
-    });
-
-    document.getElementById('goToYearBtn').addEventListener('click', function() {
-        const m = parseInt(document.getElementById('monthSelect').value);
-        const y = parseInt(document.getElementById('yearInput').value);
-        generateCalendar(y, m);
-    });
-
-    document.getElementById('todayBtn').addEventListener('click', function() {
-        const now = new Date();
-        generateCalendar(now.getFullYear(), now.getMonth());
-    });
-
-    const now = new Date();
-    generateCalendar(now.getFullYear(), now.getMonth());
-</script>
-
-</body>
-</html>
+        const options = { weekday
