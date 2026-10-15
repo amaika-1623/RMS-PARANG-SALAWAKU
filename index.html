@@ -569,16 +569,15 @@
         generateCalendar(now.getFullYear(), now.getMonth());
     });
 
-    // Start direct met het huidige jaar en de huidige maand
     const now = new Date();
     generateCalendar(now.getFullYear(), now.getMonth());
-
 </script>
-    
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-      .then(() => console.log('Service Worker geregistreerd!'));
-  }
+
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+            .then(() => console.log('Service Worker geregistreerd!'));
+    }
 </script>
 
 </body>
