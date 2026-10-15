@@ -131,7 +131,7 @@
         }
 
         /* Formulieren & Knoppen */
-        select, input[type="text"], input[type="number"], input[type="time"], button, .link-button {
+        select, input[type="text"], input[type="number"], input[type="time"], button {
             background-color: #1a1205;
             color: #f3e5ab;
             border: 1px solid #d4af37;
@@ -140,24 +140,21 @@
             font-size: 12px;
             margin: 4px 0;
             box-sizing: border-box;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
         }
         select, input[type="text"], input[type="time"] { width: 100%; }
-        button, .link-button {
+        button {
             cursor: pointer;
             font-weight: bold;
             background: linear-gradient(to bottom, #d4af37, #aa820a);
             color: #0b0804;
         }
-        button:hover, .link-button:hover { opacity: 0.9; }
+        button:hover { opacity: 0.9; }
 
         iframe {
             border-radius: 6px;
             border: 1px solid #d4af37;
             width: 100%;
-            height: 180px;
+            height: 200px;
         }
         .status-text {
             font-size: 11px;
@@ -183,18 +180,21 @@
             border-radius: 50%;
         }
 
-        /* MINI TV ZWEVEND SCHERM MODUS (POPUP) */
-        .pip-mode {
-            position: fixed !important;
-            bottom: 20px !important;
-            right: 20px !important;
-            width: 220px !important;
-            height: 130px !important;
-            z-index: 9999 !important;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.8) !important;
-            border: 2px solid #d4af37 !important;
-            border-radius: 8px !important;
-            background: #000;
+        /* MINI TV INGEBOUWD SCHERM BOVENIN OF ONDERIN MET SLUITKNOP */
+        .mini-tv-box {
+            display: none;
+            margin-top: 10px;
+            position: relative;
+        }
+        .close-tv-btn {
+            background: #8b0000;
+            color: #fff;
+            border: 1px solid #d4af37;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            margin-bottom: 5px;
         }
     </style>
 </head>
@@ -247,8 +247,6 @@
         <div id="mediaOutput">
             <div class="status-text" id="playerStatus">Speler gereed</div>
         </div>
-        
-        <button id="togglePipBtn" style="width: 100%; margin-top: 8px; display: none;">📺 Open / Sluit Mini TV</button>
     </div>
 
     <!-- WEKKER / ALARM SECTIE -->
@@ -261,12 +259,18 @@
         <div class="status-text" id="alarmStatus">Geen wekker ingesteld</div>
     </div>
 
-    <!-- SNELLE LINK KNOPPEN (YOUTUBE & FACEBOOK) -->
+    <!-- SNELLE LINK KNOPPEN MET INGEBOUWDE MINI TV -->
     <div class="section-box">
-        <div class="section-title">🔗 SNELLE LINKS</div>
-        <div style="display: flex; gap: 8px;">
-            <a href="https://www.youtube.com/" target="_blank" class="link-button" style="flex: 1;">📺 YouTube</a>
-            <a href="https://share.google/OjtH32V2ynojkQ1mW" target="_blank" class="link-button" style="flex: 1;">📘 Facebook</a>
+        <div class="section-title">📺 MINI TV & SNELLE LINKS</div>
+        <div style="display: flex; gap: 5px;">
+            <button id="openYtTvBtn" style="flex: 1;">📺 Open YouTube TV</button>
+            <button id="openFbTvBtn" style="flex: 1;">📘 Open Facebook TV</button>
+        </div>
+
+        <!-- DE INGEBOUWDE MINI TV WAAR HET IN VERSCHIJNT -->
+        <div class="mini-tv-box" id="miniTvContainer">
+            <button class="close-tv-btn" id="closeTvBtn">✖ Sluit Mini TV</button>
+            <iframe id="miniTvIframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
     </div>
 
@@ -484,16 +488,15 @@
             
             if (videoId) {
                 outputDiv.innerHTML = `
-                    <div style="margin-top:10px;" id="videoContainer">
-                        <iframe id="youtubeIframe" src="https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1" 
+                    <div style="margin-top:10px;">
+                        <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
                             frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                             allowfullscreen>
                         </iframe>
                         <div class="status-text">Video actief</div>
                     </div>
                 `;
-                document.getElementById('togglePipBtn').style.display = 'block';
             } else {
                 outputDiv.innerHTML = `<div class="status-text" style="color:red;">Kon YouTube ID niet verwerken</div>`;
             }
@@ -507,20 +510,33 @@
                     <div class="status-text">Audiostream actief</div>
                 </div>
             `;
-            document.getElementById('togglePipBtn').style.display = 'none';
-        }
-    });
-
-    document.getElementById('togglePipBtn').addEventListener('click', function() {
-        const iframe = document.getElementById('youtubeIframe');
-        if (iframe) {
-            iframe.classList.toggle('pip-mode');
         }
     });
 
     document.getElementById('stopBtn').addEventListener('click', function() {
         document.getElementById('mediaOutput').innerHTML = `<div class="status-text">Speler gestopt</div>`;
-        document.getElementById('togglePipBtn').style.display = 'none';
+    });
+
+    /* MINI TV KNOPPEN LOGICA */
+    document.getElementById('openYtTvBtn').addEventListener('click', function() {
+        const tvBox = document.getElementById('miniTvContainer');
+        const tvIframe = document.getElementById('miniTvIframe');
+        tvIframe.src = "https://www.youtube.com/embed?listType=search&list=Aboru+Ambon";
+        tvBox.style.display = "block";
+    });
+
+    document.getElementById('openFbTvBtn').addEventListener('click', function() {
+        const tvBox = document.getElementById('miniTvContainer');
+        const tvIframe = document.getElementById('miniTvIframe');
+        tvIframe.src = "https://share.google/OjtH32V2ynojkQ1mW";
+        tvBox.style.display = "block";
+    });
+
+    document.getElementById('closeTvBtn').addEventListener('click', function() {
+        const tvBox = document.getElementById('miniTvContainer');
+        const tvIframe = document.getElementById('miniTvIframe');
+        tvIframe.src = "";
+        tvBox.style.display = "none";
     });
 
     document.getElementById('setAlarmBtn').addEventListener('click', function() {
