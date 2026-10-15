@@ -374,7 +374,6 @@
         const alarmCheckString = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
         if (activeAlarm && activeAlarm === alarmCheckString && seconds === 0) {
             playAlarmSound();
-            // Stel automatisch de wekkermuziek in en start de speler
             document.getElementById('mediaUrl').value = "https://youtu.be/TXWzTSgXUfg";
             document.getElementById('playBtn').click();
             
@@ -458,12 +457,13 @@
             if (videoId) {
                 outputDiv.innerHTML = `
                     <div style="margin-top:10px;">
-                        <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
+                        <!-- Picture-in-Picture en autoplay permissies toegevoegd -->
+                        <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1" 
                             frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                             allowfullscreen>
                         </iframe>
-                        <div class="status-text">Wekkermuziek actief</div>
+                        <div class="status-text">Wekkermuziek actief (PiP ondersteund)</div>
                     </div>
                 `;
             } else {
