@@ -131,24 +131,27 @@
         }
 
         /* Formulieren & Knoppen */
-        select, input[type="text"], input[type="number"], input[type="time"], button {
+        select, input[type="text"], input[type="number"], input[type="time"], button, .link-button {
             background-color: #1a1205;
             color: #f3e5ab;
             border: 1px solid #d4af37;
-            padding: 6px;
+            padding: 8px;
             border-radius: 4px;
             font-size: 12px;
             margin: 4px 0;
             box-sizing: border-box;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
         }
         select, input[type="text"], input[type="time"] { width: 100%; }
-        button {
+        button, .link-button {
             cursor: pointer;
             font-weight: bold;
             background: linear-gradient(to bottom, #d4af37, #aa820a);
             color: #0b0804;
         }
-        button:hover { opacity: 0.9; }
+        button:hover, .link-button:hover { opacity: 0.9; }
 
         iframe {
             border-radius: 6px;
@@ -240,6 +243,15 @@
             <button id="setAlarmBtn" style="flex: 1;">Zet Wekker</button>
         </div>
         <div class="status-text" id="alarmStatus">Geen wekker ingesteld</div>
+    </div>
+
+    <!-- SNELLE LINK KNOPPEN (YOUTUBE & FACEBOOK) -->
+    <div class="section-box">
+        <div class="section-title">🔗 SNELLE LINKS</div>
+        <div style="display: flex; gap: 8px;">
+            <a href="https://www.youtube.com/" target="_blank" class="link-button" style="flex: 1;">📺 YouTube</a>
+            <a href="https://share.google/OjtH32V2ynojkQ1mW" target="_blank" class="link-button" style="flex: 1;">📘 Facebook</a>
+        </div>
     </div>
 
     <!-- EEUWKALENDER SECTIE -->
@@ -457,7 +469,6 @@
             if (videoId) {
                 outputDiv.innerHTML = `
                     <div style="margin-top:10px;">
-                        <!-- Picture-in-Picture en autoplay permissies toegevoegd -->
                         <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1" 
                             frameborder="0" 
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
