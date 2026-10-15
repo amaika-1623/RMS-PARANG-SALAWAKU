@@ -393,15 +393,21 @@
         const minuteDeg = minutes * 6 + seconds * 0.1;
         const hourDeg = (hours % 12) * 30 + minutes * 0.5;
 
-        document.getElementById('secondHand').style.transform = `rotate(${secondDeg}deg)`;
-        document.getElementById('minuteHand').style.transform = `rotate(${minuteDeg}deg)`;
-        document.getElementById('hourHand').style.transform = `rotate(${hourDeg}deg)`;
+        const hourHand = document.getElementById('hourHand');
+        const minuteHand = document.getElementById('minuteHand');
+        const secondHand = document.getElementById('secondHand');
+
+        if (hourHand) hourHand.style.transform = `rotate(${hourDeg}deg)`;
+        if (minuteHand) minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
+        if (secondHand) secondHand.style.transform = `rotate(${secondDeg}deg)`;
 
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('digitalDateOnly').innerText = now.toLocaleDateString('nl-NL', options);
+        const dateElem = document.getElementById('digitalDateOnly');
+        if (dateElem) dateElem.innerText = now.toLocaleDateString('nl-NL', options);
 
         const timeString = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
-        document.getElementById('digitalTimeOnly').innerText = timeString;
+        const timeElem = document.getElementById('digitalTimeOnly');
+        if (timeElem) timeElem.innerText = timeString;
 
         updateDailyVerse();
 
@@ -411,13 +417,17 @@
             document.getElementById('mediaUrl').value = "https://youtu.be/TXWzTSgXUfg";
             document.getElementById('playBtn').click();
             
-            document.getElementById('alarmStatus').innerText = `🔔 WEKKER GAAT AF (${alarmCheckString})!`;
-            document.getElementById('alarmStatus').style.color = "#ff4444";
+            const alarmStatus = document.getElementById('alarmStatus');
+            if (alarmStatus) {
+                alarmStatus.innerText = `🔔 WEKKER GAAT AF (${alarmCheckString})!`;
+                alarmStatus.style.color = "#ff4444";
+            }
         }
     }
 
     function generateCalendar(year, month) {
         const body = document.getElementById('calendarBody');
+        if (!body) return;
         body.innerHTML = '';
         
         const today = new Date();
@@ -549,7 +559,9 @@
     document.getElementById('goToYearBtn').addEventListener('click', function() {
         const m = parseInt(document.getElementById('monthSelect').value);
         const y = parseInt(document.getElementById('yearInput').value);
-        generateCalendar(y, m);
+        if (!isNaN(y)) {
+            generateCalendar(y, m);
+        }
     });
 
     document.getElementById('todayBtn').addEventListener('click', function() {
@@ -557,6 +569,7 @@
         generateCalendar(now.getFullYear(), now.getMonth());
     });
 
+    // Start direct met het huidige jaar en de huidige maand
     const now = new Date();
     generateCalendar(now.getFullYear(), now.getMonth());
 </script>
