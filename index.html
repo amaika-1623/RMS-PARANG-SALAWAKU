@@ -228,7 +228,8 @@
         
         <select id="stationSelect">
             <option value="https://youtu.be/TXWzTSgXUfg">Wekker Muziek (YouTube)</option>
-            <option value="https://youtu.be/Q6W78dSEa1M?is=45eNcpkPoQmDWDYd">YouTube Stream (Voorbeeld)</option>
+            <option value="https://youtu.be/Q6W78dSEa1M?is=45eNcpkPoQmDWDYd		
+">YouTube Stream (Voorbeeld)</option>
             <option value="https://icecast.omroep.nl/radio1-bb-mp3">Radio 1 (Audio)</option>
         </select>
 
@@ -257,8 +258,12 @@
     <!-- MINI TV SECTIE -->
     <div class="section-box">
         <div class="section-title">📺 MINI TV & LINKS</div>
-        <div style="display: flex; gap: 5px;">
-            <button id="showYtTvBtn" style="flex: 1;">📺 YouTube TV</button>
+        
+        <!-- Invoerveld voor eigen YouTube video/kanaal links -->
+        <input type="text" id="tvUrlInput" value="https://youtu.be/TXWzTSgXUfg" placeholder="Plak YouTube video URL hier..." />
+        
+        <div style="display: flex; gap: 5px; margin-top: 5px;">
+            <button id="showYtTvBtn" style="flex: 1;">📺 Start Mini TV</button>
             <a href="https://share.google/OjtH32V2ynojkQ1mW" target="_blank" class="link-button" style="flex: 1;">📘 Facebook</a>
         </div>
 
@@ -528,10 +533,20 @@
         document.getElementById('mediaOutput').innerHTML = `<div class="status-text">Speler gestopt</div>`;
     });
 
+    // AANGEPASTE MINI TV FUNCTIE VOOR EIGEN LINKS (ZOALS EDWINE SAMUELS)
     document.getElementById('showYtTvBtn').addEventListener('click', function() {
         const container = document.getElementById('tvPlayerContainer');
         const iframe = document.getElementById('tvIframe');
-        iframe.src = "https://www.youtube.com/embed/TXWzTSgXUfg?autoplay=1";
+        const urlInput = document.getElementById('tvUrlInput').value.trim();
+        
+        let videoId = "TXWzTSgXUfg"; // Standaard fallback
+        if (urlInput.includes("youtu.be/")) {
+            videoId = urlInput.split("youtu.be/")[1].split("?")[0].split("&")[0];
+        } else if (urlInput.includes("watch?v=")) {
+            videoId = urlInput.split("watch?v=")[1].split("&")[0];
+        }
+
+        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
         container.style.display = 'block';
     });
 
