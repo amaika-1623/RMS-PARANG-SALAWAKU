@@ -227,20 +227,20 @@
         <div class="section-title">📻 STREAM & RADIO SPELER</div>
         
         <select id="stationSelect">
+            <option value="https://youtu.be/Q6W78dSEa1M">Carlos Santana (Wekker Concert)</option>
             <option value="https://youtu.be/4y9szAi9Dhc">Edwine Samuels (Herfstparty)</option>
             <option value="https://icecast.omroep.nl/radio1-bb-mp3">NPO Radio 1 (Audio)</option>
             <option value="https://icecast.omroep.nl/radio2-bb-mp3">NPO Radio 2 (Audio)</option>
             <option value="https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO_10.mp3">Radio 10 (Audio)</option>
         </select>
 
-        <input type="text" id="mediaUrl" value="https://youtu.be/4y9szAi9Dhc" placeholder="Plak YouTube of Stream URL..." />
+        <input type="text" id="mediaUrl" value="https://youtu.be/Q6W78dSEa1M" placeholder="Plak YouTube of Stream URL..." />
         
         <div style="display: flex; gap: 5px;">
             <button id="playBtn" style="flex: 1;">▶ Play</button>
             <button id="stopBtn" style="flex: 1;">⏹ Stop</button>
         </div>
 
-        <!-- Radio.net Gids Knop -->
         <div style="margin-top: 6px;">
             <a href="https://nl.radio.net/" target="_blank" class="link-button" style="width: 100%;">🌐 Radio.net (Alle Zenders)</a>
         </div>
@@ -420,7 +420,8 @@
         const alarmCheckString = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
         if (activeAlarm && activeAlarm === alarmCheckString && seconds === 0) {
             playAlarmSound();
-            document.getElementById('mediaUrl').value = "https://youtu.be/4y9szAi9Dhc";
+            // Hier wordt Carlos Santana automatisch ingesteld als wekker muziek
+            document.getElementById('mediaUrl').value = "https://youtu.be/Q6W78dSEa1M";
             document.getElementById('playBtn').click();
             
             const alarmStatus = document.getElementById('alarmStatus');
@@ -534,10 +535,11 @@
         document.getElementById('mediaOutput').innerHTML = `<div class="status-text">Speler gestopt</div>`;
     });
 
+    // Mini TV start nu ook standaard met het Santana concert
     document.getElementById('showYtTvBtn').addEventListener('click', function() {
         const container = document.getElementById('tvPlayerContainer');
         const iframe = document.getElementById('tvIframe');
-        iframe.src = "https://www.youtube.com/embed/4y9szAi9Dhc?autoplay=1";
+        iframe.src = "https://www.youtube.com/embed/Q6W78dSEa1M?autoplay=1";
         container.style.display = 'block';
     });
 
