@@ -224,12 +224,13 @@
 
     <!-- STREAM & RADIO SPELER -->
     <div class="section-box">
-        <div class="section-title">📻 STREAM PLAYER</div>
+        <div class="section-title">📻 STREAM & RADIO SPELER</div>
         
         <select id="stationSelect">
             <option value="https://youtu.be/4y9szAi9Dhc">Edwine Samuels (Herfstparty)</option>
-            <option value="https://youtu.be/TXWzTSgXUfg">Wekker Muziek (YouTube)</option>
-            <option value="https://icecast.omroep.nl/radio1-bb-mp3">Radio 1 (Audio)</option>
+            <option value="https://icecast.omroep.nl/radio1-bb-mp3">NPO Radio 1 (Audio)</option>
+            <option value="https://icecast.omroep.nl/radio2-bb-mp3">NPO Radio 2 (Audio)</option>
+            <option value="https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO_10.mp3">Radio 10 (Audio)</option>
         </select>
 
         <input type="text" id="mediaUrl" value="https://youtu.be/4y9szAi9Dhc" placeholder="Plak YouTube of Stream URL..." />
@@ -237,6 +238,11 @@
         <div style="display: flex; gap: 5px;">
             <button id="playBtn" style="flex: 1;">▶ Play</button>
             <button id="stopBtn" style="flex: 1;">⏹ Stop</button>
+        </div>
+
+        <!-- Radio.net Gids Knop -->
+        <div style="margin-top: 6px;">
+            <a href="https://nl.radio.net/" target="_blank" class="link-button" style="width: 100%;">🌐 Radio.net (Alle Zenders)</a>
         </div>
 
         <div id="mediaOutput">
@@ -528,7 +534,6 @@
         document.getElementById('mediaOutput').innerHTML = `<div class="status-text">Speler gestopt</div>`;
     });
 
-    // Hier wordt de video van Edwine Samuels gestart in de Mini TV
     document.getElementById('showYtTvBtn').addEventListener('click', function() {
         const container = document.getElementById('tvPlayerContainer');
         const iframe = document.getElementById('tvIframe');
