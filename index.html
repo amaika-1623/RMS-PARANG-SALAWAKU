@@ -227,12 +227,12 @@
         <div class="section-title">📻 STREAM PLAYER</div>
         
         <select id="stationSelect">
+            <option value="https://youtu.be/4y9szAi9Dhc">Edwine Samuels (Herfstparty)</option>
             <option value="https://youtu.be/TXWzTSgXUfg">Wekker Muziek (YouTube)</option>
-            <option value="https://youtu.be/TEhNMG2du8k">YouTube Stream (Voorbeeld)</option>
             <option value="https://icecast.omroep.nl/radio1-bb-mp3">Radio 1 (Audio)</option>
         </select>
 
-        <input type="text" id="mediaUrl" value="https://youtu.be/TXWzTSgXUfg" placeholder="Plak YouTube of Stream URL..." />
+        <input type="text" id="mediaUrl" value="https://youtu.be/4y9szAi9Dhc" placeholder="Plak YouTube of Stream URL..." />
         
         <div style="display: flex; gap: 5px;">
             <button id="playBtn" style="flex: 1;">▶ Play</button>
@@ -257,12 +257,8 @@
     <!-- MINI TV SECTIE -->
     <div class="section-box">
         <div class="section-title">📺 MINI TV & LINKS</div>
-        
-        <!-- Invoerveld voor eigen YouTube video/kanaal links -->
-        <input type="text" id="tvUrlInput" value="https://youtu.be/TXWzTSgXUfg" placeholder="Plak YouTube video URL hier..." />
-        
-        <div style="display: flex; gap: 5px; margin-top: 5px;">
-            <button id="showYtTvBtn" style="flex: 1;">📺 Start Mini TV</button>
+        <div style="display: flex; gap: 5px;">
+            <button id="showYtTvBtn" style="flex: 1;">📺 YouTube TV</button>
             <a href="https://share.google/OjtH32V2ynojkQ1mW" target="_blank" class="link-button" style="flex: 1;">📘 Facebook</a>
         </div>
 
@@ -418,7 +414,7 @@
         const alarmCheckString = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
         if (activeAlarm && activeAlarm === alarmCheckString && seconds === 0) {
             playAlarmSound();
-            document.getElementById('mediaUrl').value = "https://youtu.be/TXWzTSgXUfg";
+            document.getElementById('mediaUrl').value = "https://youtu.be/4y9szAi9Dhc";
             document.getElementById('playBtn').click();
             
             const alarmStatus = document.getElementById('alarmStatus');
@@ -532,20 +528,11 @@
         document.getElementById('mediaOutput').innerHTML = `<div class="status-text">Speler gestopt</div>`;
     });
 
-    // AANGEPASTE MINI TV FUNCTIE VOOR EIGEN LINKS (ZOALS EDWINE SAMUELS)
+    // Hier wordt de video van Edwine Samuels gestart in de Mini TV
     document.getElementById('showYtTvBtn').addEventListener('click', function() {
         const container = document.getElementById('tvPlayerContainer');
         const iframe = document.getElementById('tvIframe');
-        const urlInput = document.getElementById('tvUrlInput').value.trim();
-        
-        let videoId = "TXWzTSgXUfg"; // Standaard fallback
-        if (urlInput.includes("youtu.be/")) {
-            videoId = urlInput.split("youtu.be/")[1].split("?")[0].split("&")[0];
-        } else if (urlInput.includes("watch?v=")) {
-            videoId = urlInput.split("watch?v=")[1].split("&")[0];
-        }
-
-        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+        iframe.src = "https://www.youtube.com/embed/4y9szAi9Dhc?autoplay=1";
         container.style.display = 'block';
     });
 
