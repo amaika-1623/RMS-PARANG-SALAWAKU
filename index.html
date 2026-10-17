@@ -338,7 +338,10 @@
     let activeAlarm = null;
     let currentVerseDay = null;
     const months = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
-    const ROTATION_OFFSET = 6; // Nauwkeurige correctie in graden voor de wijzerplaat
+    
+    // Afzonderlijke fijne correcties voor uren/minuten en seconden
+    const HAND_OFFSET = -9;    // -9 graden (-1.5 minuut voor uren & minuten)
+    const SECOND_OFFSET = -6;  // -6 graden (-1 seconde voor de secondewijzer)
 
     const bibleVerses = [
         { text: "De HEERE is mijn Herder, mij zal niets ontbreken.", ref: "Psalm 23:1" },
@@ -409,9 +412,9 @@
             const minutes = now.getMinutes();
             const hours = now.getHours();
 
-            const secondDeg = (seconds * 6) + ROTATION_OFFSET;
-            const minuteDeg = (minutes * 6 + seconds * 0.1) + ROTATION_OFFSET;
-            const hourDeg = ((hours % 12) * 30 + minutes * 0.5) + ROTATION_OFFSET;
+            const secondDeg = (seconds * 6) + SECOND_OFFSET;
+            const minuteDeg = (minutes * 6 + seconds * 0.1) + HAND_OFFSET;
+            const hourDeg = ((hours % 12) * 30 + minutes * 0.5) + HAND_OFFSET;
 
             const hourHand = document.getElementById('hourHand');
             const minuteHand = document.getElementById('minuteHand');
