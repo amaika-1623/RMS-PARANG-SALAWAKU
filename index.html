@@ -51,7 +51,7 @@
             letter-spacing: 1px;
         }
 
-        /* PERFECT RONDE KLOK (Bovenkant volledig zichtbaar) */
+        /* PERFECT RONDE KLOK */
         .clock-container {
             position: relative;
             width: 280px;
@@ -67,19 +67,39 @@
             box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
         }
 
-        /* Wijzers precies in het midden */
+        /* DUIDELIJK ONDERSCHEID IN WIJZERS */
         .hand {
             position: absolute;
             bottom: 50%;
             left: 50%;
             transform-origin: bottom center;
-            background: #d4af37;
             border-radius: 4px;
             z-index: 10;
         }
-        .hour-hand { width: 4px; height: 55px; background: #f3e5ab; margin-left: -2px; }
-        .minute-hand { width: 3px; height: 75px; background: #d4af37; margin-left: -1.5px; }
-        .second-hand { width: 1px; height: 85px; background: #ff3333; margin-left: -0.5px; z-index: 11; }
+        /* Korte, dikke uurwijzer */
+        .hour-hand { 
+            width: 6px; 
+            height: 50px; 
+            background: #f3e5ab; 
+            margin-left: -3px; 
+            box-shadow: 0 0 4px rgba(0,0,0,0.8);
+        }
+        /* Lange, slanke minuutwijzer */
+        .minute-hand { 
+            width: 3.5px; 
+            height: 82px; 
+            background: #d4af37; 
+            margin-left: -1.75px; 
+            box-shadow: 0 0 4px rgba(0,0,0,0.8);
+        }
+        /* Secondewijzer */
+        .second-hand { 
+            width: 1.5px; 
+            height: 90px; 
+            background: #ff3333; 
+            margin-left: -0.75px; 
+            z-index: 11; 
+        }
         .center-dot {
             position: absolute;
             top: 50%; left: 50%;
