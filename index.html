@@ -51,7 +51,7 @@
             letter-spacing: 1px;
         }
 
-        /* PERFECT RONDE KLOK - Fijn afgesteld op het nieuwe plaatje */
+        /* PERFECT RONDE KLOK - Perfect gecentreerd */
         .clock-container {
             position: relative;
             width: 280px;
@@ -477,89 +477,4 @@
 
         for (let i = 0; i < 6; i++) {
             let row = '<tr>';
-            for (let j = 0; j < 7; j++) {
-                if (i === 0 && j < startDay) {
-                    row += '<td></td>';
-                } else if (date > lastDay.getDate()) {
-                    row += '<td></td>';
-                } else {
-                    let isToday = (date === currentDate && month === currentMonth && year === currentYear);
-                    let classAttr = isToday ? 'class="today-cell"' : '';
-                    row += `<td ${classAttr}>${date}</td>`;
-                    date++;
-                }
-            }
-            row += '</tr>';
-            html += row;
-            if (date > lastDay.getDate()) break;
-        }
-        body.innerHTML = html;
-
-        const selDate = new Date(year, month, (year === currentYear && month === currentMonth) ? currentDate : 1);
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('selectedDateInfo').innerText = "Geselecteerde datum: " + selDate.toLocaleDateString('nl-NL', options);
-    }
-
-    updateClock();
-    setInterval(updateClock, 1000);
-
-    document.getElementById('stationSelect').addEventListener('change', function() {
-        document.getElementById('mediaUrl').value = this.value;
-    });
-
-    document.getElementById('playBtn').addEventListener('click', function() {
-        const urlInput = document.getElementById('mediaUrl').value.trim();
-        const outputDiv = document.getElementById('mediaOutput');
-        
-        if (!urlInput) {
-            outputDiv.innerHTML = `<div class="status-text" style="color:red;">Voer een URL in</div>`;
-            return;
-        }
-
-        if (urlInput.includes("youtube.com") || urlInput.includes("youtu.be")) {
-            let videoId = "";
-            if (urlInput.includes("youtu.be/")) {
-                videoId = urlInput.split("youtu.be/")[1].split("?")[0].split("&")[0];
-            } else if (urlInput.includes("watch?v=")) {
-                videoId = urlInput.split("watch?v=")[1].split("&")[0];
-            }
-            
-            if (videoId) {
-                outputDiv.innerHTML = `
-                    <div style="margin-top:10px;">
-                        <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                        </iframe>
-                        <div class="status-text">Video actief</div>
-                    </div>
-                `;
-            } else {
-                outputDiv.innerHTML = `<div class="status-text" style="color:red;">Kon YouTube ID niet verwerken</div>`;
-            }
-        } else {
-            outputDiv.innerHTML = `
-                <div style="margin-top:10px;">
-                    <audio id="audioStream" controls autoplay style="width:100%;">
-                        <source src="${urlInput}" type="audio/mpeg">
-                        Browser ondersteunt dit audio-element niet.
-                    </audio>
-                    <div class="status-text">Audiostream actief</div>
-                </div>
-            `;
-        }
-    });
-
-    document.getElementById('stopBtn').addEventListener('click', function() {
-        document.getElementById('mediaOutput').innerHTML = `<div class="status-text">Speler gestopt</div>`;
-    });
-
-    document.getElementById('showYtTvBtn').addEventListener('click', function() {
-        const container = document.getElementById('tvPlayerContainer');
-        const iframe = document.getElementById('tvIframe');
-        iframe.src = "https://www.youtube.com/embed/Q6W78dSEa1M?autoplay=1";
-        container.style.display = 'block';
-    });
-
-    document.getElementById('closeTvBtn').addEventListener('click', function() {
+            for (let j =
