@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <link rel="manifest" href="manifest.json?v=4">
+    <link rel="manifest" href="manifest.json?v=5">
     <link rel="icon" type="image/png" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,7 +51,7 @@
             letter-spacing: 1px;
         }
 
-        /* RONDE KLOK - Middelpunt uitgelijnd op de gouden ring */
+        /* RONDE KLOK - Achtergrond iets naar beneden gecorrigeerd naar 45% */
         .clock-container {
             position: relative;
             width: 280px;
@@ -59,9 +59,9 @@
             margin: 10px auto;
             border-radius: 50%;
             overflow: hidden;
-            background-image: url('clock-face.png?v=4');
+            background-image: url('clock-face.png?v=5');
             background-size: cover;
-            background-position: center 43%;
+            background-position: center 45%;
             background-repeat: no-repeat;
             border: none;
             box-shadow: none;
@@ -502,14 +502,14 @@
         } catch (e) { console.error(e); }
     }
 
-    // DIRECTE UITVOERING - Voorkomt haperingen door DOM/Load-events
+    // Directe uitvoering
     updateClock();
     setInterval(updateClock, 1000);
 
     const initialNow = new Date();
     generateCalendar(initialNow.getFullYear(), initialNow.getMonth());
 
-    // EVENT LISTENERS VOOR KNOPPEN
+    // Event listeners voor knoppen
     document.addEventListener('DOMContentLoaded', function() {
         try {
             const stationSelect = document.getElementById('stationSelect');
