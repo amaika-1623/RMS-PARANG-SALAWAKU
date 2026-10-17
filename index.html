@@ -51,7 +51,7 @@
             letter-spacing: 1px;
         }
 
-        /* RONDE KLOK - Plaatje verder naar beneden (center 70%) voor volledige bovenste cijfers */
+        /* RONDE KLOK - Perfect gecentreerd om aslijnen synchroon te houden */
         .clock-container {
             position: relative;
             width: 280px;
@@ -60,8 +60,8 @@
             border-radius: 50%;
             overflow: hidden;
             background-image: url('clock-face.png');
-            background-size: 100%;
-            background-position: center 70%;
+            background-size: 88%;
+            background-position: center center;
             background-repeat: no-repeat;
             border: none;
             box-shadow: none;
@@ -85,7 +85,7 @@
         }
         .minute-hand { 
             width: 7px; 
-            height: 100px; 
+            height: 98px; 
             background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #8b6914 100%); 
             margin-left: -3.5px; 
             clip-path: polygon(50% 0%, 100% 20%, 75% 100%, 25% 100%, 0% 20%);
@@ -405,6 +405,7 @@
         const minutes = now.getMinutes();
         const hours = now.getHours();
 
+        // Exacte hoekberekening volgens de klokposities
         const secondDeg = seconds * 6;
         const minuteDeg = minutes * 6 + seconds * 0.1;
         const hourDeg = (hours % 12) * 30 + minutes * 0.5;
@@ -476,142 +477,4 @@
                 if (i === 0 && j < startDay) {
                     row += '<td></td>';
                 } else if (date > lastDay.getDate()) {
-                    row += '<td></td>';
-                } else {
-                    let isToday = (date === currentDate && month === currentMonth && year === currentYear);
-                    let classAttr = isToday ? 'class="today-cell"' : '';
-                    row += `<td ${classAttr}>${date}</td>`;
-                    date++;
-                }
-            }
-            row += '</tr>';
-            html += row;
-            if (date > lastDay.getDate()) break;
-        }
-        body.innerHTML = html;
-
-        const selDate = new Date(year, month, (year === currentYear && month === currentMonth) ? currentDate : 1);
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const sInfo = document.getElementById('selectedDateInfo');
-        if (sInfo) sInfo.innerText = "Geselecteerde datum: " + selDate.toLocaleDateString('nl-NL', options);
-    }
-
-    // Direct uitvoeren
-    updateClock();
-    setInterval(updateClock, 1000);
-
-    const now = new Date();
-    generateCalendar(now.getFullYear(), now.getMonth());
-
-    document.getElementById('stationSelect').addEventListener('change', function() {
-        const mUrl = document.getElementById('mediaUrl');
-        if (mUrl) mUrl.value = this.value;
-    });
-
-    document.getElementById('playBtn').addEventListener('click', function() {
-        const urlInput = document.getElementById('mediaUrl').value.trim();
-        const outputDiv = document.getElementById('mediaOutput');
-        
-        if (!urlInput) {
-            outputDiv.innerHTML = `<div class="status-text" style="color:red;">Voer een URL in</div>`;
-            return;
-        }
-
-        if (urlInput.includes("youtube.com") || urlInput.includes("youtu.be")) {
-            let videoId = "";
-            if (urlInput.includes("youtu.be/")) {
-                videoId = urlInput.split("youtu.be/")[1].split("?")[0].split("&")[0];
-            } else if (urlInput.includes("watch?v=")) {
-                videoId = urlInput.split("watch?v=")[1].split("&")[0];
-            }
-            
-            if (videoId) {
-                outputDiv.innerHTML = `
-                    <div style="margin-top:10px;">
-                        <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                        </iframe>
-                        <div class="status-text">Video actief</div>
-                    </div>
-                `;
-            } else {
-                outputDiv.innerHTML = `<div class="status-text" style="color:red;">Kon YouTube ID niet verwerken</div>`;
-            }
-        } else {
-            outputDiv.innerHTML = `
-                <div style="margin-top:10px;">
-                    <audio id="audioStream" controls autoplay style="width:100%;">
-                        <source src="${urlInput}" type="audio/mpeg">
-                        Browser ondersteunt dit audio-element niet.
-                    </audio>
-                    <div class="status-text">Audiostream actief</div>
-                </div>
-            `;
-        }
-    });
-
-    document.getElementById('stopBtn').addEventListener('click', function() {
-        const outputDiv = document.getElementById('mediaOutput');
-        if (outputDiv) outputDiv.innerHTML = `<div class="status-text">Speler gestopt</div>`;
-    });
-
-    document.getElementById('showYtTvBtn').addEventListener('click', function() {
-        const container = document.getElementById('tvPlayerContainer');
-        const iframe = document.getElementById('tvIframe');
-        if (iframe) iframe.src = "https://www.youtube.com/embed/Q6W78dSEa1M?autoplay=1";
-        if (container) container.style.display = 'block';
-    });
-
-    document.getElementById('closeTvBtn').addEventListener('click', function() {
-        const container = document.getElementById('tvPlayerContainer');
-        const iframe = document.getElementById('tvIframe');
-        if (iframe) iframe.src = "";
-        if (container) container.style.display = 'none';
-    });
-
-    document.getElementById('setAlarmBtn').addEventListener('click', function() {
-        const alarmTimeInput = document.getElementById('alarmTime');
-        const statusDiv = document.getElementById('alarmStatus');
-        if (alarmTimeInput && alarmTimeInput.value) {
-            activeAlarm = alarmTimeInput.value;
-            if (statusDiv) {
-                statusDiv.innerText = `Wekker ingesteld om ${activeAlarm} uur`;
-                statusDiv.style.color = "#f3e5ab";
-            }
-        } else {
-            activeAlarm = null;
-            if (statusDiv) {
-                statusDiv.innerText = `Geen wekker ingesteld`;
-                statusDiv.style.color = "#c5a059";
-            }
-        }
-    });
-
-    document.getElementById('goToYearBtn').addEventListener('click', function() {
-        const m = parseInt(document.getElementById('monthSelect').value);
-        const y = parseInt(document.getElementById('yearInput').value);
-        if (!isNaN(y)) {
-            generateCalendar(y, m);
-        }
-    });
-
-    document.getElementById('todayBtn').addEventListener('click', function() {
-        const curr = new Date();
-        generateCalendar(curr.getFullYear(), curr.getMonth());
-    });
-</script>
-
-<script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-            for(let registration of registrations) {
-                registration.unregister();
-            }
-        });
-    }
-</script>
-
-</body>
-</html>
+                    row += '
