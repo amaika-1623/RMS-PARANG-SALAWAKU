@@ -51,7 +51,7 @@
             letter-spacing: 1px;
         }
 
-        /* RONDE KLOK - Perfect gecentreerd */
+        /* RONDE KLOK - Geoptimaliseerd voor het nieuwe, rechte ontwerp */
         .clock-container {
             position: relative;
             width: 280px;
@@ -60,8 +60,8 @@
             border-radius: 50%;
             overflow: hidden;
             background-image: url('clock-face.png');
-            background-size: 88%;
-            background-position: center center;
+            background-size: cover;
+            background-position: center 38%; /* Zorgt dat het hart van het klokblad exact op de draaias van de wijzers valt */
             background-repeat: no-repeat;
             border: none;
             box-shadow: none;
@@ -339,10 +339,10 @@
     let currentVerseDay = null;
     const months = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
     
-    // Exacte fijne correcties per wijzer
-    const MINUTE_OFFSET = 0;   // Minutenwijzer is perfect
-    const HOUR_OFFSET = 12;    // Uurwijzer fijn afgesteld (+12 graden)
-    const SECOND_OFFSET = 12;  // Secondewijzer perfect (+12 graden)
+    // Geen offsets meer nodig doordat dit nieuwe ontwerp perfect loodrecht is!
+    const MINUTE_OFFSET = 0;
+    const HOUR_OFFSET = 0;
+    const SECOND_OFFSET = 0;
 
     const bibleVerses = [
         { text: "De HEERE is mijn Herder, mij zal niets ontbreken.", ref: "Psalm 23:1" },
