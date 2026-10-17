@@ -90,12 +90,12 @@
             z-index: 12;
         }
 
-        /* ZWART MASKER: Exact onderaan geplaatst zodat 1950 vrij blijft */
+        /* ZWART MASKER: Perfect gecentreerd en smaller zodat de randen vrij blijven */
         .live-digital-overlay {
             position: absolute;
             bottom: 5px;
-            left: 8%;
-            width: 84%;
+            left: 14%;
+            width: 72%;
             background-color: #0d0a06;
             padding: 6px 0;
             border-radius: 6px;
@@ -207,7 +207,7 @@
             <div class="hand second-hand" id="secondHand"></div>
             <div class="center-dot"></div>
 
-            <!-- Netjes uitgelijnd afdekvlak voor de live tijd -->
+            <!-- Netjes gecentreerd afdekvlak -->
             <div class="live-digital-overlay">
                 <div class="date-line" id="digitalDateOnly">Laden...</div>
                 <div class="time-line" id="digitalTimeOnly">00:00:00</div>
@@ -479,7 +479,6 @@
         document.getElementById('selectedDateInfo').innerText = "Geselecteerde datum: " + selDate.toLocaleDateString('nl-NL', options);
     }
 
-    // Direct uitvoeren bij laden zodat "Laden..." meteen weg is
     updateClock();
     setInterval(updateClock, 1000);
 
