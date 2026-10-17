@@ -114,18 +114,11 @@
             padding: 5px;
             border-top: 1px dashed rgba(212, 175, 55, 0.3);
         }
-        .aboru-title {
-            font-size: 22px;
-            font-weight: bold;
-            letter-spacing: 3px;
-            color: #d4af37;
-            margin-bottom: 4px;
-            text-shadow: 1px 1px 3px #000;
-        }
         .date-line {
             font-size: 13px;
             color: #c5a059;
             margin-bottom: 4px;
+            margin-top: 5px;
         }
         .time-line {
             font-size: 28px;
@@ -227,7 +220,6 @@
         </div>
 
         <div class="digital-time-section">
-            <div class="aboru-title">ABORU</div>
             <div class="date-line" id="digitalDateOnly">Laden...</div>
             <div class="time-line" id="digitalTimeOnly">00:00:00</div>
         </div>
@@ -336,4 +328,94 @@
         </div>
         
         <div class="status-text" id="selectedDateInfo" style="margin-top: 10px; border-top: 1px dashed #d4af37; padding-top: 5px;">
-            Gese
+            Geselecteerde datum: Laden...
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let activeAlarm = null;
+    let currentVerseDay = null;
+    const months = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
+
+    const bibleVerses = [
+        { text: "De HEERE is mijn Herder, mij zal niets ontbreken.", ref: "Psalm 23:1" },
+        { text: "Uw woord is een lamp voor mijn voet en een licht op mijn pad.", ref: "Psalm 119:105" },
+        { text: "Vertrouw op de HEERE met heel je hart, en steun op je eigen inzicht niet.", ref: "Spreuken 3:5" },
+        { text: "Wees niet bevreesd, want Ik ben met u; wees niet ontsteld, want Ik ben uw God.", ref: "Jesaja 41:10" },
+        { text: "De vreugde van de HEERE is uw kracht.", ref: "Nehemia 8:11" },
+        { text: "Want alzo lief heeft God de wereld gehad, dat Hij Zijn eniggeboren Zoon gegeven heeft.", ref: "Johannes 3:16" },
+        { text: "Ik vermag alle dingen door Christus, Die mij kracht geeft.", ref: "Filippenzen 4:13" },
+        { text: "Wees in geen ding bezorgd, maar laat uw verlangens in alles door bidden en smeken bekend worden bij God.", ref: "Filippenzen 4:6" },
+        { text: "De HEERE is mijn licht en mijn heil, voor wie zou ik vrezen?", ref: "Psalm 27:1" },
+        { text: "Zo zoek eerst het Koninkrijk van God en Zijn gerechtigheid, en al deze dingen zullen u erbij gegeven worden.", ref: "Mattheüs 6:33" },
+        { text: "Komt herwaarts tot Mij, allen die vermoeid en belast zijt, en Ik zal u rust geven.", ref: "Mattheüs 11:28" },
+        { text: "Wees sterk en moedig, schrik niet en wees niet ontsteld, want de HEERE, uw God, is met u.", ref: "Jozua 1:9" },
+        { text: "En wij weten dat voor hen die God liefhebben, alle dingen meewerken ten goede.", ref: "Romeinen 8:28" },
+        { text: "Liefde is geduldig, liefde is vriendelijk.", ref: "1 Korinthiërs 13:4" },
+        { text: "God is ons een toevlucht en sterkte, zeer beproefd bevonden als hulp in benauwdheden.", ref: "Psalm 46:2" },
+        { text: "U zult de waarheid kennen, en de waarheid zal u vrijmaken.", ref: "Johannes 8:32" },
+        { text: "Zij die de HEERE verwachten, zullen hun kracht vernieuwen, zij zullen hun vleugels uitslaan als arenden.", ref: "Jesaja 40:31" },
+        { text: "Werp al uw zorgen op Hem, want Hij zorgt voor u.", ref: "1 Petrus 5:7" },
+        { text: "Dit is de dag die de HEERE gemaakt heeft; laten wij daarin verheugd en verblijd zijn.", ref: "Psalm 118:24" },
+        { text: "Gezegend is de mens die op de HEERE vertrouwt, wiens vertrouwen de HEERE is.", ref: "Jeremia 17:7" }
+    ];
+
+    function updateDailyVerse() {
+        try {
+            const today = new Date();
+            const startOfYear = new Date(today.getFullYear(), 0, 0);
+            const diff = today - startOfYear;
+            const oneDay = 1000 * 60 * 60 * 24;
+            const dayOfYear = Math.floor(diff / oneDay);
+            
+            if (currentVerseDay !== dayOfYear) {
+                currentVerseDay = dayOfYear;
+                const index = dayOfYear % bibleVerses.length;
+                const vText = document.getElementById('bibleVerseText');
+                const vRef = document.getElementById('bibleVerseRef');
+                if (vText) vText.innerText = `"${bibleVerses[index].text}"`;
+                if (vRef) vRef.innerText = `— ${bibleVerses[index].ref}`;
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    function playAlarmSound() {
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+            gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 1.0);
+        } catch (e) {
+            console.log("Audio niet ondersteund");
+        }
+    }
+
+    function updateClock() {
+        try {
+            const now = new Date();
+            const seconds = now.getSeconds();
+            const minutes = now.getMinutes();
+            const hours = now.getHours();
+
+            const secondDeg = seconds * 6;
+            const minuteDeg = minutes * 6 + seconds * 0.1;
+            const hourDeg = (hours % 12) * 30 + minutes * 0.5;
+
+            const hourHand = document.getElementById('hourHand');
+            const minuteHand = document.getElementById('minuteHand');
+            const secondHand = document.getElementById('secondHand');
+
+            if (hourHand) hourHand.style.transform = `rotate(${hourDeg}deg)`;
+            if (minuteHand) minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
+            if (secondHand) secondHand
