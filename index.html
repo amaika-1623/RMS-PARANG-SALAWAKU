@@ -67,35 +67,39 @@
             box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
         }
 
-        /* DUIDELIJK EN SCHERP ONDERSCHEID IN WIJZERS */
+        /* ANTIEKE PIJL WIJZERS */
         .hand {
             position: absolute;
             bottom: 50%;
             left: 50%;
             transform-origin: bottom center;
-            border-radius: 4px;
             z-index: 10;
         }
-        /* Extra korte, dikke uurwijzer in helder lichtgoud */
+        
+        /* Uurwijzer met antieke pijlpunt */
         .hour-hand { 
-            width: 8px; 
-            height: 35px; 
+            width: 10px; 
+            height: 58px; 
             background: #fff3cd; 
-            margin-left: -4px; 
-            box-shadow: 0 0 6px rgba(0,0,0,0.9);
+            margin-left: -5px; 
+            clip-path: polygon(30% 0%, 70% 0%, 70% 75%, 100% 75%, 50% 100%, 0% 75%, 30% 75%);
+            box-shadow: 0 0 5px rgba(0,0,0,0.9);
         }
-        /* Duidelijk langere, slanke minuutwijzer */
+        
+        /* Minuutwijzer met antieke pijlpunt */
         .minute-hand { 
-            width: 3.5px; 
-            height: 86px; 
+            width: 5px; 
+            height: 98px; 
             background: #d4af37; 
-            margin-left: -1.75px; 
-            box-shadow: 0 0 4px rgba(0,0,0,0.8);
+            margin-left: -2.5px; 
+            clip-path: polygon(35% 0%, 65% 0%, 65% 82%, 100% 82%, 50% 100%, 0% 82%, 35% 82%);
+            box-shadow: 0 0 5px rgba(0,0,0,0.9);
         }
+
         /* Secondewijzer */
         .second-hand { 
             width: 1.5px; 
-            height: 94px; 
+            height: 105px; 
             background: #ff3333; 
             margin-left: -0.75px; 
             z-index: 11; 
@@ -609,48 +613,4 @@
                 const alarmTimeInput = document.getElementById('alarmTime');
                 const statusDiv = document.getElementById('alarmStatus');
                 if (alarmTimeInput && alarmTimeInput.value) {
-                    activeAlarm = alarmTimeInput.value;
-                    if (statusDiv) {
-                        statusDiv.innerText = `Wekker ingesteld om ${activeAlarm} uur`;
-                        statusDiv.style.color = "#f3e5ab";
-                    }
-                } else {
-                    activeAlarm = null;
-                    if (statusDiv) {
-                        statusDiv.innerText = `Geen wekker ingesteld`;
-                        statusDiv.style.color = "#c5a059";
-                    }
-                }
-            });
-        }
-
-        const goToYearBtn = document.getElementById('goToYearBtn');
-        if (goToYearBtn) {
-            goToYearBtn.addEventListener('click', function() {
-                const m = parseInt(document.getElementById('monthSelect').value);
-                const y = parseInt(document.getElementById('yearInput').value);
-                if (!isNaN(y)) {
-                    generateCalendar(y, m);
-                }
-            });
-        }
-
-        const todayBtn = document.getElementById('todayBtn');
-        if (todayBtn) {
-            todayBtn.addEventListener('click', function() {
-                const curr = new Date();
-                generateCalendar(curr.getFullYear(), curr.getMonth());
-            });
-        }
-    })();
-</script>
-
-<script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js?v=3')
-            .then(() => console.log('Service Worker geregistreerd!'));
-    }
-</script>
-
-</body>
-</html>
+                    activeAlarm = alarmTimeInput.
