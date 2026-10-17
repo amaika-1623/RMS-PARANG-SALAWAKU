@@ -345,4 +345,236 @@
     ];
 
     function updateDailyVerse() {
-        const
+        const today = new Date();
+        const startOfYear = new Date(today.getFullYear(), 0, 0);
+        const diff = today - startOfYear;
+        const oneDay = 1000 * 60 * 60 * 24;
+        const dayOfYear = Math.floor(diff / oneDay);
+        
+        if (currentVerseDay !== dayOfYear) {
+            currentVerseDay = dayOfYear;
+            const index = dayOfYear % bibleVerses.length;
+            document.getElementById('bibleVerseText').innerText = `"${bibleVerses[index].text}"`;
+            document.getElementById('bibleVerseRef').innerText = `— ${bibleVerses[index].ref}`;
+        }
+    }
+
+    function playAlarmSound() {
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+            gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 1.0);
+        } catch (e) {
+            console.log("Audio niet ondersteund");
+        }
+    }
+
+    function updateClock() {
+        const now = new Date();
+        const seconds = now.getSeconds();
+        const minutes = now.getMinutes();
+        const hours = now.getHours();
+
+        const secondDeg = seconds * 6;
+        const minuteDeg = minutes * 6 + seconds * 0.1;
+        const hourDeg = (hours % 12) * 30 + minutes * 0.5;
+
+        const hourHand = document.getElementById('hourHand');
+        const minuteHand = document.getElementById('minuteHand');
+        const secondHand = document.getElementById('secondHand');
+
+        if (hourHand) hourHand.style.transform = `rotate(${hourDeg}deg)`;
+        if (minuteHand) minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
+        if (secondHand) secondHand.style.transform = `rotate(${secondDeg}deg)`;
+
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const dateElem = document.getElementById('digitalDateOnly');
+        if (dateElem) dateElem.innerText = now.toLocaleDateString('nl-NL', options);
+
+        const timeString = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+        const timeElem = document.getElementById('digitalTimeOnly');
+        if (timeElem) timeElem.innerText = timeString;
+
+        updateDailyVerse();
+
+        const alarmCheckString = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
+        if (activeAlarm && activeAlarm === alarmCheckString && seconds === 0) {
+            playAlarmSound();
+            document.getElementById('mediaUrl').value = "https://youtu.be/Q6W78dSEa1M";
+            document.getElementById('playBtn').click();
+            
+            const alarmStatus = document.getElementById('alarmStatus');
+            if (alarmStatus) {
+                alarmStatus.innerText = `🔔 WEKKER GAAT AF (${alarmCheckString})!`;
+                alarmStatus.style.color = "#ff4444";
+            }
+        }
+    }
+
+    function generateCalendar(year, month) {
+        const body = document.getElementById('calendarBody');
+        if (!body) return;
+        body.innerHTML = '';
+        
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth();
+        const currentDate = today.getDate();
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        
+        let startDay = firstDay.getDay() - 1;
+        if (startDay === -1) startDay = 6;
+        
+        let date = 1;
+        let html = '';
+
+        document.getElementById('monthSelect').value = month;
+        document.getElementById('yearInput').value = year;
+        document.getElementById('calMonthYearTitle').innerText = `${months[month]} ${year}`;
+
+        for (let i = 0; i < 6; i++) {
+            let row = '<tr>';
+            for (let j = 0; j < 7; j++) {
+                if (i === 0 && j < startDay) {
+                    row += '<td></td>';
+                } else if (date > lastDay.getDate()) {
+                    row += '<td></td>';
+                } else {
+                    let isToday = (date === currentDate && month === currentMonth && year === currentYear);
+                    let classAttr = isToday ? 'class="today-cell"' : '';
+                    row += `<td ${classAttr}>${date}</td>`;
+                    date++;
+                }
+            }
+            row += '</tr>';
+            html += row;
+            if (date > lastDay.getDate()) break;
+        }
+        body.innerHTML = html;
+
+        const selDate = new Date(year, month, (year === currentYear && month === currentMonth) ? currentDate : 1);
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('selectedDateInfo').innerText = "Geselecteerde datum: " + selDate.toLocaleDateString('nl-NL', options);
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    document.getElementById('stationSelect').addEventListener('change', function() {
+        document.getElementById('mediaUrl').value = this.value;
+    });
+
+    document.getElementById('playBtn').addEventListener('click', function() {
+        const urlInput = document.getElementById('mediaUrl').value.trim();
+        const outputDiv = document.getElementById('mediaOutput');
+        
+        if (!urlInput) {
+            outputDiv.innerHTML = `<div class="status-text" style="color:red;">Voer een URL in</div>`;
+            return;
+        }
+
+        if (urlInput.includes("youtube.com") || urlInput.includes("youtu.be")) {
+            let videoId = "";
+            if (urlInput.includes("youtu.be/")) {
+                videoId = urlInput.split("youtu.be/")[1].split("?")[0].split("&")[0];
+            } else if (urlInput.includes("watch?v=")) {
+                videoId = urlInput.split("watch?v=")[1].split("&")[0];
+            }
+            
+            if (videoId) {
+                outputDiv.innerHTML = `
+                    <div style="margin-top:10px;">
+                        <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                        <div class="status-text">Video actief</div>
+                    </div>
+                `;
+            } else {
+                outputDiv.innerHTML = `<div class="status-text" style="color:red;">Kon YouTube ID niet verwerken</div>`;
+            }
+        } else {
+            outputDiv.innerHTML = `
+                <div style="margin-top:10px;">
+                    <audio id="audioStream" controls autoplay style="width:100%;">
+                        <source src="${urlInput}" type="audio/mpeg">
+                        Browser ondersteunt dit audio-element niet.
+                    </audio>
+                    <div class="status-text">Audiostream actief</div>
+                </div>
+            `;
+        }
+    });
+
+    document.getElementById('stopBtn').addEventListener('click', function() {
+        document.getElementById('mediaOutput').innerHTML = `<div class="status-text">Speler gestopt</div>`;
+    });
+
+    document.getElementById('showYtTvBtn').addEventListener('click', function() {
+        const container = document.getElementById('tvPlayerContainer');
+        const iframe = document.getElementById('tvIframe');
+        iframe.src = "https://www.youtube.com/embed/Q6W78dSEa1M?autoplay=1";
+        container.style.display = 'block';
+    });
+
+    document.getElementById('closeTvBtn').addEventListener('click', function() {
+        const container = document.getElementById('tvPlayerContainer');
+        const iframe = document.getElementById('tvIframe');
+        iframe.src = "";
+        container.style.display = 'none';
+    });
+
+    document.getElementById('setAlarmBtn').addEventListener('click', function() {
+        const alarmTime = document.getElementById('alarmTime').value;
+        const statusDiv = document.getElementById('alarmStatus');
+        if (alarmTime) {
+            activeAlarm = alarmTime;
+            statusDiv.innerText = `Wekker ingesteld om ${alarmTime} uur`;
+            statusDiv.style.color = "#f3e5ab";
+        } else {
+            activeAlarm = null;
+            statusDiv.innerText = `Geen wekker ingesteld`;
+            statusDiv.style.color = "#c5a059";
+        }
+    });
+
+    document.getElementById('goToYearBtn').addEventListener('click', function() {
+        const m = parseInt(document.getElementById('monthSelect').value);
+        const y = parseInt(document.getElementById('yearInput').value);
+        if (!isNaN(y)) {
+            generateCalendar(y, m);
+        }
+    });
+
+    document.getElementById('todayBtn').addEventListener('click', function() {
+        const now = new Date();
+        generateCalendar(now.getFullYear(), now.getMonth());
+    });
+
+    const now = new Date();
+    generateCalendar(now.getFullYear(), now.getMonth());
+</script>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+            .then(() => console.log('Service Worker geregistreerd!'));
+    }
+</script>
+
+</body>
+</html>
