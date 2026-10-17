@@ -339,9 +339,10 @@
     let currentVerseDay = null;
     const months = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
     
-    // Afzonderlijke fijne correcties voor uren/minuten en seconden
-    const HAND_OFFSET = -9;    // -9 graden (-1.5 minuut voor uren & minuten)
-    const SECOND_OFFSET = -6;  // -6 graden (-1 seconde voor de secondewijzer)
+    // Exacte fijne correcties per wijzer
+    const MINUTE_OFFSET = 0;   // Minutenwijzer is perfect
+    const HOUR_OFFSET = 9;     // Uurwijzer 3 streepjes (+9 graden) gecorrigeerd
+    const SECOND_OFFSET = 12;  // Secondewijzer 2 seconden (+12 graden) gecorrigeerd
 
     const bibleVerses = [
         { text: "De HEERE is mijn Herder, mij zal niets ontbreken.", ref: "Psalm 23:1" },
@@ -413,8 +414,8 @@
             const hours = now.getHours();
 
             const secondDeg = (seconds * 6) + SECOND_OFFSET;
-            const minuteDeg = (minutes * 6 + seconds * 0.1) + HAND_OFFSET;
-            const hourDeg = ((hours % 12) * 30 + minutes * 0.5) + HAND_OFFSET;
+            const minuteDeg = (minutes * 6 + seconds * 0.1) + MINUTE_OFFSET;
+            const hourDeg = ((hours % 12) * 30 + minutes * 0.5) + HOUR_OFFSET;
 
             const hourHand = document.getElementById('hourHand');
             const minuteHand = document.getElementById('minuteHand');
