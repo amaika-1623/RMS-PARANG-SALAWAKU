@@ -51,7 +51,7 @@
             letter-spacing: 1px;
         }
 
-        /* PERFECT RONDE KLOK (Aangepast zodat de onderkant perfect binnen de cirkel valt) */
+        /* PERFECT RONDE KLOK (Hele klok past nu exact binnen de cirkel) */
         .clock-container {
             position: relative;
             width: 280px;
@@ -60,8 +60,8 @@
             border-radius: 50%;
             overflow: hidden;
             background-image: url('clock-face.png');
-            background-size: 108%;
-            background-position: center 38%;
+            background-size: 92%;
+            background-position: center 52%;
             background-repeat: no-repeat;
             border: 2px solid #d4af37;
             box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
@@ -77,9 +77,9 @@
             border-radius: 4px;
             z-index: 10;
         }
-        .hour-hand { width: 4px; height: 60px; background: #f3e5ab; margin-left: -2px; }
-        .minute-hand { width: 3px; height: 85px; background: #d4af37; margin-left: -1.5px; }
-        .second-hand { width: 1px; height: 95px; background: #ff3333; margin-left: -0.5px; z-index: 11; }
+        .hour-hand { width: 4px; height: 55px; background: #f3e5ab; margin-left: -2px; }
+        .minute-hand { width: 3px; height: 75px; background: #d4af37; margin-left: -1.5px; }
+        .second-hand { width: 1px; height: 85px; background: #ff3333; margin-left: -0.5px; z-index: 11; }
         .center-dot {
             position: absolute;
             top: 50%; left: 50%;
