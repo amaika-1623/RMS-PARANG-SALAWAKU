@@ -51,37 +51,36 @@
             letter-spacing: 1px;
         }
 
-        /* KLOK CONTAINER - PERFECT VOOR HET VOLLEDIGE ONTWERP */
+        /* VOLLEDIGE WIJZERPLAAT AFBEELDING */
         .clock-container {
             position: relative;
-            width: 310px;
-            height: 380px;
-            margin: 5px auto;
-            border-radius: 10px;
+            width: 320px;
+            height: 425px;
+            margin: 0 auto;
             background-image: url('clock-face.png');
-            background-size: contain;
-            background-position: center top;
+            background-size: 100% 100%;
             background-repeat: no-repeat;
+            background-position: center;
             border: none;
             box-shadow: none;
         }
 
-        /* Wijzers precies afgesteld op het middelpunt van de cirkel */
+        /* Wijzers precies in het midden van de ronde klok op de afbeelding */
         .hand {
             position: absolute;
-            bottom: 55.8%;
+            bottom: 57.5%;
             left: 50%;
             transform-origin: bottom center;
             background: #d4af37;
             border-radius: 4px;
             z-index: 10;
         }
-        .hour-hand { width: 4px; height: 60px; background: #f3e5ab; margin-left: -2px; }
-        .minute-hand { width: 3px; height: 85px; background: #d4af37; margin-left: -1.5px; }
-        .second-hand { width: 1.5px; height: 95px; background: #ff3333; margin-left: -0.75px; z-index: 11; }
+        .hour-hand { width: 4px; height: 55px; background: #f3e5ab; margin-left: -2px; }
+        .minute-hand { width: 3px; height: 80px; background: #d4af37; margin-left: -1.5px; }
+        .second-hand { width: 1.5px; height: 90px; background: #ff3333; margin-left: -0.75px; z-index: 11; }
         .center-dot {
             position: absolute;
-            top: 44.2%; left: 50%;
+            top: 42.5%; left: 50%;
             width: 12px; height: 12px;
             background: radial-gradient(circle, #ffcc00 0%, #8b0000 100%);
             border: 2px solid #d4af37;
@@ -90,22 +89,25 @@
             z-index: 12;
         }
 
-        /* DIGITALE TIJD & DATUM */
-        .digital-time-section {
-            margin-top: -15px;
-            padding: 5px;
+        /* LIVE DIGITALE TIJD (Onderaan over de afbeelding heen) */
+        .live-digital-overlay {
+            position: absolute;
+            bottom: 22px;
+            width: 100%;
+            text-align: center;
         }
         .date-line {
-            font-size: 13px;
-            color: #c5a059;
-            margin-bottom: 4px;
+            font-size: 12px;
+            color: #f3e5ab;
+            margin-bottom: 2px;
+            text-shadow: 1px 1px 2px #000;
         }
         .time-line {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: bold;
-            color: #f3e5ab;
+            color: #ffcc00;
             letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.7);
         }
 
         /* DAGELIJKS WOORD UIT DE BIJBEL */
@@ -190,18 +192,19 @@
     <h1>MENA MURIA</h1>
     <div class="subtitle">KLOK • RADIO STREAM • EEUWKALENDER</div>
 
-    <!-- ANALOGE KLOK -->
-    <div class="section-box">
+    <!-- ANALOGE KLOK & DESIGN ACHTERGROND -->
+    <div class="section-box" style="padding: 5px;">
         <div class="clock-container">
             <div class="hand hour-hand" id="hourHand"></div>
             <div class="hand minute-hand" id="minuteHand"></div>
             <div class="hand second-hand" id="secondHand"></div>
             <div class="center-dot"></div>
-        </div>
 
-        <div class="digital-time-section">
-            <div class="date-line" id="digitalDateOnly">Laden...</div>
-            <div class="time-line" id="digitalTimeOnly">00:00:00</div>
+            <!-- Live tijd netjes over de onderste digitale plek op de afbeelding heen -->
+            <div class="live-digital-overlay">
+                <div class="date-line" id="digitalDateOnly">Laden...</div>
+                <div class="time-line" id="digitalTimeOnly">00:00:00</div>
+            </div>
         </div>
     </div>
 
