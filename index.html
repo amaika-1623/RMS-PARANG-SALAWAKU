@@ -51,7 +51,7 @@
             letter-spacing: 1px;
         }
 
-        /* RONDE KLOK - Plaatje op center 62% (Iets gezakt) */
+        /* RONDE KLOK - Achtergrond groter en gezakt voor prominente bovenste cijfers */
         .clock-container {
             position: relative;
             width: 280px;
@@ -60,39 +60,39 @@
             border-radius: 50%;
             overflow: hidden;
             background-image: url('clock-face.png');
-            background-size: 94%;
-            background-position: center 62%;
+            background-size: 98%;
+            background-position: center 64%;
             background-repeat: no-repeat;
             border: none;
             box-shadow: none;
         }
 
-        /* WIJZERS - KROONPEN STIJL */
+        /* WIJZERS - ELEGANTE KROONPEN STIJL */
         .hand {
             position: absolute;
             bottom: 50%;
             left: 50%;
             transform-origin: bottom center;
             z-index: 10;
-            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.8));
+            filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.9));
         }
         .hour-hand { 
             width: 10px; 
-            height: 60px; 
-            background: linear-gradient(to right, #fff3cd, #d4af37); 
+            height: 62px; 
+            background: linear-gradient(135deg, #fff3cd 0%, #d4af37 50%, #aa820a 100%); 
             margin-left: -5px; 
             clip-path: polygon(50% 0%, 100% 25%, 70% 100%, 30% 100%, 0% 25%);
         }
         .minute-hand { 
             width: 7px; 
-            height: 98px; 
-            background: linear-gradient(to right, #f3e5ab, #aa820a); 
+            height: 100px; 
+            background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #8b6914 100%); 
             margin-left: -3.5px; 
             clip-path: polygon(50% 0%, 100% 20%, 75% 100%, 25% 100%, 0% 20%);
         }
         .second-hand { 
             width: 1.5px; 
-            height: 105px; 
+            height: 108px; 
             background: #ff3333; 
             margin-left: -0.75px; 
             z-index: 11; 
@@ -496,7 +496,7 @@
         if (sInfo) sInfo.innerText = "Geselecteerde datum: " + selDate.toLocaleDateString('nl-NL', options);
     }
 
-    // Direct uitvoeren en starten
+    // Direct uitvoeren
     updateClock();
     setInterval(updateClock, 1000);
 
