@@ -51,7 +51,7 @@
             letter-spacing: 1px;
         }
 
-        /* RONDE KLOK ZONDER GELE RAND */
+        /* RONDE KLOK - Plaatje op center 62% (Iets gezakt) */
         .clock-container {
             position: relative;
             width: 280px;
@@ -61,38 +61,38 @@
             overflow: hidden;
             background-image: url('clock-face.png');
             background-size: 94%;
-            background-position: center 58%;
+            background-position: center 62%;
             background-repeat: no-repeat;
             border: none;
             box-shadow: none;
         }
 
-        /* WIJZERS */
+        /* WIJZERS - KROONPEN STIJL */
         .hand {
             position: absolute;
             bottom: 50%;
             left: 50%;
             transform-origin: bottom center;
-            border-radius: 4px;
             z-index: 10;
+            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.8));
         }
         .hour-hand { 
-            width: 8px; 
-            height: 52px; 
-            background: #fff3cd; 
-            margin-left: -4px; 
-            box-shadow: 0 0 6px rgba(0,0,0,0.9);
+            width: 10px; 
+            height: 60px; 
+            background: linear-gradient(to right, #fff3cd, #d4af37); 
+            margin-left: -5px; 
+            clip-path: polygon(50% 0%, 100% 25%, 70% 100%, 30% 100%, 0% 25%);
         }
         .minute-hand { 
-            width: 4px; 
-            height: 94px; 
-            background: #d4af37; 
-            margin-left: -2px; 
-            box-shadow: 0 0 6px rgba(0,0,0,0.9);
+            width: 7px; 
+            height: 98px; 
+            background: linear-gradient(to right, #f3e5ab, #aa820a); 
+            margin-left: -3.5px; 
+            clip-path: polygon(50% 0%, 100% 20%, 75% 100%, 25% 100%, 0% 20%);
         }
         .second-hand { 
             width: 1.5px; 
-            height: 100px; 
+            height: 105px; 
             background: #ff3333; 
             margin-left: -0.75px; 
             z-index: 11; 
