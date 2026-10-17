@@ -67,7 +67,7 @@
             box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
         }
 
-        /* WIJZERS */
+        /* DUIDELIJK EN SCHERP ONDERSCHEID IN WIJZERS */
         .hand {
             position: absolute;
             bottom: 50%;
@@ -76,13 +76,15 @@
             border-radius: 4px;
             z-index: 10;
         }
+        /* Extra korte, dikke uurwijzer in helder lichtgoud */
         .hour-hand { 
-            width: 7px; 
-            height: 38px; 
-            background: #f3e5ab; 
-            margin-left: -3.5px; 
-            box-shadow: 0 0 4px rgba(0,0,0,0.8);
+            width: 8px; 
+            height: 35px; 
+            background: #fff3cd; 
+            margin-left: -4px; 
+            box-shadow: 0 0 6px rgba(0,0,0,0.9);
         }
+        /* Duidelijk langere, slanke minuutwijzer */
         .minute-hand { 
             width: 3.5px; 
             height: 86px; 
@@ -90,6 +92,7 @@
             margin-left: -1.75px; 
             box-shadow: 0 0 4px rgba(0,0,0,0.8);
         }
+        /* Secondewijzer */
         .second-hand { 
             width: 1.5px; 
             height: 94px; 
@@ -343,7 +346,6 @@
 </div>
 
 <script>
-    // Veilige initialisatie en uitvoering
     (function() {
         let activeAlarm = null;
         let currentVerseDay = null;
@@ -512,14 +514,12 @@
             } catch (e) { console.error(e); }
         }
 
-        // Start direct
         updateClock();
         setInterval(updateClock, 1000);
 
         const now = new Date();
         generateCalendar(now.getFullYear(), now.getMonth());
 
-        // Event Listeners
         const stationSelect = document.getElementById('stationSelect');
         if (stationSelect) {
             stationSelect.addEventListener('change', function() {
@@ -647,7 +647,7 @@
 
 <script>
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js?v=2')
+        navigator.serviceWorker.register('sw.js?v=3')
             .then(() => console.log('Service Worker geregistreerd!'));
     }
 </script>
