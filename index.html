@@ -343,7 +343,6 @@
 </div>
 
 <script>
-    // Direct uitvoeren zodra het script laadt
     let activeAlarm = null;
     let currentVerseDay = null;
     const months = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
@@ -511,8 +510,8 @@
         } catch (e) { console.error(e); }
     }
 
-    // Direct starten bij inladen
-    window.onload = function() {
+    // Directe uitvoering gegarandeerd
+    function startApp() {
         updateClock();
         setInterval(updateClock, 1000);
 
@@ -541,4 +540,124 @@
                 if (urlInput.includes("youtube.com") || urlInput.includes("youtu.be")) {
                     let videoId = "";
                     if (urlInput.includes("youtu.be/")) {
-                        
+                        videoId = urlInput.split("youtu.be/")[1].split("?")[0].split("&")[0];
+                    } else if (urlInput.includes("watch?v=")) {
+                        videoId = urlInput.split("watch?v=")[1].split("&")[0];
+                    }
+                    
+                    if (videoId) {
+                        outputDiv.innerHTML = `
+                            <div style="margin-top:10px;">
+                                <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen>
+                                </iframe>
+                                <div class="status-text">Video actief</div>
+                            </div>
+                        `;
+                    } else {
+                        outputDiv.innerHTML = `<div class="status-text" style="color:red;">Kon YouTube ID niet verwerken</div>`;
+                    }
+                } else {
+                    outputDiv.innerHTML = `
+                        <div style="margin-top:10px;">
+                            <audio id="audioStream" controls autoplay style="width:100%;">
+                                <source src="${urlInput}" type="audio/mpeg">
+                                Browser ondersteunt dit audio-element niet.
+                            </audio>
+                            <div class="status-text">Audiostream actief</div>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        const stopBtn = document.getElementById('stopBtn');
+        if (stopBtn) {
+            stopBtn.addEventListener('click', function() {
+                const outputDiv = document.getElementById('mediaOutput');
+                if (outputDiv) outputDiv.innerHTML = `<div class="status-text">Speler gestopt</div>`;
+            });
+        }
+
+        const showYtTvBtn = document.getElementById('showYtTvBtn');
+        if (showYtTvBtn) {
+            showYtTvBtn.addEventListener('click', function() {
+                const container = document.getElementById('tvPlayerContainer');
+                const iframe = document.getElementById('tvIframe');
+                if (iframe) iframe.src = "https://www.youtube.com/embed/Q6W78dSEa1M?autoplay=1";
+                if (container) container.style.display = 'block';
+            });
+        }
+
+        const closeTvBtn = document.getElementById('closeTvBtn');
+        if (closeTvBtn) {
+            closeTvBtn.addEventListener('click', function() {
+                const container = document.getElementById('tvPlayerContainer');
+                const iframe = document.getElementById('tvIframe');
+                if (iframe) iframe.src = "";
+                if (container) container.style.display = 'none';
+            });
+        }
+
+        const setAlarmBtn = document.getElementById('setAlarmBtn');
+        if (setAlarmBtn) {
+            setAlarmBtn.addEventListener('click', function() {
+                const alarmTimeInput = document.getElementById('alarmTime');
+                const statusDiv = document.getElementById('alarmStatus');
+                if (alarmTimeInput && alarmTimeInput.value) {
+                    activeAlarm = alarmTimeInput.value;
+                    if (statusDiv) {
+                        statusDiv.innerText = `Wekker ingesteld om ${activeAlarm} uur`;
+                        statusDiv.style.color = "#f3e5ab";
+                    }
+                } else {
+                    activeAlarm = null;
+                    if (statusDiv) {
+                        statusDiv.innerText = `Geen wekker ingesteld`;
+                        statusDiv.style.color = "#c5a059";
+                    }
+                }
+            });
+        }
+
+        const goToYearBtn = document.getElementById('goToYearBtn');
+        if (goToYearBtn) {
+            goToYearBtn.addEventListener('click', function() {
+                const m = parseInt(document.getElementById('monthSelect').value);
+                const y = parseInt(document.getElementById('yearInput').value);
+                if (!isNaN(y)) {
+                    generateCalendar(y, m);
+                }
+            });
+        }
+
+        const todayBtn = document.getElementById('todayBtn');
+        if (todayBtn) {
+            todayBtn.addEventListener('click', function() {
+                const curr = new Date();
+                generateCalendar(curr.getFullYear(), curr.getMonth());
+            });
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', startApp);
+    } else {
+        startApp();
+    }
+</script>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                registration.unregister();
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
