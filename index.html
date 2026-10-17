@@ -51,7 +51,7 @@
             letter-spacing: 1px;
         }
 
-        /* PERFECT RONDE KLOK */
+        /* PERFECT RONDE KLOK - Fijn afgesteld op het nieuwe plaatje */
         .clock-container {
             position: relative;
             width: 280px;
@@ -60,8 +60,8 @@
             border-radius: 50%;
             overflow: hidden;
             background-image: url('clock-face.png');
-            background-size: 92%;
-            background-position: center 55%;
+            background-size: 94%;
+            background-position: center 52%;
             background-repeat: no-repeat;
             border: 2px solid #d4af37;
             box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
@@ -563,49 +563,3 @@
     });
 
     document.getElementById('closeTvBtn').addEventListener('click', function() {
-        const container = document.getElementById('tvPlayerContainer');
-        const iframe = document.getElementById('tvIframe');
-        iframe.src = "";
-        container.style.display = 'none';
-    });
-
-    document.getElementById('setAlarmBtn').addEventListener('click', function() {
-        const alarmTime = document.getElementById('alarmTime').value;
-        const statusDiv = document.getElementById('alarmStatus');
-        if (alarmTime) {
-            activeAlarm = alarmTime;
-            statusDiv.innerText = `Wekker ingesteld om ${alarmTime} uur`;
-            statusDiv.style.color = "#f3e5ab";
-        } else {
-            activeAlarm = null;
-            statusDiv.innerText = `Geen wekker ingesteld`;
-            statusDiv.style.color = "#c5a059";
-        }
-    });
-
-    document.getElementById('goToYearBtn').addEventListener('click', function() {
-        const m = parseInt(document.getElementById('monthSelect').value);
-        const y = parseInt(document.getElementById('yearInput').value);
-        if (!isNaN(y)) {
-            generateCalendar(y, m);
-        }
-    });
-
-    document.getElementById('todayBtn').addEventListener('click', function() {
-        const now = new Date();
-        generateCalendar(now.getFullYear(), now.getMonth());
-    });
-
-    const now = new Date();
-    generateCalendar(now.getFullYear(), now.getMonth());
-</script>
-
-<script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js')
-            .then(() => console.log('Service Worker geregistreerd!'));
-    }
-</script>
-
-</body>
-</html>
