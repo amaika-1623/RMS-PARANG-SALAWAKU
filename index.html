@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <link rel="manifest" href="manifest.json?v=6">
+    <link rel="manifest" href="manifest.json?v=7">
     <link rel="icon" type="image/png" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,7 +51,7 @@
             letter-spacing: 1px;
         }
 
-        /* RONDE KLOK - Achtergrond fijn afgesteld op exact 44% */
+        /* RONDE KLOK - Plaatje iets laten zakken zodat de wijzers exact kloppen */
         .clock-container {
             position: relative;
             width: 280px;
@@ -59,12 +59,23 @@
             margin: 10px auto;
             border-radius: 50%;
             overflow: hidden;
-            background-image: url('clock-face.png?v=6');
+            background-image: url('clock-face.png?v=7');
             background-size: cover;
-            background-position: center 44%;
+            background-position: center 47%;
             background-repeat: no-repeat;
             border: none;
             box-shadow: none;
+        }
+
+        /* ABORU TEKST ONDER DE KLOK */
+        .aboru-title {
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: #f3e5ab;
+            margin-top: 8px;
+            margin-bottom: 4px;
+            text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
         }
 
         /* WIJZERS */
@@ -110,7 +121,7 @@
 
         /* DIGITALE TIJD & DATUM */
         .digital-time-section {
-            margin-top: 12px;
+            margin-top: 8px;
             padding: 5px;
             border-top: 1px dashed rgba(212, 175, 55, 0.3);
         }
@@ -218,6 +229,8 @@
             <div class="hand second-hand" id="secondHand"></div>
             <div class="center-dot"></div>
         </div>
+
+        <div class="aboru-title">ABORU</div>
 
         <div class="digital-time-section">
             <div class="date-line" id="digitalDateOnly">Laden...</div>
