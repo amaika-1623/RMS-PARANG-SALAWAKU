@@ -51,7 +51,7 @@
             letter-spacing: 1px;
         }
 
-        /* RONDE KLOK - Middelpunt uitgelijnd op het hart van de gouden ring */
+        /* RONDE KLOK - Perfect uitgelijnd op het nieuwe ontwerp */
         .clock-container {
             position: relative;
             width: 280px;
@@ -61,7 +61,7 @@
             overflow: hidden;
             background-image: url('clock-face.png');
             background-size: cover;
-            background-position: center 43%; /* Exact op het snijpunt van het zwaard/ring */
+            background-position: center 43%;
             background-repeat: no-repeat;
             border: none;
             box-shadow: none;
@@ -338,11 +338,6 @@
     let activeAlarm = null;
     let currentVerseDay = null;
     const months = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
-    
-    // Exacte fijne hoek-correcties voor dit specifieke ontwerp
-    const MINUTE_OFFSET = 12;  // +12 graden (geeft de minuten- en uurwijzer 2 minuten extra)
-    const HOUR_OFFSET = 12;    
-    const SECOND_OFFSET = -6;  // -6 graden (zet de secondewijzer 1 seconde terug)
 
     const bibleVerses = [
         { text: "De HEERE is mijn Herder, mij zal niets ontbreken.", ref: "Psalm 23:1" },
@@ -413,9 +408,9 @@
             const minutes = now.getMinutes();
             const hours = now.getHours();
 
-            const secondDeg = (seconds * 6) + SECOND_OFFSET;
-            const minuteDeg = (minutes * 6 + seconds * 0.1) + MINUTE_OFFSET;
-            const hourDeg = ((hours % 12) * 30 + minutes * 0.5) + HOUR_OFFSET;
+            const secondDeg = seconds * 6;
+            const minuteDeg = minutes * 6 + seconds * 0.1;
+            const hourDeg = (hours % 12) * 30 + minutes * 0.5;
 
             const hourHand = document.getElementById('hourHand');
             const minuteHand = document.getElementById('minuteHand');
@@ -441,64 +436,4 @@
                 const mediaUrlInput = document.getElementById('mediaUrl');
                 const playBtn = document.getElementById('playBtn');
                 if (mediaUrlInput) mediaUrlInput.value = "https://youtu.be/Q6W78dSEa1M";
-                if (playBtn) playBtn.click();
-                
-                const alarmStatus = document.getElementById('alarmStatus');
-                if (alarmStatus) {
-                    alarmStatus.innerText = `🔔 WEKKER GAAT AF (${alarmCheckString})!`;
-                    alarmStatus.style.color = "#ff4444";
-                }
-            }
-        } catch (e) { console.error(e); }
-    }
-
-    function generateCalendar(year, month) {
-        try {
-            const body = document.getElementById('calendarBody');
-            if (!body) return;
-            body.innerHTML = '';
-            
-            const today = new Date();
-            const currentYear = today.getFullYear();
-            const currentMonth = today.getMonth();
-            const currentDate = today.getDate();
-
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-            
-            let startDay = firstDay.getDay() - 1;
-            if (startDay === -1) startDay = 6;
-            
-            let date = 1;
-            let html = '';
-
-            const mSelect = document.getElementById('monthSelect');
-            const yInput = document.getElementById('yearInput');
-            const cTitle = document.getElementById('calMonthYearTitle');
-
-            if (mSelect) mSelect.value = month;
-            if (yInput) yInput.value = year;
-            if (cTitle) cTitle.innerText = `${months[month]} ${year}`;
-
-            for (let i = 0; i < 6; i++) {
-                let row = '<tr>';
-                for (let j = 0; j < 7; j++) {
-                    if (i === 0 && j < startDay) {
-                        row += '<td></td>';
-                    } else if (date > lastDay.getDate()) {
-                        row += '<td></td>';
-                    } else {
-                        let isToday = (date === currentDate && month === currentMonth && year === currentYear);
-                        let classAttr = isToday ? 'class="today-cell"' : '';
-                        row += `<td ${classAttr}>${date}</td>`;
-                        date++;
-                    }
-                }
-                row += '</tr>';
-                html += row;
-                if (date > lastDay.getDate()) break;
-            }
-            body.innerHTML = html;
-
-            const selDate = new Date(year, month, (year === currentYear && month === currentMonth) ? currentDate : 1);
-            
+                if (playBtn) playBtn
