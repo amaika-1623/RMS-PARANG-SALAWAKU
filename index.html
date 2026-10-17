@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="manifest.json?v=2">
     <link rel="icon" type="image/png" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -436,4 +436,93 @@
                 const mediaUrlInput = document.getElementById('mediaUrl');
                 const playBtn = document.getElementById('playBtn');
                 if (mediaUrlInput) mediaUrlInput.value = "https://youtu.be/Q6W78dSEa1M";
-                if (playBtn) playBtn
+                if (playBtn) playBtn.click();
+                
+                const alarmStatus = document.getElementById('alarmStatus');
+                if (alarmStatus) {
+                    alarmStatus.innerText = `🔔 WEKKER GAAT AF (${alarmCheckString})!`;
+                    alarmStatus.style.color = "#ff4444";
+                }
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    function generateCalendar(year, month) {
+        try {
+            const body = document.getElementById('calendarBody');
+            if (!body) return;
+            body.innerHTML = '';
+            
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth();
+            const currentDate = today.getDate();
+
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            
+            let startDay = firstDay.getDay() - 1;
+            if (startDay === -1) startDay = 6;
+            
+            let date = 1;
+            let html = '';
+
+            const mSelect = document.getElementById('monthSelect');
+            const yInput = document.getElementById('yearInput');
+            const cTitle = document.getElementById('calMonthYearTitle');
+
+            if (mSelect) mSelect.value = month;
+            if (yInput) yInput.value = year;
+            if (cTitle) cTitle.innerText = `${months[month]}${year}`;
+
+            for (let i = 0; i < 6; i++) {
+                let row = '<tr>';
+                for (let j = 0; j < 7; j++) {
+                    if (i === 0 && j < startDay) {
+                        row += '<td></td>';
+                    } else if (date > lastDay.getDate()) {
+                        row += '<td></td>';
+                    } else {
+                        let isToday = (date === currentDate && month === currentMonth && year === currentYear);
+                        let classAttr = isToday ? 'class="today-cell"' : '';
+                        row += `<td ${classAttr}>${date}</td>`;
+                        date++;
+                    }
+                }
+                row += '</tr>';
+                html += row;
+                if (date > lastDay.getDate()) break;
+            }
+            body.innerHTML = html;
+
+            const selDate = new Date(year, month, (year === currentYear && month === currentMonth) ? currentDate : 1);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const sInfo = document.getElementById('selectedDateInfo');
+            if (sInfo) sInfo.innerText = "Geselecteerde datum: " + selDate.toLocaleDateString('nl-NL', options);
+        } catch (e) { console.error(e); }
+    }
+
+    function startApp() {
+        try {
+            updateClock();
+            setInterval(updateClock, 1000);
+
+            const now = new Date();
+            generateCalendar(now.getFullYear(), now.getMonth());
+
+            const stationSelect = document.getElementById('stationSelect');
+            if (stationSelect) {
+                stationSelect.addEventListener('change', function() {
+                    const mUrl = document.getElementById('mediaUrl');
+                    if (mUrl) mUrl.value = this.value;
+                });
+            }
+
+            const playBtn = document.getElementById('playBtn');
+            if (playBtn) {
+                playBtn.addEventListener('click', function() {
+                    const urlInput = document.getElementById('mediaUrl').value.trim();
+                    const outputDiv = document.getElementById('mediaOutput');
+                    
+                    if (!urlInput) {
+                        outputDiv.innerHTML = `<div class="status-
