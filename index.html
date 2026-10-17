@@ -90,27 +90,27 @@
             z-index: 12;
         }
 
-        /* ZWART MASKER: Dekt de oude text en cijfers in de foto af */
+        /* ZWART MASKER: Exact onderaan geplaatst zodat 1950 vrij blijft */
         .live-digital-overlay {
             position: absolute;
-            bottom: 15px;
-            left: 5%;
-            width: 90%;
+            bottom: 5px;
+            left: 8%;
+            width: 84%;
             background-color: #0d0a06;
-            padding: 8px 0;
+            padding: 6px 0;
             border-radius: 6px;
             border: 1px solid #33260b;
             text-align: center;
             z-index: 15;
         }
         .date-line {
-            font-size: 13px;
+            font-size: 12px;
             color: #d4af37;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
             font-weight: 500;
         }
         .time-line {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: bold;
             color: #ffcc00;
             letter-spacing: 2px;
@@ -207,7 +207,7 @@
             <div class="hand second-hand" id="secondHand"></div>
             <div class="center-dot"></div>
 
-            <!-- Zwart balkje dat precies de oude foto-tekst afdekt -->
+            <!-- Netjes uitgelijnd afdekvlak voor de live tijd -->
             <div class="live-digital-overlay">
                 <div class="date-line" id="digitalDateOnly">Laden...</div>
                 <div class="time-line" id="digitalTimeOnly">00:00:00</div>
@@ -479,8 +479,9 @@
         document.getElementById('selectedDateInfo').innerText = "Geselecteerde datum: " + selDate.toLocaleDateString('nl-NL', options);
     }
 
-    setInterval(updateClock, 1000);
+    // Direct uitvoeren bij laden zodat "Laden..." meteen weg is
     updateClock();
+    setInterval(updateClock, 1000);
 
     document.getElementById('stationSelect').addEventListener('change', function() {
         document.getElementById('mediaUrl').value = this.value;
@@ -498,4 +499,93 @@
         if (urlInput.includes("youtube.com") || urlInput.includes("youtu.be")) {
             let videoId = "";
             if (urlInput.includes("youtu.be/")) {
-                videoId = urlInput.
+                videoId = urlInput.split("youtu.be/")[1].split("?")[0].split("&")[0];
+            } else if (urlInput.includes("watch?v=")) {
+                videoId = urlInput.split("watch?v=")[1].split("&")[0];
+            }
+            
+            if (videoId) {
+                outputDiv.innerHTML = `
+                    <div style="margin-top:10px;">
+                        <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                        <div class="status-text">Video actief</div>
+                    </div>
+                `;
+            } else {
+                outputDiv.innerHTML = `<div class="status-text" style="color:red;">Kon YouTube ID niet verwerken</div>`;
+            }
+        } else {
+            outputDiv.innerHTML = `
+                <div style="margin-top:10px;">
+                    <audio id="audioStream" controls autoplay style="width:100%;">
+                        <source src="${urlInput}" type="audio/mpeg">
+                        Browser ondersteunt dit audio-element niet.
+                    </audio>
+                    <div class="status-text">Audiostream actief</div>
+                </div>
+            `;
+        }
+    });
+
+    document.getElementById('stopBtn').addEventListener('click', function() {
+        document.getElementById('mediaOutput').innerHTML = `<div class="status-text">Speler gestopt</div>`;
+    });
+
+    document.getElementById('showYtTvBtn').addEventListener('click', function() {
+        const container = document.getElementById('tvPlayerContainer');
+        const iframe = document.getElementById('tvIframe');
+        iframe.src = "https://www.youtube.com/embed/Q6W78dSEa1M?autoplay=1";
+        container.style.display = 'block';
+    });
+
+    document.getElementById('closeTvBtn').addEventListener('click', function() {
+        const container = document.getElementById('tvPlayerContainer');
+        const iframe = document.getElementById('tvIframe');
+        iframe.src = "";
+        container.style.display = 'none';
+    });
+
+    document.getElementById('setAlarmBtn').addEventListener('click', function() {
+        const alarmTime = document.getElementById('alarmTime').value;
+        const statusDiv = document.getElementById('alarmStatus');
+        if (alarmTime) {
+            activeAlarm = alarmTime;
+            statusDiv.innerText = `Wekker ingesteld om ${alarmTime} uur`;
+            statusDiv.style.color = "#f3e5ab";
+        } else {
+            activeAlarm = null;
+            statusDiv.innerText = `Geen wekker ingesteld`;
+            statusDiv.style.color = "#c5a059";
+        }
+    });
+
+    document.getElementById('goToYearBtn').addEventListener('click', function() {
+        const m = parseInt(document.getElementById('monthSelect').value);
+        const y = parseInt(document.getElementById('yearInput').value);
+        if (!isNaN(y)) {
+            generateCalendar(y, m);
+        }
+    });
+
+    document.getElementById('todayBtn').addEventListener('click', function() {
+        const now = new Date();
+        generateCalendar(now.getFullYear(), now.getMonth());
+    });
+
+    const now = new Date();
+    generateCalendar(now.getFullYear(), now.getMonth());
+</script>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+            .then(() => console.log('Service Worker geregistreerd!'));
+    }
+</script>
+
+</body>
+</html>
