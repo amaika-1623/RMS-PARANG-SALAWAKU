@@ -51,7 +51,7 @@
             letter-spacing: 1px;
         }
 
-        /* RONDE KLOK - Geoptimaliseerd voor het nieuwe, rechte ontwerp */
+        /* RONDE KLOK - Middelpunt uitgelijnd op het hart van de gouden ring */
         .clock-container {
             position: relative;
             width: 280px;
@@ -61,7 +61,7 @@
             overflow: hidden;
             background-image: url('clock-face.png');
             background-size: cover;
-            background-position: center 38%; /* Zorgt dat het hart van het klokblad exact op de draaias van de wijzers valt */
+            background-position: center 43%; /* Exact op het snijpunt van het zwaard/ring */
             background-repeat: no-repeat;
             border: none;
             box-shadow: none;
@@ -339,10 +339,10 @@
     let currentVerseDay = null;
     const months = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
     
-    // Geen offsets meer nodig doordat dit nieuwe ontwerp perfect loodrecht is!
-    const MINUTE_OFFSET = 0;
-    const HOUR_OFFSET = 0;
-    const SECOND_OFFSET = 0;
+    // Exacte fijne hoek-correcties voor dit specifieke ontwerp
+    const MINUTE_OFFSET = 12;  // +12 graden (geeft de minuten- en uurwijzer 2 minuten extra)
+    const HOUR_OFFSET = 12;    
+    const SECOND_OFFSET = -6;  // -6 graden (zet de secondewijzer 1 seconde terug)
 
     const bibleVerses = [
         { text: "De HEERE is mijn Herder, mij zal niets ontbreken.", ref: "Psalm 23:1" },
@@ -501,161 +501,4 @@
             body.innerHTML = html;
 
             const selDate = new Date(year, month, (year === currentYear && month === currentMonth) ? currentDate : 1);
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const sInfo = document.getElementById('selectedDateInfo');
-            if (sInfo) sInfo.innerText = "Geselecteerde datum: " + selDate.toLocaleDateString('nl-NL', options);
-        } catch (e) { console.error(e); }
-    }
-
-    function startApp() {
-        try {
-            updateClock();
-            setInterval(updateClock, 1000);
-
-            const now = new Date();
-            generateCalendar(now.getFullYear(), now.getMonth());
-
-            const stationSelect = document.getElementById('stationSelect');
-            if (stationSelect) {
-                stationSelect.addEventListener('change', function() {
-                    const mUrl = document.getElementById('mediaUrl');
-                    if (mUrl) mUrl.value = this.value;
-                });
-            }
-
-            const playBtn = document.getElementById('playBtn');
-            if (playBtn) {
-                playBtn.addEventListener('click', function() {
-                    const urlInput = document.getElementById('mediaUrl').value.trim();
-                    const outputDiv = document.getElementById('mediaOutput');
-                    
-                    if (!urlInput) {
-                        outputDiv.innerHTML = `<div class="status-text" style="color:red;">Voer een URL in</div>`;
-                        return;
-                    }
-
-                    if (urlInput.includes("youtube.com") || urlInput.includes("youtu.be")) {
-                        let videoId = "";
-                        if (urlInput.includes("youtu.be/")) {
-                            videoId = urlInput.split("youtu.be/")[1].split("?")[0].split("&")[0];
-                        } else if (urlInput.includes("watch?v=")) {
-                            videoId = urlInput.split("watch?v=")[1].split("&")[0];
-                        }
-                        
-                        if (videoId) {
-                            outputDiv.innerHTML = `
-                                <div style="margin-top:10px;">
-                                    <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
-                                        frameborder="0" 
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                        allowfullscreen>
-                                    </iframe>
-                                    <div class="status-text">Video actief</div>
-                                </div>
-                            `;
-                        } else {
-                            outputDiv.innerHTML = `<div class="status-text" style="color:red;">Kon YouTube ID niet verwerken</div>`;
-                        }
-                    } else {
-                        outputDiv.innerHTML = `
-                            <div style="margin-top:10px;">
-                                <audio id="audioStream" controls autoplay style="width:100%;">
-                                    <source src="${urlInput}" type="audio/mpeg">
-                                    Browser ondersteunt dit audio-element niet.
-                                </audio>
-                                <div class="status-text">Audiostream actief</div>
-                            </div>
-                        `;
-                    }
-                });
-            }
-
-            const stopBtn = document.getElementById('stopBtn');
-            if (stopBtn) {
-                stopBtn.addEventListener('click', function() {
-                    const outputDiv = document.getElementById('mediaOutput');
-                    if (outputDiv) outputDiv.innerHTML = `<div class="status-text">Speler gestopt</div>`;
-                });
-            }
-
-            const showYtTvBtn = document.getElementById('showYtTvBtn');
-            if (showYtTvBtn) {
-                showYtTvBtn.addEventListener('click', function() {
-                    const container = document.getElementById('tvPlayerContainer');
-                    const iframe = document.getElementById('tvIframe');
-                    if (iframe) iframe.src = "https://www.youtube.com/embed/Q6W78dSEa1M?autoplay=1";
-                    if (container) container.style.display = 'block';
-                });
-            }
-
-            const closeTvBtn = document.getElementById('closeTvBtn');
-            if (closeTvBtn) {
-                closeTvBtn.addEventListener('click', function() {
-                    const container = document.getElementById('tvPlayerContainer');
-                    const iframe = document.getElementById('tvIframe');
-                    if (iframe) iframe.src = "";
-                    if (container) container.style.display = 'none';
-                });
-            }
-
-            const setAlarmBtn = document.getElementById('setAlarmBtn');
-            if (setAlarmBtn) {
-                setAlarmBtn.addEventListener('click', function() {
-                    const alarmTimeInput = document.getElementById('alarmTime');
-                    const statusDiv = document.getElementById('alarmStatus');
-                    if (alarmTimeInput && alarmTimeInput.value) {
-                        activeAlarm = alarmTimeInput.value;
-                        if (statusDiv) {
-                            statusDiv.innerText = `Wekker ingesteld om ${activeAlarm} uur`;
-                            statusDiv.style.color = "#f3e5ab";
-                        }
-                    } else {
-                        activeAlarm = null;
-                        if (statusDiv) {
-                            statusDiv.innerText = `Geen wekker ingesteld`;
-                            statusDiv.style.color = "#c5a059";
-                        }
-                    }
-                });
-            }
-
-            const goToYearBtn = document.getElementById('goToYearBtn');
-            if (goToYearBtn) {
-                goToYearBtn.addEventListener('click', function() {
-                    const m = parseInt(document.getElementById('monthSelect').value);
-                    const y = parseInt(document.getElementById('yearInput').value);
-                    if (!isNaN(y)) {
-                        generateCalendar(y, m);
-                    }
-                });
-            }
-
-            const todayBtn = document.getElementById('todayBtn');
-            if (todayBtn) {
-                todayBtn.addEventListener('click', function() {
-                    const curr = new Date();
-                    generateCalendar(curr.getFullYear(), curr.getMonth());
-                });
-            }
-        } catch (e) { console.error(e); }
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', startApp);
-    } else {
-        startApp();
-    }
-</script>
-
-<script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-            for(let registration of registrations) {
-                registration.unregister();
-            }
-        });
-    }
-</script>
-
-</body>
-</html>
+            
