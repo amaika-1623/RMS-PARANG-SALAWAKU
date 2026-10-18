@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <link rel="manifest" href="manifest.json?v=7">
+    <link rel="manifest" href="manifest.json?v=8">
     <link rel="icon" type="image/png" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,7 +51,7 @@
             letter-spacing: 1px;
         }
 
-        /* RONDE KLOK - Plaatje iets laten zakken zodat de wijzers exact kloppen */
+        /* RONDE KLOK */
         .clock-container {
             position: relative;
             width: 280px;
@@ -59,7 +59,7 @@
             margin: 10px auto;
             border-radius: 50%;
             overflow: hidden;
-            background-image: url('clock-face.png?v=7');
+            background-image: url('clock-face.png?v=8');
             background-size: cover;
             background-position: center 47%;
             background-repeat: no-repeat;
@@ -286,8 +286,11 @@
     <!-- MINI TV -->
     <div class="section-box">
         <div class="section-title">📺 MINI TV & LINKS</div>
-        <div style="display: flex; gap: 5px;">
+        <div style="display: flex; gap: 5px; margin-bottom: 5px;">
             <button id="showYtTvBtn" style="flex: 1;">📺 YouTube TV</button>
+            <button id="showGunungBtn" style="flex: 1; background: linear-gradient(to bottom, #e5c158, #b8860b);">⛪ Gunung Batu</button>
+        </div>
+        <div style="display: flex; gap: 5px;">
             <a href="https://share.google/OjtH32V2ynojkQ1mW" target="_blank" class="link-button" style="flex: 1;">📘 Facebook</a>
         </div>
 
@@ -574,6 +577,17 @@
                     const container = document.getElementById('tvPlayerContainer');
                     const iframe = document.getElementById('tvIframe');
                     if (iframe) iframe.src = "https://www.youtube.com/embed/Q6W78dSEa1M?autoplay=1";
+                    if (container) container.style.display = 'block';
+                });
+            }
+
+            const showGunungBtn = document.getElementById('showGunungBtn');
+            if (showGunungBtn) {
+                showGunungBtn.addEventListener('click', function() {
+                    const container = document.getElementById('tvPlayerContainer');
+                    const iframe = document.getElementById('tvIframe');
+                    // GIM Gunung Batu Amsterdam kanaal link omgezet naar embed formaat voor de livestream/hoofdpagina
+                    if (iframe) iframe.src = "https://www.youtube.com/embed/live_stream?channel=UCXw8dSEa1M&autoplay=1";
                     if (container) container.style.display = 'block';
                 });
             }
