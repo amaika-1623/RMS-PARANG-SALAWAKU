@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <link rel="manifest" href="manifest.json?v=8">
+    <link rel="manifest" href="manifest.json?v=9">
     <link rel="icon" type="image/png" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,7 +59,7 @@
             margin: 10px auto;
             border-radius: 50%;
             overflow: hidden;
-            background-image: url('clock-face.png?v=8');
+            background-image: url('clock-face.png?v=9');
             background-size: cover;
             background-position: center 47%;
             background-repeat: no-repeat;
@@ -584,11 +584,7 @@
             const showGunungBtn = document.getElementById('showGunungBtn');
             if (showGunungBtn) {
                 showGunungBtn.addEventListener('click', function() {
-                    const container = document.getElementById('tvPlayerContainer');
-                    const iframe = document.getElementById('tvIframe');
-                    // GIM Gunung Batu Amsterdam kanaal link omgezet naar embed formaat voor de livestream/hoofdpagina
-                    if (iframe) iframe.src = "https://www.youtube.com/embed/live_stream?channel=UCXw8dSEa1M&autoplay=1";
-                    if (container) container.style.display = 'block';
+                    window.open("https://youtube.com/@gunungbatuamsterdamlivestreamk/live", "_blank");
                 });
             }
 
