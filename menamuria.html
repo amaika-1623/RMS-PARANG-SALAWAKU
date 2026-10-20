@@ -1,1 +1,386 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mena Muria Klok & Radio</title>
+    <style>
+        :root {
+            --bg-color: #0d0b07;
+            --card-bg: #14110b;
+            --border-gold: #d4af37;
+            --text-gold: #e6ca65;
+            --text-light: #f4edd3;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--card-bg);
+            border: 2px solid var(--border-gold);
+            border-radius: 12px;
+            padding: 15px;
+            box-sizing: border-box;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+
+        header h1 {
+            color: var(--text-gold);
+            font-size: 1.5rem;
+            margin: 0 0 5px 0;
+            letter-spacing: 2px;
+        }
+
+        header p {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin: 0 0 15px 0;
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        .section {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-gold);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        /* KLOK STYLING */
+        .clock-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .clock-face {
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, #2a2213 0%, #0d0b07 80%);
+            border: 4px solid var(--border-gold);
+            border-radius: 50%;
+            position: relative;
+            margin: 10px auto;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+        }
+
+        /* Cijfers en tekst op wijzerplaat vereenvoudigd voor strakke weergave */
+        .clock-center-dot {
+            width: 12px;
+            height: 12px;
+            background: var(--border-gold);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        /* Wijzers met Kroonpijltje via SVG */
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            transform: translateX(-50%) rotate(0deg);
+            transition: transform 0.1s cubic-bezier(0.4, 2.08, 0.55, 0.44);
+            z-index: 5;
+        }
+
+        .hour-hand {
+            width: 12px;
+            height: 70px;
+        }
+
+        .minute-hand {
+            width: 10px;
+            height: 95px;
+        }
+
+        .second-hand {
+            width: 2px;
+            height: 100px;
+            background-color: #ff4d4d;
+            z-index: 6;
+        }
+
+        .digital-date {
+            font-size: 0.9rem;
+            color: var(--text-gold);
+            margin-top: 5px;
+        }
+
+        .digital-time {
+            font-size: 1.4rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: var(--text-light);
+        }
+
+        /* KNOPPEN EN INPUTS */
+        select, button, input {
+            background: linear-gradient(to bottom, #d4af37, #aa8c2c);
+            color: #0d0b07;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin: 4px 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        select {
+            background: #1f1910;
+            color: var(--text-gold);
+            border: 1px solid var(--border-gold);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* EEUWKALENDER STYLING */
+        .calendar-header {
+            font-size: 0.9rem;
+            color: var(--text-gold);
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
+            font-size: 0.75rem;
+            margin-top: 8px;
+        }
+
+        .calendar-day-name {
+            color: var(--text-gold);
+            font-weight: bold;
+            padding: 4px 0;
+        }
+
+        .calendar-cell {
+            background: rgba(255,255,255,0.05);
+            padding: 6px 0;
+            border-radius: 3px;
+            color: var(--text-light);
+        }
+
+        .calendar-cell.empty {
+            background: transparent;
+        }
+
+        .calendar-cell.today {
+            background: var(--border-gold);
+            color: #0d0b07;
+            font-weight: bold;
+        }
+
+        iframe {
+            display: none; /* Onzichtbare of actieve speler */
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <h1>MENA MURIA</h1>
+        <p>KLOK • RADIO STREAM • EEUWKALENDER</p>
+    </header>
+
+    <!-- 1 & 3 & 4 & 5. KLOK & WIJZERS -->
+    <div class="section clock-section">
+        <div class="clock-face" id="klokFace">
+            <div class="clock-center-dot"></div>
+            <!-- Uurwijzer met Kroonpijltje -->
+            <div class="hand hour-hand" id="hourHand">
+                <svg viewBox="0 0 20 100" width="100%" height="100%">
+                    <path d="M10 0 L18 20 L13 20 L13 100 L7 100 L7 20 L2 20 Z" fill="#e6ca65" stroke="#0d0b07" stroke-width="1"/>
+                </svg>
+            </div>
+            <!-- Minuutwijzer met Kroonpijltje -->
+            <div class="hand minute-hand" id="minuteHand">
+                <svg viewBox="0 0 16 100" width="100%" height="100%">
+                    <path d="M8 0 L15 15 L11 15 L11 100 L5 100 L5 15 L1 15 Z" fill="#f4edd3" stroke="#0d0b07" stroke-width="1"/>
+                </svg>
+            </div>
+            <!-- Secondevis -->
+            <div class="hand second-hand" id="secondHand"></div>
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-gold); margin-top: 4px; font-weight: bold;">ABORU</div>
+        <div class="digital-date" id="digitalDate">dinsdag 20 oktober 2026</div>
+        <div class="digital-time" id="digitalTime">23:30:36</div>
+    </div>
+
+    <!-- DAGELIJKS WOORD -->
+    <div class="section">
+        <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 4px;">📖 DAGELIJKS WOORD</div>
+        <div style="font-size: 0.85rem; font-style: italic;">"De Heer is mijn herder, mij ontbreekt niets."</div>
+        <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 4px;">Psalm 23:1</div>
+    </div>
+
+    <!-- 2. STREAM & RADIO SPELER -->
+    <div class="section">
+        <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 6px;">📻 STREAM & RADIO SPELER</div>
+        <select id="stationSelect">
+            <option>Carlos Santana (Wekker Concert)</option>
+        </select>
+        <div class="btn-row" style="margin-top: 8px;">
+            <button onclick="playMusic()">▶ Play</button>
+            <button onclick="stopMusic()" style="background: linear-gradient(to bottom, #d9534f, #c9302c); color: white;">⏹ Stop</button>
+        </div>
+        <!-- YouTube Audio/Video Frame voor weergave en geluid -->
+        <div id="playerContainer" style="margin-top: 8px;">
+            <iframe id="youtubePlayer" width="100%" height="90" src="" frameborder="0" allow="autoplay"></iframe>
+        </div>
+    </div>
+
+    <!-- EEUWKALENDER -->
+    <div class="section">
+        <div class="calendar-header">📅 EEUWKALENDER</div>
+        <button onclick="gaNaarVandaag()">Vandaag</button>
+        <div class="btn-row" style="margin-top: 6px;">
+            <select id="maandSelect" onchange="bouwKalender()">
+                <option value="0">Januari</option>
+                <option value="1">Februari</option>
+                <option value="2">Maart</option>
+                <option value="3">April</option>
+                <option value="4">Mei</option>
+                <option value="5">Juni</option>
+                <option value="6">Juli</option>
+                <option value="7">Augustus</option>
+                <option value="8">September</option>
+                <option value="9" selected>Oktober</option>
+                <option value="10">November</option>
+                <option value="11">December</option>
+            </select>
+            <input type="number" id="jaarInput" value="2026" onchange="bouwKalender()" style="width: 80px; text-align: center;">
+        </div>
+        <button onclick="bouwKalender()" style="margin-top: 6px;">Ga naar jaar / maand</button>
+        
+        <div class="calendar-grid" id="kalenderGrid">
+            <!-- Wordt dynamisch gevuld -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- KLOK LOGICA ---
+    function updateKlok() {
+        const nu = new Date();
+        
+        const seconden = nu.getSeconds();
+        const minuten = nu.getMinutes();
+        const uren = nu.getHours();
+
+        const secGraden = seconden * 6;
+        const minGraden = minuten * 6 + seconden * 0.1;
+        const uurGraden = (uren % 12) * 30 + minuten * 0.5;
+
+        document.getElementById('secondHand').style.transform = `translateX(-50%) rotate(${secGraden}deg)`;
+        document.getElementById('minuteHand').style.transform = `translateX(-50%) rotate(${minGraden}deg)`;
+        document.getElementById('hourHand').style.transform = `translateX(-50%) rotate(${uurGraden}deg)`;
+
+        // Digitale tijd en datum update
+        const optiesDagen = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('digitalDate').innerText = nu.toLocaleDateString('nl-NL', optiesDagen);
+        document.getElementById('digitalTime').innerText = nu.toLocaleTimeString('nl-NL');
+    }
+    setInterval(updateKlok, 1000);
+    updateKlok();
+
+    // --- MUZIEK / RADIO SPELER LOGICA ---
+    function playMusic() {
+        const iframe = document.getElementById('youtubePlayer');
+        iframe.style.display = 'block';
+        // Q6W78dSEa1M met autoplay ingeschakeld
+        iframe.src = "https://www.youtube.com/embed/Q6W78dSEa1M?autoplay=1";
+    }
+
+    function stopMusic() {
+        const iframe = document.getElementById('youtubePlayer');
+        iframe.src = ""; // Stopt de stream direct
+        iframe.style.display = 'none';
+    }
+
+    // --- VOLLEDIGE EEUWKALENDER LOGICA ---
+    function bouwKalender() {
+        const maand = parseInt(document.getElementById('maandSelect').value);
+        const jaar = parseInt(document.getElementById('jaarInput').value);
+        const grid = document.getElementById('kalenderGrid');
+        grid.innerHTML = '';
+
+        // Dagen van de week koppen (Ma t/m Zo)
+        const dNamen = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
+        dNamen.forEach(d => {
+            const div = document.createElement('div');
+            div.className = 'calendar-day-name';
+            div.innerText = d;
+            grid.appendChild(div);
+        });
+
+        // Eerste dag van de maand bepalen (0 = Zondag, 1 = Maandag, etc.)
+        let eersteDagIndex = new Date(jaar, maand, 1).getDay();
+        // Omzetten naar Maandag als start van de week (0 = Maandag, 6 = Zondag)
+        eersteDagIndex = (eersteDagIndex === 0) ? 6 : eersteDagIndex - 1;
+
+        // Totaal aantal dagen in deze maand
+        const aantalDagen = new Date(jaar, maand + 1, 0).getDate();
+
+        // V lege cellen opvullen vóór de 1e van de maand
+        for (let i = 0; i < eersteDagIndex; i++) {
+            const leeg = document.createElement('div');
+            leeg.className = 'calendar-cell empty';
+            grid.appendChild(leeg);
+        }
+
+        // Alle dagen van de maand toevoegen
+        const vandaag = new Date();
+        for (let dag = 1; dag <= aantalDagen; dag++) {
+            const cel = document.createElement('div');
+            cel.className = 'calendar-cell';
+            cel.innerText = dag;
+
+            // Markeer vandaag als dit overeenkomt
+            if (dag === vandaag.getDate() && maand === vandaag.getMonth() && jaar === vandaag.getFullYear()) {
+                cel.classList.add('today');
+            }
+            grid.appendChild(cel);
+        }
+    }
+
+    function gaNaarVandaag() {
+        const vandaag = new Date();
+        document.getElementById('maandSelect').value = vandaag.getMonth();
+        document.getElementById('jaarInput').value = vandaag.getFullYear();
+        bouwKalender();
+    }
+
+    // Initialiseer kalender bij laden
+    bouwKalender();
+</script>
+
+</body>
+</html>
 
