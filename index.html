@@ -59,7 +59,7 @@
             margin-bottom: 12px;
         }
 
-        /* KLOK STYLING MET JOUW CLOCK-FACE.PNG */
+        /* KLOK STYLING */
         .clock-section {
             display: flex;
             flex-direction: column;
@@ -70,19 +70,22 @@
             width: 260px;
             height: 260px;
             background-image: url('clock-face.png');
-            background-size: cover;
-            background-position: center;
+            /* Achtergrond iets naar beneden gezet (50% 55%) zodat het zwaard-handvat exact in het midden valt */
+            background-size: 108%;
+            background-position: center 53%;
+            background-repeat: no-repeat;
             border: 4px solid var(--border-gold);
             border-radius: 50%;
             position: relative;
             margin: 10px auto;
             box-shadow: 0 0 15px rgba(0,0,0,0.8);
+            overflow: hidden;
         }
 
         .clock-center-dot {
-            width: 12px;
-            height: 12px;
-            background: radial-gradient(circle, #fff 0%, var(--border-gold) 100%);
+            width: 10px;
+            height: 10px;
+            background: var(--text-gold);
             border: 1px solid #000;
             border-radius: 50%;
             position: absolute;
@@ -92,7 +95,7 @@
             z-index: 10;
         }
 
-        /* WATERPAS WIJZERS MET KROONPIJLTJES */
+        /* WATERPAS WIJZERS MET PIJL- / KROONPIJLTJES */
         .hand {
             position: absolute;
             bottom: 50%;
@@ -104,18 +107,18 @@
 
         .hour-hand {
             width: 14px;
-            height: 75px;
+            height: 70px;
         }
 
         .minute-hand {
             width: 12px;
-            height: 100px;
+            height: 95px;
         }
 
         .second-hand {
             width: 2px;
-            height: 110px;
-            background-color: #ff4d4d;
+            height: 105px;
+            background-color: #00ff66; /* Groene secondewijzer */
             z-index: 6;
             transform-origin: bottom center;
         }
@@ -159,7 +162,7 @@
             gap: 8px;
         }
 
-        /* EEUWKALENDER STYLING */
+        /* EEUWKALENDER GRID */
         .calendar-header {
             font-size: 0.9rem;
             color: var(--text-gold);
@@ -167,22 +170,35 @@
             font-weight: bold;
         }
 
-        .week-days {
-            display: flex;
-            justify-content: space-around;
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
             font-size: 0.75rem;
-            color: var(--text-gold);
-            font-weight: bold;
             margin-top: 8px;
-            border-bottom: 1px dashed rgba(212,175,55,0.4);
-            padding-bottom: 4px;
         }
 
-        .calendar-status {
-            font-size: 0.75rem;
-            font-style: italic;
-            opacity: 0.8;
-            margin-top: 8px;
+        .calendar-day-name {
+            color: var(--text-gold);
+            font-weight: bold;
+            padding: 4px 0;
+        }
+
+        .calendar-cell {
+            background: rgba(255,255,255,0.05);
+            padding: 6px 0;
+            border-radius: 3px;
+            color: var(--text-light);
+        }
+
+        .calendar-cell.empty {
+            background: transparent;
+        }
+
+        .calendar-cell.today {
+            background: var(--border-gold);
+            color: #0d0b07;
+            font-weight: bold;
         }
 
         iframe {
@@ -202,24 +218,24 @@
     <div class="section clock-section">
         <div class="clock-face" id="klokFace">
             <div class="clock-center-dot"></div>
-            <!-- Uurwijzer met Kroonpijltje -->
+            <!-- Uurwijzer met Pijlmodel -->
             <div class="hand hour-hand" id="hourHand">
                 <svg viewBox="0 0 20 100" width="100%" height="100%">
-                    <path d="M10 0 L18 18 L13 18 L13 100 L7 100 L7 18 L2 18 Z" fill="#e6ca65" stroke="#0d0b07" stroke-width="1.5"/>
+                    <path d="M10 0 L19 20 L13 20 L13 100 L7 100 L7 20 L1 20 Z" fill="#e6ca65" stroke="#0d0b07" stroke-width="1.2"/>
                 </svg>
             </div>
-            <!-- Minuutwijzer met Kroonpijltje -->
+            <!-- Minuutwijzer met Pijlmodel -->
             <div class="hand minute-hand" id="minuteHand">
                 <svg viewBox="0 0 16 100" width="100%" height="100%">
-                    <path d="M8 0 L15 14 L11 14 L11 100 L5 100 L5 14 L1 14 Z" fill="#f4edd3" stroke="#0d0b07" stroke-width="1.5"/>
+                    <path d="M8 0 L16 16 L11 16 L11 100 L5 100 L5 16 L0 16 Z" fill="#f4edd3" stroke="#0d0b07" stroke-width="1.2"/>
                 </svg>
             </div>
-            <!-- Secondewijzer -->
+            <!-- Groene Secondewijzer -->
             <div class="hand second-hand" id="secondHand"></div>
         </div>
         <div style="font-size: 0.85rem; color: var(--text-gold); margin-top: 4px; font-weight: bold;">ABORU</div>
         <div class="digital-date" id="digitalDate">woensdag 21 oktober 2026</div>
-        <div class="digital-time" id="digitalTime">01:43:00</div>
+        <div class="digital-time" id="digitalTime">01:57:00</div>
     </div>
 
     <!-- DAGELIJKS WOORD -->
@@ -240,9 +256,30 @@
             <button onclick="playMusic()">▶ Play</button>
             <button onclick="stopMusic()" style="background: linear-gradient(to bottom, #d9534f, #c9302c); color: white;">⏹ Stop</button>
         </div>
-        <div id="playerContainer">
+        <button onclick="window.open('https://radio.net', '_blank')" style="margin-top: 6px;">🌍 Radio.net (Alle Zenders)</button>
+        <div id="playerContainer" style="margin-top: 6px;">
             <iframe id="youtubePlayer" width="100%" height="80" src="" frameborder="0" allow="autoplay"></iframe>
         </div>
+    </div>
+
+    <!-- WEKKER / ALARM -->
+    <div class="section">
+        <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 6px;">⏰ WEKKER / ALARM</div>
+        <div class="btn-row">
+            <input type="time" id="alarmTijd" value="07:00" style="text-align: center; background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold);">
+            <button onclick="zetWekker()" style="width: auto; padding: 8px 16px;">Zet Wekker</button>
+        </div>
+        <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 4px;" id="alarmStatus">Geen wekker ingesteld</div>
+    </div>
+
+    <!-- MINI TV & LINKS -->
+    <div class="section">
+        <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 6px;">📺 MINI TV & LINKS</div>
+        <div class="btn-row">
+            <button onclick="window.open('https://www.youtube.com', '_blank')">📺 YouTube TV</button>
+            <button onclick="window.open('https://www.facebook.com', '_blank')">📘 Facebook</button>
+        </div>
+        <button onclick="window.open('https://www.youtube.com/results?search_query=Gunung+Batu', '_blank')" style="margin-top: 4px;">⛰️ Gunung Batu</button>
     </div>
 
     <!-- EEUWKALENDER -->
@@ -250,7 +287,7 @@
         <div class="calendar-header">📅 EEUWKALENDER</div>
         <button onclick="gaNaarVandaag()">Vandaag</button>
         <div class="btn-row" style="margin-top: 6px;">
-            <select id="maandSelect">
+            <select id="maandSelect" onchange="bouwKalender()">
                 <option value="0">Januari</option>
                 <option value="1">Februari</option>
                 <option value="2">Maart</option>
@@ -264,14 +301,13 @@
                 <option value="10">November</option>
                 <option value="11">December</option>
             </select>
-            <input type="number" id="jaarInput" value="2026" style="width: 80px; text-align: center;">
+            <input type="number" id="jaarInput" value="2026" onchange="bouwKalender()" style="width: 80px; text-align: center;">
         </div>
-        <button onclick="laadKalender()" style="margin-top: 6px;">Ga naar jaar</button>
+        <button onclick="bouwKalender()" style="margin-top: 6px;">Ga naar jaar / maand</button>
         
-        <div class="week-days">
-            <span>Ma</span><span>Di</span><span>Wo</span><span>Do</span><span>Vr</span><span>Za</span><span>Zo</span>
+        <div class="calendar-grid" id="kalenderGrid">
+            <!-- Wordt dynamisch gevuld -->
         </div>
-        <div class="calendar-status" id="kalenderStatus">Geselecteerde datum: 21 oktober 2026</div>
     </div>
 </div>
 
@@ -313,20 +349,63 @@
         iframe.style.display = 'none';
     }
 
-    // --- EEUWKALENDER ACTIE ---
-    function laadKalender() {
-        const maanden = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
-        const maandIdx = document.getElementById('maandSelect').value;
-        const jaar = document.getElementById('jaarInput').value;
-        document.getElementById('kalenderStatus').innerText = `Geselecteerde datum: 1 ${maanden[maandIdx]} ${jaar}`;
+    // --- WEKKER FUNCTIE ---
+    function zetWekker() {
+        const tijd = document.getElementById('alarmTijd').value;
+        if(tijd) {
+            document.getElementById('alarmStatus').innerText = `Wekker ingesteld om ${tijd} uur`;
+        } else {
+            document.getElementById('alarmStatus').innerText = `Geen wekker ingesteld`;
+        }
+    }
+
+    // --- VOLLEDIGE EEUWKALENDER ---
+    function bouwKalender() {
+        const maand = parseInt(document.getElementById('maandSelect').value);
+        const jaar = parseInt(document.getElementById('jaarInput').value);
+        const grid = document.getElementById('kalenderGrid');
+        grid.innerHTML = '';
+
+        const dNamen = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
+        dNamen.forEach(d => {
+            const div = document.createElement('div');
+            div.className = 'calendar-day-name';
+            div.innerText = d;
+            grid.appendChild(div);
+        });
+
+        let eersteDagIndex = new Date(jaar, maand, 1).getDay();
+        eersteDagIndex = (eersteDagIndex === 0) ? 6 : eersteDagIndex - 1;
+
+        const aantalDagen = new Date(jaar, maand + 1, 0).getDate();
+
+        for (let i = 0; i < eersteDagIndex; i++) {
+            const leeg = document.createElement('div');
+            leeg.className = 'calendar-cell empty';
+            grid.appendChild(leeg);
+        }
+
+        const vandaag = new Date();
+        for (let dag = 1; dag <= aantalDagen; dag++) {
+            const cel = document.createElement('div');
+            cel.className = 'calendar-cell';
+            cel.innerText = dag;
+
+            if (dag === vandaag.getDate() && maand === vandaag.getMonth() && jaar === vandaag.getFullYear()) {
+                cel.classList.add('today');
+            }
+            grid.appendChild(cel);
+        }
     }
 
     function gaNaarVandaag() {
         const vandaag = new Date();
         document.getElementById('maandSelect').value = vandaag.getMonth();
         document.getElementById('jaarInput').value = vandaag.getFullYear();
-        laadKalender();
+        bouwKalender();
     }
+
+    bouwKalender();
 </script>
 
 </body>
