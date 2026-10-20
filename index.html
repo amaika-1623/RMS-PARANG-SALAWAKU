@@ -59,7 +59,7 @@
             margin-bottom: 12px;
         }
 
-        /* KLOK STYLING MET JOUW EIGEN ACHTERGROND */
+        /* KLOK STYLING MET JOUW CLOCK-FACE.PNG */
         .clock-section {
             display: flex;
             flex-direction: column;
@@ -69,8 +69,7 @@
         .clock-face {
             width: 260px;
             height: 260px;
-            /* Vervang onderstaande url eventueel met de exacte bestandsnaam/link van jouw klok-achtergrondafbeelding */
-            background-image: url('1000067374.jpg'); 
+            background-image: url('clock-face.png');
             background-size: cover;
             background-position: center;
             border: 4px solid var(--border-gold);
@@ -93,7 +92,7 @@
             z-index: 10;
         }
 
-        /* EXACTE WATERPAS WIJZERS MET KROONPIJLTJES */
+        /* WATERPAS WIJZERS MET KROONPIJLTJES */
         .hand {
             position: absolute;
             bottom: 50%;
@@ -203,7 +202,7 @@
     <div class="section clock-section">
         <div class="clock-face" id="klokFace">
             <div class="clock-center-dot"></div>
-            <!-- Uurwijzer met Kroonpijltje (Exact waterpas uitgelijnd op 9-3 as) -->
+            <!-- Uurwijzer met Kroonpijltje -->
             <div class="hand hour-hand" id="hourHand">
                 <svg viewBox="0 0 20 100" width="100%" height="100%">
                     <path d="M10 0 L18 18 L13 18 L13 100 L7 100 L7 18 L2 18 Z" fill="#e6ca65" stroke="#0d0b07" stroke-width="1.5"/>
@@ -219,8 +218,8 @@
             <div class="hand second-hand" id="secondHand"></div>
         </div>
         <div style="font-size: 0.85rem; color: var(--text-gold); margin-top: 4px; font-weight: bold;">ABORU</div>
-        <div class="digital-date" id="digitalDate">dinsdag 20 oktober 2026</div>
-        <div class="digital-time" id="digitalTime">23:41:53</div>
+        <div class="digital-date" id="digitalDate">woensdag 21 oktober 2026</div>
+        <div class="digital-time" id="digitalTime">01:43:00</div>
     </div>
 
     <!-- DAGELIJKS WOORD -->
@@ -272,7 +271,7 @@
         <div class="week-days">
             <span>Ma</span><span>Di</span><span>Wo</span><span>Do</span><span>Vr</span><span>Za</span><span>Zo</span>
         </div>
-        <div class="calendar-status" id="kalenderStatus">Geselecteerde datum: 20 oktober 2026</div>
+        <div class="calendar-status" id="kalenderStatus">Geselecteerde datum: 21 oktober 2026</div>
     </div>
 </div>
 
@@ -304,7 +303,6 @@
         const iframe = document.getElementById('youtubePlayer');
         const urlInput = document.getElementById('streamUrl').value;
         iframe.style.display = 'block';
-        // Zorg dat autoplay=1 wordt meegegeven aan de YouTube embed link
         let playUrl = urlInput.includes('?') ? urlInput + '&autoplay=1' : urlInput + '?autoplay=1';
         iframe.src = playUrl;
     }
