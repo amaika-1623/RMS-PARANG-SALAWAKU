@@ -51,7 +51,7 @@
             letter-spacing: 1px;
         }
 
-        /* RONDE KLOK - Met de nieuwe schone achtergrond */
+        /* RONDE KLOK */
         .clock-container {
             position: relative;
             width: 280px;
@@ -61,18 +61,10 @@
             overflow: hidden;
             background-image: url('clock-face.png?v=10');
             background-size: cover;
-            background-position: center 44%;
+            background-position: center 47%;
             background-repeat: no-repeat;
             border: none;
             box-shadow: none;
-        }
-
-        /* OMDAT DE NIEUWE ACHTERGROND AL WIJZERS BEVAT, ZETTEN WE DE HTML-WIJZERS ONZICHTBAAR */
-        .hand {
-            display: none;
-        }
-        .center-dot {
-            display: none;
         }
 
         /* ABORU TEKST ONDER DE KLOK */
@@ -84,6 +76,47 @@
             margin-top: 8px;
             margin-bottom: 4px;
             text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+        }
+
+        /* WIJZERS MET KROONPIJL STIJL */
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            z-index: 10;
+            filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.9));
+        }
+        .hour-hand { 
+            width: 12px; 
+            height: 65px; 
+            background: linear-gradient(135deg, #fff3cd 0%, #d4af37 50%, #aa820a 100%); 
+            margin-left: -6px; 
+            clip-path: polygon(50% 0%, 100% 25%, 75% 100%, 25% 100%, 0% 25%);
+        }
+        .minute-hand { 
+            width: 8px; 
+            height: 98px; 
+            background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #8b6914 100%); 
+            margin-left: -4px; 
+            clip-path: polygon(50% 0%, 100% 20%, 75% 100%, 25% 100%, 0% 20%);
+        }
+        .second-hand { 
+            width: 1.5px; 
+            height: 108px; 
+            background: #00ff66; /* Groene secondewijzer */
+            margin-left: -0.75px; 
+            z-index: 11; 
+        }
+        .center-dot {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 12px; height: 12px;
+            background: radial-gradient(circle, #ffcc00 0%, #8b0000 100%);
+            border: 2px solid #d4af37;
+            border-radius: 50%;
+            margin: -6px 0 0 -6px;
+            z-index: 12;
         }
 
         /* DIGITALE TIJD & DATUM */
@@ -317,3 +350,6 @@
 
 </div>
 
+<script>
+    let activeAlarm = null;
+    
