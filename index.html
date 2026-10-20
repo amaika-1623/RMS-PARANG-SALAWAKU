@@ -78,7 +78,7 @@
             text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
         }
 
-        /* WIJZERS MET KROONPIJLTJES & GROENE SECONDEWIJZER */
+        /* WIJZERS MET KROONPIJL STIJL & GROENE SECONDEWIJZER */
         .hand {
             position: absolute;
             bottom: 50%;
@@ -102,10 +102,10 @@
             clip-path: polygon(50% 0%, 100% 20%, 75% 100%, 25% 100%, 0% 20%);
         }
         .second-hand { 
-            width: 1.5px; 
+            width: 2px; 
             height: 108px; 
-            background: #2ecc71; /* Groene secondewijzer */
-            margin-left: -0.75px; 
+            background: #00cc44; 
+            margin-left: -1px; 
             z-index: 11; 
         }
         .center-dot {
@@ -348,8 +348,3 @@
         </div>
     </div>
 
-</div>
-
-<script>
-    let activeAlarm = null;
-    let currentVerse
