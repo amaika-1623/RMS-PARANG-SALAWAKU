@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <link rel="manifest" href="manifest.json?v=9">
+    <link rel="manifest" href="manifest.json?v=10">
     <link rel="icon" type="image/png" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,7 +51,7 @@
             letter-spacing: 1px;
         }
 
-        /* RONDE KLOK */
+        /* RONDE KLOK - Perfect gecentreerd */
         .clock-container {
             position: relative;
             width: 280px;
@@ -59,7 +59,7 @@
             margin: 10px auto;
             border-radius: 50%;
             overflow: hidden;
-            background-image: url('clock-face.png?v=9');
+            background-image: url('clock-face.png?v=10');
             background-size: cover;
             background-position: center 47%;
             background-repeat: no-repeat;
@@ -78,7 +78,7 @@
             text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
         }
 
-        /* WIJZERS */
+        /* STIJLEMENTEN VOOR DE KROONPIJL-WIJZERS */
         .hand {
             position: absolute;
             bottom: 50%;
@@ -87,27 +87,34 @@
             z-index: 10;
             filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.9));
         }
+        
+        /* UURWIJZER: Sierlijke kroonpijl vorm */
         .hour-hand { 
-            width: 10px; 
-            height: 62px; 
+            width: 12px; 
+            height: 65px; 
             background: linear-gradient(135deg, #fff3cd 0%, #d4af37 50%, #aa820a 100%); 
-            margin-left: -5px; 
-            clip-path: polygon(50% 0%, 100% 25%, 70% 100%, 30% 100%, 0% 25%);
+            margin-left: -6px; 
+            clip-path: polygon(50% 0%, 80% 15%, 100% 30%, 75% 45%, 70% 100%, 30% 100%, 25% 45%, 0% 30%, 20% 15%);
         }
+        
+        /* MINUUTWIJZER: Langere kroonpijl vorm */
         .minute-hand { 
-            width: 7px; 
+            width: 9px; 
             height: 98px; 
             background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #8b6914 100%); 
-            margin-left: -3.5px; 
-            clip-path: polygon(50% 0%, 100% 20%, 75% 100%, 25% 100%, 0% 20%);
+            margin-left: -4.5px; 
+            clip-path: polygon(50% 0%, 75% 10%, 100% 22%, 70% 35%, 70% 100%, 30% 100%, 30% 35%, 0% 22%, 25% 10%);
         }
+        
+        /* SECONDEWIJZER: Strak en helder groen */
         .second-hand { 
             width: 1.5px; 
             height: 108px; 
-            background: #ff3333; 
+            background: #2ecc71; 
             margin-left: -0.75px; 
             z-index: 11; 
         }
+        
         .center-dot {
             position: absolute;
             top: 50%; left: 50%;
@@ -232,422 +239,4 @@
 
         <div class="aboru-title">ABORU</div>
 
-        <div class="digital-time-section">
-            <div class="date-line" id="digitalDateOnly">Laden...</div>
-            <div class="time-line" id="digitalTimeOnly">00:00:00</div>
-        </div>
-    </div>
-
-    <!-- DAGELIJKS WOORD -->
-    <div class="section-box">
-        <div class="section-title">📖 DAGELIJKS WOORD</div>
-        <div class="bible-verse" id="bibleVerseText">Laden van dagtekst...</div>
-        <div class="bible-ref" id="bibleVerseRef"></div>
-    </div>
-
-    <!-- STREAM & RADIO SPELER -->
-    <div class="section-box">
-        <div class="section-title">📻 STREAM & RADIO SPELER</div>
-        
-        <select id="stationSelect">
-            <option value="https://youtu.be/Q6W78dSEa1M">Carlos Santana (Wekker Concert)</option>
-            <option value="https://youtu.be/4y9szAi9Dhc">Edwine Samuels (Herfstparty)</option>
-            <option value="https://icecast.omroep.nl/radio1-bb-mp3">NPO Radio 1 (Audio)</option>
-            <option value="https://icecast.omroep.nl/radio2-bb-mp3">NPO Radio 2 (Audio)</option>
-            <option value="https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO_10.mp3">Radio 10 (Audio)</option>
-        </select>
-
-        <input type="text" id="mediaUrl" value="https://youtu.be/Q6W78dSEa1M" placeholder="Plak YouTube of Stream URL..." />
-        
-        <div style="display: flex; gap: 5px;">
-            <button id="playBtn" style="flex: 1;">▶ Play</button>
-            <button id="stopBtn" style="flex: 1;">⏹ Stop</button>
-        </div>
-
-        <div style="margin-top: 6px;">
-            <a href="https://nl.radio.net/" target="_blank" class="link-button" style="width: 100%;">🌐 Radio.net (Alle Zenders)</a>
-        </div>
-
-        <div id="mediaOutput">
-            <div class="status-text" id="playerStatus">Speler gereed</div>
-        </div>
-    </div>
-
-    <!-- WEKKER -->
-    <div class="section-box">
-        <div class="section-title">⏰ WEKKER / ALARM</div>
-        <div style="display: flex; gap: 5px;">
-            <input type="time" id="alarmTime" value="07:00" style="flex: 2;" />
-            <button id="setAlarmBtn" style="flex: 1;">Zet Wekker</button>
-        </div>
-        <div class="status-text" id="alarmStatus">Geen wekker ingesteld</div>
-    </div>
-
-    <!-- MINI TV -->
-    <div class="section-box">
-        <div class="section-title">📺 MINI TV & LINKS</div>
-        <div style="display: flex; gap: 5px; margin-bottom: 5px;">
-            <button id="showYtTvBtn" style="flex: 1;">📺 YouTube TV</button>
-            <button id="showGunungBtn" style="flex: 1; background: linear-gradient(to bottom, #e5c158, #b8860b);">⛪ Gunung Batu</button>
-        </div>
-        <div style="display: flex; gap: 5px;">
-            <a href="https://share.google/OjtH32V2ynojkQ1mW" target="_blank" class="link-button" style="flex: 1;">📘 Facebook</a>
-        </div>
-
-        <div id="tvPlayerContainer">
-            <button id="closeTvBtn" style="background:#8b0000; color:#fff; width:100%; margin-bottom:5px;">✖ Sluit Mini TV</button>
-            <iframe id="tvIframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-    </div>
-
-    <!-- EEUWKALENDER -->
-    <div class="section-box">
-        <div class="section-title">📅 EEUWKALENDER</div>
-        <div style="display: flex; gap: 5px; justify-content: center; margin-bottom: 8px;">
-            <button id="todayBtn">Vandaag</button>
-        </div>
-        <div style="display: flex; gap: 5px;">
-            <select id="monthSelect" style="flex: 2;">
-                <option value="0">Januari</option>
-                <option value="1">Februari</option>
-                <option value="2">Maart</option>
-                <option value="3">April</option>
-                <option value="4">Mei</option>
-                <option value="5">Juni</option>
-                <option value="6">Juli</option>
-                <option value="7">Augustus</option>
-                <option value="8">September</option>
-                <option value="9">Oktober</option>
-                <option value="10">November</option>
-                <option value="11">December</option>
-            </select>
-            <input type="number" id="yearInput" style="flex: 1; text-align: center;" />
-        </div>
-        <button id="goToYearBtn" style="width: 100%; margin-top: 5px;">Ga naar jaar</button>
-        
-        <div id="calendarContainer" style="margin-top: 10px;">
-            <div style="font-size: 13px; font-weight: bold; color: #f3e5ab;" id="calMonthYearTitle">Laden...</div>
-            <table>
-                <thead>
-                    <tr>
-                        <th style="color: #f3e5ab;">Ma</th>
-                        <th>Di</th>
-                        <th>Wo</th>
-                        <th>Do</th>
-                        <th>Vr</th>
-                        <th style="color: #ff9999;">Za</th>
-                        <th style="color: #ff9999;">Zo</th>
-                    </tr>
-                </thead>
-                <tbody id="calendarBody"></tbody>
-            </table>
-        </div>
-        
-        <div class="status-text" id="selectedDateInfo" style="margin-top: 10px; border-top: 1px dashed #d4af37; padding-top: 5px;">
-            Geselecteerde datum: Laden...
-        </div>
-    </div>
-
-</div>
-
-<script>
-    let activeAlarm = null;
-    let currentVerseDay = null;
-    const months = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
-
-    const bibleVerses = [
-        { text: "De HEERE is mijn Herder, mij zal niets ontbreken.", ref: "Psalm 23:1" },
-        { text: "Uw woord is een lamp voor mijn voet en een licht op mijn pad.", ref: "Psalm 119:105" },
-        { text: "Vertrouw op de HEERE met heel je hart, en steun op je eigen inzicht niet.", ref: "Spreuken 3:5" },
-        { text: "Wees niet bevreesd, want Ik ben met u; wees niet ontsteld, want Ik ben uw God.", ref: "Jesaja 41:10" },
-        { text: "De vreugde van de HEERE is uw kracht.", ref: "Nehemia 8:11" },
-        { text: "Want alzo lief heeft God de wereld gehad, dat Hij Zijn eniggeboren Zoon gegeven heeft.", ref: "Johannes 3:16" },
-        { text: "Ik vermag alle dingen door Christus, Die mij kracht geeft.", ref: "Filippenzen 4:13" },
-        { text: "Wees in geen ding bezorgd, maar laat uw verlangens in alles door bidden en smeken bekend worden bij God.", ref: "Filippenzen 4:6" },
-        { text: "De HEERE is mijn licht en mijn heil, voor wie zou ik vrezen?", ref: "Psalm 27:1" },
-        { text: "Zo zoek eerst het Koninkrijk van God en Zijn gerechtigheid, en al deze dingen zullen u erbij gegeven worden.", ref: "Mattheüs 6:33" },
-        { text: "Komt herwaarts tot Mij, allen die vermoeid en belast zijt, en Ik zal u rust geven.", ref: "Mattheüs 11:28" },
-        { text: "Wees sterk en moedig, schrik niet en wees niet ontsteld, want de HEERE, uw God, is met u.", ref: "Jozua 1:9" },
-        { text: "En wij weten dat voor hen die God liefhebben, alle dingen meewerken ten goede.", ref: "Romeinen 8:28" },
-        { text: "Liefde is geduldig, liefde is vriendelijk.", ref: "1 Korinthiërs 13:4" },
-        { text: "God is ons een toevlucht en sterkte, zeer beproefd bevonden als hulp in benauwdheden.", ref: "Psalm 46:2" },
-        { text: "U zult de waarheid kennen, en de waarheid zal u vrijmaken.", ref: "Johannes 8:32" },
-        { text: "Zij die de HEERE verwachten, zullen hun kracht vernieuwen, zij zullen hun vleugels uitslaan als arenden.", ref: "Jesaja 40:31" },
-        { text: "Werp al uw zorgen op Hem, want Hij zorgt voor u.", ref: "1 Petrus 5:7" },
-        { text: "Dit is de dag die de HEERE gemaakt heeft; laten wij daarin verheugd en verblijd zijn.", ref: "Psalm 118:24" },
-        { text: "Gezegend is de mens die op de HEERE vertrouwt, wiens vertrouwen de HEERE is.", ref: "Jeremia 17:7" }
-    ];
-
-    function updateDailyVerse() {
-        try {
-            const today = new Date();
-            const startOfYear = new Date(today.getFullYear(), 0, 0);
-            const diff = today - startOfYear;
-            const oneDay = 1000 * 60 * 60 * 24;
-            const dayOfYear = Math.floor(diff / oneDay);
-            
-            if (currentVerseDay !== dayOfYear) {
-                currentVerseDay = dayOfYear;
-                const index = dayOfYear % bibleVerses.length;
-                const vText = document.getElementById('bibleVerseText');
-                const vRef = document.getElementById('bibleVerseRef');
-                if (vText) vText.innerText = `"${bibleVerses[index].text}"`;
-                if (vRef) vRef.innerText = `— ${bibleVerses[index].ref}`;
-            }
-        } catch (e) { console.error(e); }
-    }
-
-    function playAlarmSound() {
-        try {
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
-            gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
-
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-
-            oscillator.start();
-            oscillator.stop(audioCtx.currentTime + 1.0);
-        } catch (e) {
-            console.log("Audio niet ondersteund");
-        }
-    }
-
-    function updateClock() {
-        try {
-            const now = new Date();
-            const seconds = now.getSeconds();
-            const minutes = now.getMinutes();
-            const hours = now.getHours();
-
-            const secondDeg = seconds * 6;
-            const minuteDeg = minutes * 6 + seconds * 0.1;
-            const hourDeg = (hours % 12) * 30 + minutes * 0.5;
-
-            const hourHand = document.getElementById('hourHand');
-            const minuteHand = document.getElementById('minuteHand');
-            const secondHand = document.getElementById('secondHand');
-
-            if (hourHand) hourHand.style.transform = `rotate(${hourDeg}deg)`;
-            if (minuteHand) minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
-            if (secondHand) secondHand.style.transform = `rotate(${secondDeg}deg)`;
-
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const dateElem = document.getElementById('digitalDateOnly');
-            if (dateElem) dateElem.innerText = now.toLocaleDateString('nl-NL', options);
-
-            const timeString = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
-            const timeElem = document.getElementById('digitalTimeOnly');
-            if (timeElem) timeElem.innerText = timeString;
-
-            updateDailyVerse();
-
-            const alarmCheckString = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
-            if (activeAlarm && activeAlarm === alarmCheckString && seconds === 0) {
-                playAlarmSound();
-                const mediaUrlInput = document.getElementById('mediaUrl');
-                const playBtn = document.getElementById('playBtn');
-                if (mediaUrlInput) mediaUrlInput.value = "https://youtu.be/Q6W78dSEa1M";
-                if (playBtn) playBtn.click();
-                
-                const alarmStatus = document.getElementById('alarmStatus');
-                if (alarmStatus) {
-                    alarmStatus.innerText = `🔔 WEKKER GAAT AF (${alarmCheckString})!`;
-                    alarmStatus.style.color = "#ff4444";
-                }
-            }
-        } catch (e) { console.error(e); }
-    }
-
-    function generateCalendar(year, month) {
-        try {
-            const body = document.getElementById('calendarBody');
-            if (!body) return;
-            body.innerHTML = '';
-            
-            const today = new Date();
-            const currentYear = today.getFullYear();
-            const currentMonth = today.getMonth();
-            const currentDate = today.getDate();
-
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-            
-            let startDay = firstDay.getDay() - 1;
-            if (startDay === -1) startDay = 6;
-            
-            let date = 1;
-            let html = '';
-
-            const mSelect = document.getElementById('monthSelect');
-            const yInput = document.getElementById('yearInput');
-            const cTitle = document.getElementById('calMonthYearTitle');
-
-            if (mSelect) mSelect.value = month;
-            if (yInput) yInput.value = year;
-            if (cTitle) cTitle.innerText = `${months[month]} ${year}`;
-
-            for (let i = 0; i < 6; i++) {
-                let row = '<tr>';
-                for (let j = 0; j < 7; j++) {
-                    if (i === 0 && j < startDay) {
-                        row += '<td></td>';
-                    } else if (date > lastDay.getDate()) {
-                        row += '<td></td>';
-                    } else {
-                        let isToday = (date === currentDate && month === currentMonth && year === currentYear);
-                        let classAttr = isToday ? 'class="today-cell"' : '';
-                        row += `<td ${classAttr}>${date}</td>`;
-                        date++;
-                    }
-                }
-                row += '</tr>';
-                html += row;
-                if (date > lastDay.getDate()) break;
-            }
-            body.innerHTML = html;
-
-            const selDate = new Date(year, month, (year === currentYear && month === currentMonth) ? currentDate : 1);
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const sInfo = document.getElementById('selectedDateInfo');
-            if (sInfo) sInfo.innerText = "Geselecteerde datum: " + selDate.toLocaleDateString('nl-NL', options);
-        } catch (e) { console.error(e); }
-    }
-
-    // Directe uitvoering
-    updateClock();
-    setInterval(updateClock, 1000);
-
-    const initialNow = new Date();
-    generateCalendar(initialNow.getFullYear(), initialNow.getMonth());
-
-    // Event listeners voor knoppen
-    document.addEventListener('DOMContentLoaded', function() {
-        try {
-            const stationSelect = document.getElementById('stationSelect');
-            if (stationSelect) {
-                stationSelect.addEventListener('change', function() {
-                    const mUrl = document.getElementById('mediaUrl');
-                    if (mUrl) mUrl.value = this.value;
-                });
-            }
-
-            const playBtn = document.getElementById('playBtn');
-            if (playBtn) {
-                playBtn.addEventListener('click', function() {
-                    const urlInput = document.getElementById('mediaUrl').value.trim();
-                    const outputDiv = document.getElementById('mediaOutput');
-                    if (!urlInput) {
-                        outputDiv.innerHTML = `<div class="status-text" style="color:red;">Voer een URL in</div>`;
-                        return;
-                    }
-                    if (urlInput.includes("youtube.com") || urlInput.includes("youtu.be")) {
-                        let videoId = "";
-                        if (urlInput.includes("youtu.be/")) {
-                            videoId = urlInput.split("youtu.be/")[1].split("?")[0].split("&")[0];
-                        } else if (urlInput.includes("watch?v=")) {
-                            videoId = urlInput.split("watch?v=")[1].split("&")[0];
-                        }
-                        if (videoId) {
-                            outputDiv.innerHTML = `<div style="margin-top:10px;"><iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><div class="status-text">Video actief</div></div>`;
-                        } else {
-                            outputDiv.innerHTML = `<div class="status-text" style="color:red;">Kon YouTube ID niet verwerken</div>`;
-                        }
-                    } else {
-                        outputDiv.innerHTML = `<div style="margin-top:10px;"><audio id="audioStream" controls autoplay style="width:100%;"><source src="${urlInput}" type="audio/mpeg">Browser ondersteunt dit audio-element niet.</audio><div class="status-text">Audiostream actief</div></div>`;
-                    }
-                });
-            }
-
-            const stopBtn = document.getElementById('stopBtn');
-            if (stopBtn) {
-                stopBtn.addEventListener('click', function() {
-                    const outputDiv = document.getElementById('mediaOutput');
-                    if (outputDiv) outputDiv.innerHTML = `<div class="status-text">Speler gestopt</div>`;
-                });
-            }
-
-            const showYtTvBtn = document.getElementById('showYtTvBtn');
-            if (showYtTvBtn) {
-                showYtTvBtn.addEventListener('click', function() {
-                    const container = document.getElementById('tvPlayerContainer');
-                    const iframe = document.getElementById('tvIframe');
-                    if (iframe) iframe.src = "https://www.youtube.com/embed/Q6W78dSEa1M?autoplay=1";
-                    if (container) container.style.display = 'block';
-                });
-            }
-
-            const showGunungBtn = document.getElementById('showGunungBtn');
-            if (showGunungBtn) {
-                showGunungBtn.addEventListener('click', function() {
-                    window.open("https://youtube.com/@gunungbatuamsterdamlivestreamk/live", "_blank");
-                });
-            }
-
-            const closeTvBtn = document.getElementById('closeTvBtn');
-            if (closeTvBtn) {
-                closeTvBtn.addEventListener('click', function() {
-                    const container = document.getElementById('tvPlayerContainer');
-                    const iframe = document.getElementById('tvIframe');
-                    if (iframe) iframe.src = "";
-                    if (container) container.style.display = 'none';
-                });
-            }
-
-            const setAlarmBtn = document.getElementById('setAlarmBtn');
-            if (setAlarmBtn) {
-                setAlarmBtn.addEventListener('click', function() {
-                    const alarmTimeInput = document.getElementById('alarmTime');
-                    const statusDiv = document.getElementById('alarmStatus');
-                    if (alarmTimeInput && alarmTimeInput.value) {
-                        activeAlarm = alarmTimeInput.value;
-                        if (statusDiv) {
-                            statusDiv.innerText = `Wekker ingesteld om ${activeAlarm} uur`;
-                            statusDiv.style.color = "#f3e5ab";
-                        }
-                    } else {
-                        activeAlarm = null;
-                        if (statusDiv) {
-                            statusDiv.innerText = `Geen wekker ingesteld`;
-                            statusDiv.style.color = "#c5a059";
-                        }
-                    }
-                });
-            }
-
-            const goToYearBtn = document.getElementById('goToYearBtn');
-            if (goToYearBtn) {
-                goToYearBtn.addEventListener('click', function() {
-                    const m = parseInt(document.getElementById('monthSelect').value);
-                    const y = parseInt(document.getElementById('yearInput').value);
-                    if (!isNaN(y)) generateCalendar(y, m);
-                });
-            }
-
-            const todayBtn = document.getElementById('todayBtn');
-            if (todayBtn) {
-                todayBtn.addEventListener('click', function() {
-                    const curr = new Date();
-                    generateCalendar(curr.getFullYear(), curr.getMonth());
-                });
-            }
-        } catch (e) { console.error(e); }
-    });
-</script>
-
-<script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-            for(let registration of registrations) {
-                registration.unregister();
-            }
-        });
-    }
-</script>
-
-</body>
-</html>
+        <div
