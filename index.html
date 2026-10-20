@@ -2,312 +2,256 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <link rel="manifest" href="manifest.json?v=10">
-    <link rel="icon" type="image/png" href="icon-192.png">
-    <link rel="apple-touch-icon" href="icon-192.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mena Muria Klok & Eeuwkalender</title>
+    <title>Mena Muria Klok & Radio</title>
     <style>
+        :root {
+            --bg-color: #0d0b07;
+            --card-bg: #14110b;
+            --border-gold: #d4af37;
+            --text-gold: #e6ca65;
+            --text-light: #f4edd3;
+        }
+
         body {
-            background-color: #0b0804;
-            color: #d4af37;
-            font-family: 'Times New Roman', serif, sans-serif;
-            text-align: center;
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        .container {
+
+        .app-container {
+            width: 100%;
             max-width: 400px;
-            margin: 0 auto;
-            border: 1px solid #d4af37;
+            background: var(--card-bg);
+            border: 2px solid var(--border-gold);
             border-radius: 12px;
             padding: 15px;
-            background: #110d06;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+            box-sizing: border-box;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
         }
-        h1 {
-            font-size: 20px;
+
+        header h1 {
+            color: var(--text-gold);
+            font-size: 1.5rem;
+            margin: 0 0 5px 0;
             letter-spacing: 2px;
-            margin-bottom: 5px;
-            color: #f3e5ab;
         }
-        .subtitle {
-            font-size: 11px;
+
+        header p {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin: 0 0 15px 0;
+            opacity: 0.8;
             letter-spacing: 1px;
-            margin-bottom: 15px;
-            color: #c5a059;
         }
-        .section-box {
-            border: 1px solid #d4af37;
+
+        .section {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-gold);
             border-radius: 8px;
-            padding: 10px;
-            margin-top: 15px;
-            background: #0f0a05;
-        }
-        .section-title {
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 8px;
-            letter-spacing: 1px;
+            padding: 12px;
+            margin-bottom: 12px;
         }
 
-        /* RONDE KLOK */
-        .clock-container {
-            position: relative;
-            width: 280px;
-            height: 280px;
-            margin: 10px auto;
-            border-radius: 50%;
-            overflow: hidden;
-            background-image: url('clock-face.png?v=10');
+        /* KLOK STYLING MET JOUW EIGEN ACHTERGROND */
+        .clock-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .clock-face {
+            width: 260px;
+            height: 260px;
+            /* Vervang onderstaande url eventueel met de exacte bestandsnaam/link van jouw klok-achtergrondafbeelding */
+            background-image: url('1000067374.jpg'); 
             background-size: cover;
-            background-position: center 47%;
-            background-repeat: no-repeat;
-            border: none;
-            box-shadow: none;
+            background-position: center;
+            border: 4px solid var(--border-gold);
+            border-radius: 50%;
+            position: relative;
+            margin: 10px auto;
+            box-shadow: 0 0 15px rgba(0,0,0,0.8);
         }
 
-        /* ABORU TEKST ONDER DE KLOK */
-        .aboru-title {
-            font-size: 18px;
-            font-weight: bold;
-            letter-spacing: 3px;
-            color: #f3e5ab;
-            margin-top: 8px;
-            margin-bottom: 4px;
-            text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+        .clock-center-dot {
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle, #fff 0%, var(--border-gold) 100%);
+            border: 1px solid #000;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
         }
 
-        /* WIJZERS MET KROONPIJL STIJL & GROENE SECONDEWIJZER */
+        /* EXACTE WATERPAS WIJZERS MET KROONPIJLTJES */
         .hand {
             position: absolute;
             bottom: 50%;
             left: 50%;
             transform-origin: bottom center;
-            z-index: 10;
-            filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.9));
-        }
-        .hour-hand { 
-            width: 10px; 
-            height: 62px; 
-            background: linear-gradient(135deg, #fff3cd 0%, #d4af37 50%, #aa820a 100%); 
-            margin-left: -5px; 
-            clip-path: polygon(50% 0%, 100% 25%, 70% 100%, 30% 100%, 0% 25%);
-        }
-        .minute-hand { 
-            width: 7px; 
-            height: 98px; 
-            background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #8b6914 100%); 
-            margin-left: -3.5px; 
-            clip-path: polygon(50% 0%, 100% 20%, 75% 100%, 25% 100%, 0% 20%);
-        }
-        .second-hand { 
-            width: 2px; 
-            height: 108px; 
-            background: #00cc44; 
-            margin-left: -1px; 
-            z-index: 11; 
-        }
-        .center-dot {
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 12px; height: 12px;
-            background: radial-gradient(circle, #ffcc00 0%, #8b0000 100%);
-            border: 2px solid #d4af37;
-            border-radius: 50%;
-            margin: -6px 0 0 -6px;
-            z-index: 12;
+            transform: translateX(-50%) rotate(0deg);
+            z-index: 5;
         }
 
-        /* DIGITALE TIJD & DATUM */
-        .digital-time-section {
-            margin-top: 8px;
-            padding: 5px;
-            border-top: 1px dashed rgba(212, 175, 55, 0.3);
+        .hour-hand {
+            width: 14px;
+            height: 75px;
         }
-        .date-line {
-            font-size: 13px;
-            color: #c5a059;
-            margin-bottom: 4px;
+
+        .minute-hand {
+            width: 12px;
+            height: 100px;
+        }
+
+        .second-hand {
+            width: 2px;
+            height: 110px;
+            background-color: #ff4d4d;
+            z-index: 6;
+            transform-origin: bottom center;
+        }
+
+        .digital-date {
+            font-size: 0.9rem;
+            color: var(--text-gold);
             margin-top: 5px;
         }
-        .time-line {
-            font-size: 28px;
+
+        .digital-time {
+            font-size: 1.4rem;
             font-weight: bold;
-            color: #f3e5ab;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            letter-spacing: 1px;
+            color: var(--text-light);
         }
 
-        /* BIJBELTEKST */
-        .bible-verse {
-            font-style: italic;
-            font-size: 13px;
-            color: #f3e5ab;
-            line-height: 1.4;
-            padding: 8px 5px;
-            min-height: 40px;
-        }
-        .bible-ref {
-            font-size: 11px;
+        /* KNOPPEN EN INPUTS */
+        select, button, input {
+            background: linear-gradient(to bottom, #d4af37, #aa8c2c);
+            color: #0d0b07;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
             font-weight: bold;
-            color: #d4af37;
-            margin-top: 4px;
-            font-style: normal;
-        }
-
-        /* UI ELEMENTS */
-        select, input[type="text"], input[type="number"], input[type="time"], button, .link-button {
-            background-color: #1a1205;
-            color: #f3e5ab;
-            border: 1px solid #d4af37;
-            padding: 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            margin: 4px 0;
-            box-sizing: border-box;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
-        select, input[type="text"], input[type="time"] { width: 100%; }
-        button, .link-button {
             cursor: pointer;
-            font-weight: bold;
-            background: linear-gradient(to bottom, #d4af37, #aa820a);
-            color: #0b0804;
+            font-size: 0.85rem;
+            margin: 4px 0;
+            width: 100%;
+            box-sizing: border-box;
         }
-        button:hover, .link-button:hover { opacity: 0.9; }
+
+        select {
+            background: #1f1910;
+            color: var(--text-gold);
+            border: 1px solid var(--border-gold);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* EEUWKALENDER STYLING */
+        .calendar-header {
+            font-size: 0.9rem;
+            color: var(--text-gold);
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .week-days {
+            display: flex;
+            justify-content: space-around;
+            font-size: 0.75rem;
+            color: var(--text-gold);
+            font-weight: bold;
+            margin-top: 8px;
+            border-bottom: 1px dashed rgba(212,175,55,0.4);
+            padding-bottom: 4px;
+        }
+
+        .calendar-status {
+            font-size: 0.75rem;
+            font-style: italic;
+            opacity: 0.8;
+            margin-top: 8px;
+        }
 
         iframe {
-            border-radius: 6px;
-            border: 1px solid #d4af37;
-            width: 100%;
-            height: 200px;
-        }
-        .status-text {
-            font-size: 11px;
-            font-style: italic;
-            margin-top: 5px;
-            color: #c5a059;
-        }
-        table {
-            width: 100%;
-            margin-top: 10px;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 5px;
-            font-size: 12px;
-            text-align: center;
-        }
-        th { color: #f3e5ab; }
-        td.today-cell {
-            background: #d4af37;
-            color: #0b0804;
-            font-weight: bold;
-            border-radius: 50%;
-        }
-
-        #tvPlayerContainer {
             display: none;
-            margin-top: 10px;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>MENA MURIA</h1>
-    <div class="subtitle">KLOK • RADIO STREAM • EEUWKALENDER</div>
+<div class="app-container">
+    <header>
+        <h1>MENA MURIA</h1>
+        <p>KLOK • RADIO STREAM • EEUWKALENDER</p>
+    </header>
 
-    <!-- KLOK & DIGITALE TIJD -->
-    <div class="section-box">
-        <div class="clock-container">
-            <div class="hand hour-hand" id="hourHand"></div>
-            <div class="hand minute-hand" id="minuteHand"></div>
+    <!-- KLOK SECTIE -->
+    <div class="section clock-section">
+        <div class="clock-face" id="klokFace">
+            <div class="clock-center-dot"></div>
+            <!-- Uurwijzer met Kroonpijltje (Exact waterpas uitgelijnd op 9-3 as) -->
+            <div class="hand hour-hand" id="hourHand">
+                <svg viewBox="0 0 20 100" width="100%" height="100%">
+                    <path d="M10 0 L18 18 L13 18 L13 100 L7 100 L7 18 L2 18 Z" fill="#e6ca65" stroke="#0d0b07" stroke-width="1.5"/>
+                </svg>
+            </div>
+            <!-- Minuutwijzer met Kroonpijltje -->
+            <div class="hand minute-hand" id="minuteHand">
+                <svg viewBox="0 0 16 100" width="100%" height="100%">
+                    <path d="M8 0 L15 14 L11 14 L11 100 L5 100 L5 14 L1 14 Z" fill="#f4edd3" stroke="#0d0b07" stroke-width="1.5"/>
+                </svg>
+            </div>
+            <!-- Secondewijzer -->
             <div class="hand second-hand" id="secondHand"></div>
-            <div class="center-dot"></div>
         </div>
-
-        <div class="aboru-title">ABORU</div>
-
-        <div class="digital-time-section">
-            <div class="date-line" id="digitalDateOnly">Laden...</div>
-            <div class="time-line" id="digitalTimeOnly">00:00:00</div>
-        </div>
+        <div style="font-size: 0.85rem; color: var(--text-gold); margin-top: 4px; font-weight: bold;">ABORU</div>
+        <div class="digital-date" id="digitalDate">dinsdag 20 oktober 2026</div>
+        <div class="digital-time" id="digitalTime">23:41:53</div>
     </div>
 
     <!-- DAGELIJKS WOORD -->
-    <div class="section-box">
-        <div class="section-title">📖 DAGELIJKS WOORD</div>
-        <div class="bible-verse" id="bibleVerseText">De Heer is mijn herder, mij ontbreekt niets.</div>
-        <div class="bible-ref" id="bibleVerseRef">Psalm 23:1</div>
+    <div class="section">
+        <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 4px;">📖 DAGELIJKS WOORD</div>
+        <div style="font-size: 0.85rem; font-style: italic;">"De Heer is mijn herder, mij ontbreekt niets."</div>
+        <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 4px;">Psalm 23:1</div>
     </div>
 
     <!-- STREAM & RADIO SPELER -->
-    <div class="section-box">
-        <div class="section-title">📻 STREAM & RADIO SPELER</div>
-        
+    <div class="section">
+        <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 6px;">📻 STREAM & RADIO SPELER</div>
         <select id="stationSelect">
-            <option value="https://www.youtube.com/embed/Q6W78dSEa1M?autoplay=1">Carlos Santana (Wekker Concert)</option>
-            <option value="https://www.youtube.com/embed/4y9szAi9Dhc?autoplay=1">Edwine Samuels (Herfstparty)</option>
-            <option value="https://icecast.omroep.nl/radio1-bb-mp3">NPO Radio 1 (Audio)</option>
-            <option value="https://icecast.omroep.nl/radio2-bb-mp3">NPO Radio 2 (Audio)</option>
-            <option value="https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO_10.mp3">Radio 10 (Audio)</option>
+            <option>Carlos Santana (Wekker Concert)</option>
         </select>
-
-        <input type="text" id="mediaUrl" value="https://www.youtube.com/embed/Q6W78dSEa1M?autoplay=1" placeholder="Plak YouTube embed of Stream URL..." />
-        
-        <div style="display: flex; gap: 5px;">
-            <button id="playBtn" style="flex: 1;">▶ Play</button>
-            <button id="stopBtn" style="flex: 1;">⏹ Stop</button>
+        <input type="text" id="streamUrl" value="https://www.youtube.com/embed/Q6W78dSEa1M" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-top:6px;">
+        <div class="btn-row" style="margin-top: 8px;">
+            <button onclick="playMusic()">▶ Play</button>
+            <button onclick="stopMusic()" style="background: linear-gradient(to bottom, #d9534f, #c9302c); color: white;">⏹ Stop</button>
         </div>
-
-        <div style="margin-top: 6px;">
-            <a href="https://nl.radio.net/" target="_blank" class="link-button" style="width: 100%;">🌐 Radio.net (Alle Zenders)</a>
-        </div>
-
-        <div id="mediaOutput" style="margin-top:8px;">
-            <div class="status-text" id="playerStatus">Speler gereed</div>
-        </div>
-    </div>
-
-    <!-- WEKKER -->
-    <div class="section-box">
-        <div class="section-title">⏰ WEKKER / ALARM</div>
-        <div style="display: flex; gap: 5px;">
-            <input type="time" id="alarmTime" value="07:00" style="flex: 2;" />
-            <button id="setAlarmBtn" style="flex: 1;">Zet Wekker</button>
-        </div>
-        <div class="status-text" id="alarmStatus">Geen wekker ingesteld</div>
-    </div>
-
-    <!-- MINI TV -->
-    <div class="section-box">
-        <div class="section-title">📺 MINI TV & LINKS</div>
-        <div style="display: flex; gap: 5px; margin-bottom: 5px;">
-            <button id="showYtTvBtn" style="flex: 1;">📺 YouTube TV</button>
-            <button id="showGunungBtn" style="flex: 1; background: linear-gradient(to bottom, #e5c158, #b8860b);">⛪ Gunung Batu</button>
-        </div>
-        <div style="display: flex; gap: 5px;">
-            <a href="https://share.google/OjtH32V2ynojkQ1mW" target="_blank" class="link-button" style="flex: 1;">📘 Facebook</a>
-        </div>
-
-        <div id="tvPlayerContainer">
-            <button id="closeTvBtn" style="background:#8b0000; color:#fff; width:100%; margin-bottom:5px;">✖ Sluit Mini TV</button>
-            <iframe id="tvIframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <div id="playerContainer">
+            <iframe id="youtubePlayer" width="100%" height="80" src="" frameborder="0" allow="autoplay"></iframe>
         </div>
     </div>
 
     <!-- EEUWKALENDER -->
-    <div class="section-box">
-        <div class="section-title">📅 EEUWKALENDER</div>
-        <div style="display: flex; gap: 5px; justify-content: center; margin-bottom: 8px;">
-            <button id="todayBtn">Vandaag</button>
-        </div>
-        <div style="display: flex; gap: 5px;">
-            <select id="monthSelect" style="flex: 2;">
+    <div class="section">
+        <div class="calendar-header">📅 EEUWKALENDER</div>
+        <button onclick="gaNaarVandaag()">Vandaag</button>
+        <div class="btn-row" style="margin-top: 6px;">
+            <select id="maandSelect">
                 <option value="0">Januari</option>
                 <option value="1">Februari</option>
                 <option value="2">Maart</option>
@@ -317,314 +261,74 @@
                 <option value="6">Juli</option>
                 <option value="7">Augustus</option>
                 <option value="8">September</option>
-                <option value="9">Oktober</option>
+                <option value="9" selected>Oktober</option>
                 <option value="10">November</option>
                 <option value="11">December</option>
             </select>
-            <input type="number" id="yearInput" style="flex: 1; text-align: center;" />
+            <input type="number" id="jaarInput" value="2026" style="width: 80px; text-align: center;">
         </div>
-        <button id="goToYearBtn" style="width: 100%; margin-top: 5px;">Ga naar jaar</button>
+        <button onclick="laadKalender()" style="margin-top: 6px;">Ga naar jaar</button>
         
-        <div id="calendarContainer" style="margin-top: 10px;">
-            <div style="font-size: 13px; font-weight: bold; color: #f3e5ab;" id="calMonthYearTitle">Laden...</div>
-            <table>
-                <thead>
-                    <tr>
-                        <th style="color: #f3e5ab;">Ma</th>
-                        <th>Di</th>
-                        <th>Wo</th>
-                        <th>Do</th>
-                        <th>Vr</th>
-                        <th style="color: #ff9999;">Za</th>
-                        <th style="color: #ff9999;">Zo</th>
-                    </tr>
-                </thead>
-                <tbody id="calendarBody"></tbody>
-            </table>
+        <div class="week-days">
+            <span>Ma</span><span>Di</span><span>Wo</span><span>Do</span><span>Vr</span><span>Za</span><span>Zo</span>
         </div>
-        
-        <div class="status-text" id="selectedDateInfo" style="margin-top: 10px; border-top: 1px dashed #d4af37; padding-top: 5px;">
-            Geselecteerde datum: Laden...
-        </div>
+        <div class="calendar-status" id="kalenderStatus">Geselecteerde datum: 20 oktober 2026</div>
     </div>
 </div>
 
 <script>
-    // --- 1. KLOK & DIGITALE TIJD ---
-    function updateClock() {
-        const now = new Date();
-        const hours = now.getHours();
-        const minutes = now.getMinutes();
-        const seconds = now.getSeconds();
-        const milliseconds = now.getMilliseconds();
+    // --- KLOK LOGICA ---
+    function updateKlok() {
+        const nu = new Date();
+        const seconden = nu.getSeconds();
+        const minuten = nu.getMinutes();
+        const uren = nu.getHours();
 
-        // Analoge wijzers berekenen (vloeiende seconden door milliseconden mee te nemen)
-        const secondFraction = (seconds + milliseconds / 1000) / 60;
-        const minuteFraction = (minutes + secondFraction) / 60;
-        const hourFraction = ((hours % 12) + minuteFraction) / 12;
+        const secGraden = seconden * 6;
+        const minGraden = minuten * 6 + seconden * 0.1;
+        const uurGraden = (uren % 12) * 30 + minuten * 0.5;
 
-        const secondDeg = secondFraction * 360;
-        const minuteDeg = minuteFraction * 360;
-        const hourDeg = hourFraction * 360;
+        document.getElementById('secondHand').style.transform = `translateX(-50%) rotate(${secGraden}deg)`;
+        document.getElementById('minuteHand').style.transform = `translateX(-50%) rotate(${minGraden}deg)`;
+        document.getElementById('hourHand').style.transform = `translateX(-50%) rotate(${uurGraden}deg)`;
 
-        const secHand = document.getElementById('secondHand');
-        const minHand = document.getElementById('minuteHand');
-        const hrHand = document.getElementById('hourHand');
+        const optiesDagen = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('digitalDate').innerText = nu.toLocaleDateString('nl-NL', optiesDagen);
+        document.getElementById('digitalTime').innerText = nu.toLocaleTimeString('nl-NL');
+    }
+    setInterval(updateKlok, 1000);
+    updateKlok();
 
-        if (secHand) secHand.style.transform = `rotate(${secondDeg}deg)`;
-        if (minHand) minHand.style.transform = `rotate(${minuteDeg}deg)`;
-        if (hrHand) hrHand.style.transform = `rotate(${hourDeg}deg)`;
-
-        // Digitale tijd en datum bijwerken
-        const timeString = now.toLocaleTimeString('nl-NL');
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const dateString = now.toLocaleDateString('nl-NL', options);
-
-        const timeEl = document.getElementById('digitalTimeOnly');
-        const dateEl = document.getElementById('digitalDateOnly');
-
-        if (timeEl) timeEl.textContent = timeString;
-        if (dateEl) dateEl.textContent = dateString;
-
-        // Wekker controle
-        checkAlarm(hours, minutes);
+    // --- MUZIEK SPELER ---
+    function playMusic() {
+        const iframe = document.getElementById('youtubePlayer');
+        const urlInput = document.getElementById('streamUrl').value;
+        iframe.style.display = 'block';
+        // Zorg dat autoplay=1 wordt meegegeven aan de YouTube embed link
+        let playUrl = urlInput.includes('?') ? urlInput + '&autoplay=1' : urlInput + '?autoplay=1';
+        iframe.src = playUrl;
     }
 
-    setInterval(updateClock, 100);
-    updateClock();
-
-    // --- 2. RADIO / MEDIA SPELER ---
-    const stationSelect = document.getElementById('stationSelect');
-    const mediaUrlInput = document.getElementById('mediaUrl');
-    const playBtn = document.getElementById('playBtn');
-    const stopBtn = document.getElementById('stopBtn');
-    const playerStatus = document.getElementById('playerStatus');
-    const mediaOutput = document.getElementById('mediaOutput');
-
-    if (stationSelect) {
-        stationSelect.addEventListener('change', function() {
-            mediaUrlInput.value = this.value;
-        });
+    function stopMusic() {
+        const iframe = document.getElementById('youtubePlayer');
+        iframe.src = "";
+        iframe.style.display = 'none';
     }
 
-    let activeAudio = null;
-
-    if (playBtn) {
-        playBtn.addEventListener('click', function() {
-            const url = mediaUrlInput.value.trim();
-            // Oude speler/iframe opruimen
-            const existingIframe = document.getElementById('dynamicAudioIframe');
-            if (existingIframe) existingIframe.remove();
-            if (activeAudio) {
-                activeAudio.pause();
-                activeAudio = null;
-            }
-
-            if (url.includes('youtube.com') || url.includes('youtu.be')) {
-                // YouTube omzetten naar embed-formaat voor mobiele compatibiliteit
-                let videoId = '';
-                if (url.includes('embed/')) {
-                    videoId = url.split('embed/')[1].split('?')[0];
-                } else if (url.includes('youtu.be/')) {
-                    videoId = url.split('youtu.be/')[1].split('?')[0];
-                } else if (url.includes('v=')) {
-                    videoId = url.split('v=')[1].split('&')[0];
-                }
-
-                if (videoId) {
-                    const iframe = document.createElement('iframe');
-                    iframe.id = 'dynamicAudioIframe';
-                    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-                    iframe.style.width = '100%';
-                    iframe.style.height = '120px';
-                    iframe.style.marginTop = '8px';
-                    iframe.setAttribute('allow', 'autoplay; encrypted-media');
-                    mediaOutput.appendChild(iframe);
-                    playerStatus.textContent = 'YouTube speler actief';
-                } else {
-                    playerStatus.textContent = 'Fout: Ongeldige YouTube URL';
-                }
-            } else {
-                // Regulier audio-stream (Icecast/MP3)
-                activeAudio = new Audio(url);
-                activeAudio.play().then(() => {
-                    playerStatus.textContent = 'Stream wordt afgespeeld...';
-                }).catch(err => {
-                    playerStatus.textContent = 'Kon stream niet starten (Controleer URL)';
-                    console.error(err);
-                });
-            }
-        });
+    // --- EEUWKALENDER ACTIE ---
+    function laadKalender() {
+        const maanden = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
+        const maandIdx = document.getElementById('maandSelect').value;
+        const jaar = document.getElementById('jaarInput').value;
+        document.getElementById('kalenderStatus').innerText = `Geselecteerde datum: 1 ${maanden[maandIdx]} ${jaar}`;
     }
 
-    if (stopBtn) {
-        stopBtn.addEventListener('click', function() {
-            const existingIframe = document.getElementById('dynamicAudioIframe');
-            if (existingIframe) existingIframe.remove();
-            if (activeAudio) {
-                activeAudio.pause();
-                activeAudio = null;
-            }
-            playerStatus.textContent = 'Speler gestopt';
-        });
+    function gaNaarVandaag() {
+        const vandaag = new Date();
+        document.getElementById('maandSelect').value = vandaag.getMonth();
+        document.getElementById('jaarInput').value = vandaag.getFullYear();
+        laadKalender();
     }
-
-    // --- 3. WEKKER / ALARM ---
-    let setAlarmTimeStr = null;
-    const alarmTimeInput = document.getElementById('alarmTime');
-    const setAlarmBtn = document.getElementById('setAlarmBtn');
-    const alarmStatus = document.getElementById('alarmStatus');
-
-    if (setAlarmBtn) {
-        setAlarmBtn.addEventListener('click', function() {
-            setAlarmTimeStr = alarmTimeInput.value;
-            if (setAlarmTimeStr) {
-                alarmStatus.textContent = `Wekker ingeschakeld voor ${setAlarmTimeStr}`;
-            } else {
-                alarmStatus.textContent = 'Geen wekker ingesteld';
-            }
-        });
-    }
-
-    function checkAlarm(hours, minutes) {
-        if (!setAlarmTimeStr) return;
-        const currentFormatted = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
-        if (currentFormatted === setAlarmTimeStr) {
-            // Activeer wekker (start automatisch de geselecteerde stream of wekkerconcert)
-            if (playBtn && activeAudio === null && !document.getElementById('dynamicAudioIframe')) {
-                playBtn.click();
-            }
-            alarmStatus.textContent = `⏰ WEKKER GAAT AF! (${setAlarmTimeStr})`;
-            setAlarmTimeStr = null; // Voorkom herhaald afgaan in dezelfde minuut
-        }
-    }
-
-    // --- 4. MINI TV ---
-    const showYtTvBtn = document.getElementById('showYtTvBtn');
-    const showGunungBtn = document.getElementById('showGunungBtn');
-    const closeTvBtn = document.getElementById('closeTvBtn');
-    const tvPlayerContainer = document.getElementById('tvPlayerContainer');
-    const tvIframe = document.getElementById('tvIframe');
-
-    if (showYtTvBtn) {
-        showYtTvBtn.addEventListener('click', function() {
-            tvIframe.src = 'https://www.youtube.com/embed/live_stream?channel=UC...'; // Pas aan naar wens
-            tvPlayerContainer.style.display = 'block';
-        });
-    }
-
-    if (showGunungBtn) {
-        showGunungBtn.addEventListener('click', function() {
-            tvIframe.src = 'https://www.youtube.com/embed/Q6W78dSEa1M'; 
-            tvPlayerContainer.style.display = 'block';
-        });
-    }
-
-    if (closeTvBtn) {
-        closeTvBtn.addEventListener('click', function() {
-            tvIframe.src = '';
-            tvPlayerContainer.style.display = 'none';
-        });
-    }
-
-    // --- 5. EEUWKALENDER ---
-    let calendarDate = new Date();
-
-    const monthSelect = document.getElementById('monthSelect');
-    const yearInput = document.getElementById('yearInput');
-    const calendarBody = document.getElementById('calendarBody');
-    const calMonthYearTitle = document.getElementById('calMonthYearTitle');
-    const selectedDateInfo = document.getElementById('selectedDateInfo');
-    const todayBtn = document.getElementById('todayBtn');
-    const goToYearBtn = document.getElementById('goToYearBtn');
-
-    function renderCalendar(year, month) {
-        calendarBody.innerHTML = '';
-        const monthNames = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
-        calMonthYearTitle.textContent = `${monthNames[month]} ${year}`;
-        monthSelect.value = month;
-        yearInput.value = year;
-
-        // Eerste dag van de maand berekenen (maandag = 0, zondag = 6)
-        let firstDayIndex = new Date(year, month, 1).getDay();
-        firstDayIndex = (firstDayIndex === 0) ? 6 : firstDayIndex - 1; // Maandag als start van de week
-
-        const totalDays = new Date(year, month + 1, 0).getDate();
-
-        let dateCounter = 1;
-        let row = document.createElement('tr');
-
-        // Lege cellen voor de eerste week
-        for (let i = 0; i < firstDayIndex; i++) {
-            let cell = document.createElement('td');
-            row.appendChild(cell);
-        }
-
-        const todayObj = new Date();
-
-        for (let i = firstDayIndex; i < 7; i++) {
-            let cell = createDayCell(dateCounter, year, month, todayObj);
-            row.appendChild(cell);
-            dateCounter++;
-        }
-        calendarBody.appendChild(row);
-
-        // Resterende weken
-        while (dateCounter <= totalDays) {
-            row = document.createElement('tr');
-            for (let i = 0; i < 7 && dateCounter <= totalDays; i++) {
-                let cell = createDayCell(dateCounter, year, month, todayObj);
-                row.appendChild(cell);
-                dateCounter++;
-            }
-            calendarBody.appendChild(row);
-        }
-    }
-
-    function createDayCell(day, year, month, todayObj) {
-        let cell = document.createElement('td');
-        cell.textContent = day;
-        
-        // Check of dit vandaag is
-        if (day === todayObj.getDate() && month === todayObj.getMonth() && year === todayObj.getFullYear()) {
-            cell.classList.add('today-cell');
-        }
-
-        cell.style.cursor = 'pointer';
-        cell.addEventListener('click', function() {
-            const selected = new Date(year, month, day);
-            const opt = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            selectedDateInfo.textContent = `Geselecteerde datum: ${selected.toLocaleDateString('nl-NL', opt)}`;
-        });
-
-        return cell;
-    }
-
-    if (todayBtn) {
-        todayBtn.addEventListener('click', function() {
-            calendarDate = new Date();
-            renderCalendar(calendarDate.getFullYear(), calendarDate.getMonth());
-            selectedDateInfo.textContent = `Geselecteerde datum: ${calendarDate.toLocaleDateString('nl-NL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`;
-        });
-    }
-
-    if (goToYearBtn) {
-        goToYearBtn.addEventListener('click', function() {
-            const y = parseInt(yearInput.value);
-            const m = parseInt(monthSelect.value);
-            if (!isNaN(y)) {
-                renderCalendar(y, m);
-            }
-        });
-    }
-
-    monthSelect.addEventListener('change', function() {
-        renderCalendar(parseInt(yearInput.value), parseInt(this.value));
-    });
-
-    // Initiële kalenderweergave op vandaag
-    renderCalendar(calendarDate.getFullYear(), calendarDate.getMonth());
-    selectedDateInfo.textContent = `Geselecteerde datum: ${calendarDate.toLocaleDateString('nl-NL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`;
 </script>
 
 </body>
