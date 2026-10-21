@@ -117,7 +117,7 @@
         .second-hand {
             width: 2px;
             height: 105px;
-            background-color: #00ff66; /* Groene secondewijzer */
+            background-color: #00ff66;
             z-index: 6;
             transform-origin: bottom center;
         }
@@ -214,7 +214,7 @@
         <p>KLOK • RADIO STREAM • EEUWKALENDER</p>
     </header>
 
-    <!-- KLOK SECTIE MET WITGOUDEN KROONPIJLTJES -->
+    <!-- KLOK SECTIE -->
     <div class="section clock-section">
         <div class="clock-face" id="klokFace">
             <div class="clock-center-dot"></div>
@@ -235,7 +235,7 @@
         </div>
         <div style="font-size: 0.85rem; color: var(--text-gold); margin-top: 4px; font-weight: bold;">ABORU</div>
         <div class="digital-date" id="digitalDate">woensdag 21 oktober 2026</div>
-        <div class="digital-time" id="digitalTime">02:22:00</div>
+        <div class="digital-time" id="digitalTime">02:39:00</div>
     </div>
 
     <!-- DAGELIJKS WOORD -->
@@ -263,7 +263,7 @@
         </div>
         <!-- Bredere speler -->
         <div id="playerContainer" class="media-frame">
-            <iframe id="youtubePlayer" width="100%" height="160" src="" frameborder="0" allow="autoplay"></iframe>
+            <iframe id="youtubePlayer" width="100%" height="180" src="" frameborder="0" allow="autoplay"></iframe>
         </div>
     </div>
 
@@ -286,14 +286,14 @@
         </div>
         <button onclick="window.open('https://www.youtube.com/results?search_query=Gunung+Batu', '_blank')" style="margin-top: 4px;">⛰️ Gunung Batu</button>
         
-        <!-- Interne Mini TV Scherm -->
+        <!-- Interne Mini TV Scherm met automatische link-omzetting -->
         <div id="miniTvContainer" class="media-frame">
-            <input type="text" id="miniTvUrl" value="https://www.youtube.com/embed/live_stream?channel=UC..." placeholder="YouTube Embed URL" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:4px;">
+            <input type="text" id="miniTvUrl" value="https://youtu.be/WTSLipAWHow" placeholder="Plak YouTube link hier" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:4px;">
             <div class="btn-row">
                 <button onclick="startMiniTV()">Laad Mini TV</button>
                 <button onclick="toggleMiniTV()" style="background: #d9534f; color:white;">Sluit TV</button>
             </div>
-            <iframe id="miniTvPlayer" width="100%" height="160" src="" frameborder="0" allow="autoplay" style="margin-top:6px;"></iframe>
+            <iframe id="miniTvPlayer" width="100%" height="180" src="" frameborder="0" allow="autoplay" style="margin-top:6px;"></iframe>
         </div>
     </div>
 
@@ -349,6 +349,22 @@
     setInterval(updateKlok, 1000);
     updateKlok();
 
+    // --- HELPER OM YOUTUBE LINKS OM TE ZETTEN NAAR EMBED ---
+    function converteerYouTubeLink(url) {
+        if (!url) return '';
+        // Als het al een embed link is
+        if (url.includes('/embed/')) return url;
+        
+        let videoId = '';
+        if (url.includes('youtu.be/')) {
+            videoId = url.split('youtu.be/')[1].split('?')[0];
+        } else if (url.includes('watch?v=')) {
+            videoId = url.split('watch?v=')[1].split('&')[0];
+        }
+        
+        return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+    }
+
     // --- MUZIEK SPELER ---
     function kiesStation() {
         const select = document.getElementById('stationSelect');
@@ -358,9 +374,11 @@
     function playMusic() {
         const iframe = document.getElementById('youtubePlayer');
         const container = document.getElementById('playerContainer');
-        const urlInput = document.getElementById('streamUrl').value;
+        let urlInput = document.getElementById('streamUrl').value;
+        let embedUrl = converteerYouTubeLink(urlInput);
+        
         container.style.display = 'block';
-        let playUrl = urlInput.includes('?') ? urlInput + '&autoplay=1' : urlInput + '?autoplay=1';
+        let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
         iframe.src = playUrl;
     }
 
@@ -384,8 +402,10 @@
 
     function startMiniTV() {
         const iframe = document.getElementById('miniTvPlayer');
-        const urlInput = document.getElementById('miniTvUrl').value;
-        let playUrl = urlInput.includes('?') ? urlInput + '&autoplay=1' : urlInput + '?autoplay=1';
+        let urlInput = document.getElementById('miniTvUrl').value;
+        let embedUrl = converteerYouTubeLink(urlInput);
+        
+        let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
         iframe.src = playUrl;
     }
 
