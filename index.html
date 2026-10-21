@@ -59,7 +59,7 @@
             margin-bottom: 12px;
         }
 
-        /* KLOK STYLING */
+        /* KLOK PROMINENT EN VOLUIT BINNEN HET KADER */
         .clock-section {
             display: flex;
             flex-direction: column;
@@ -67,8 +67,8 @@
         }
 
         .clock-face {
-            width: 260px;
-            height: 260px;
+            width: 320px;
+            height: 320px;
             background-image: url('clock-face.png');
             background-size: 108%;
             background-position: center 51.5%;
@@ -76,7 +76,7 @@
             border: none;
             border-radius: 50%;
             position: relative;
-            margin: 10px auto;
+            margin: 5px auto;
             box-shadow: 0 0 20px rgba(0,0,0,0.9);
             overflow: hidden;
         }
@@ -94,7 +94,7 @@
             z-index: 10;
         }
 
-        /* ZILVERKLEURIGE KROONWIJZERS & GROENE SECONDEWIJZER */
+        /* ZILVERKLEURIGE KROONWIJZERS & GROENE SECONDEWIJZER (Langer gemaakt voor grotere klok) */
         .hand {
             position: absolute;
             bottom: 50%;
@@ -106,17 +106,17 @@
 
         .hour-hand {
             width: 14px;
-            height: 70px;
+            height: 90px;
         }
 
         .minute-hand {
             width: 12px;
-            height: 95px;
+            height: 125px;
         }
 
         .second-hand {
             width: 2px;
-            height: 105px;
+            height: 135px;
             background-color: #00ff66;
             z-index: 6;
             transform-origin: bottom center;
@@ -214,7 +214,7 @@
         <p>KLOK • RADIO STREAM • EEUWKALENDER</p>
     </header>
 
-    <!-- KLOK SECTIE -->
+    <!-- KLOK SECTIE (GROOT EN PROMINENT) -->
     <div class="section clock-section">
         <div class="clock-face" id="klokFace">
             <div class="clock-center-dot"></div>
@@ -235,7 +235,7 @@
         </div>
         <div style="font-size: 0.85rem; color: var(--text-gold); margin-top: 4px; font-weight: bold;">ABORU</div>
         <div class="digital-date" id="digitalDate">woensdag 21 oktober 2026</div>
-        <div class="digital-time" id="digitalTime">15:00:00</div>
+        <div class="digital-time" id="digitalTime">22:12:12</div>
     </div>
 
     <!-- DAGELIJKS WOORD -->
@@ -276,7 +276,7 @@
         <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 4px;" id="alarmStatus">Geen wekker ingesteld</div>
     </div>
 
-    <!-- MINI TV & LINKS MET VORIGE / VOLGENDE KNOPPEN -->
+    <!-- MINI TV & LINKS -->
     <div class="section">
         <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 6px;">📺 MINI TV & LINKS</div>
         <div class="btn-row">
@@ -285,12 +285,12 @@
         </div>
         <button onclick="window.open('https://www.youtube.com/results?search_query=Gunung+Batu', '_blank')" style="margin-top: 4px;">⛰️ Gunung Batu</button>
         
-        <!-- Interne Mini TV Scherm met Vorige (⏮) en Volgende (⏭) knoppen -->
+        <!-- Interne Mini TV Scherm -->
         <div id="miniTvContainer" class="media-frame">
             <input type="text" id="miniTvUrl" value="https://youtu.be/WTSLipAWHow" placeholder="Plak YouTube link hier" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:4px;">
             <div class="btn-row">
                 <button onclick="startMiniTV()">Laad Mini TV</button>
-                <button onclick="sluitMiniTV()" style="background: #d9534f; color:white;">Sluit TV</button>
+                <button onclick="toggleMiniTV()" style="background: #d9534f; color:white;">Sluit TV</button>
             </div>
             <!-- Vorige en Volgende driehoeks knoppen -->
             <div class="btn-row" style="margin-top: 6px;">
@@ -353,11 +353,11 @@
     setInterval(updateKlok, 1000);
     updateKlok();
 
-    // --- PLAYLIST VOOR MINI TV (VORIGE / VOLGENDE) ---
+    // --- PLAYLIST VOOR MINI TV ---
     const miniTvPlaylist = [
-        "https://youtu.be/WTSLipAWHow", // Standaard / Gunung Batu / Melodie
-        "https://www.youtube.com/embed/Q6W78dSEa1M", // Carlos Santana
-        "https://www.youtube.com/embed/dQw4w9WgXcQ"  // Extra sfeerclip
+        "https://youtu.be/WTSLipAWHow",
+        "https://www.youtube.com/embed/Q6W78dSEa1M",
+        "https://www.youtube.com/embed/dQw4w9WgXcQ"
     ];
     let huidigePlaylistIndex = 0;
 
