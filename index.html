@@ -59,7 +59,7 @@
             margin-bottom: 12px;
         }
 
-        /* KLOK EXACT UITGELIJND OP HET HANDVAT VAN HET ZWAARD */
+        /* KLOK SECTIE */
         .clock-section {
             display: flex;
             flex-direction: column;
@@ -69,16 +69,22 @@
         .clock-face {
             width: 230px;
             height: 230px;
-            background-image: url('clock-face.png');
-            background-size: 100%;
-            background-position: center 47.7%; /* Exact op de millimeter uitgelijnd */
-            background-repeat: no-repeat;
-            border: none;
-            border-radius: 50%;
             position: relative;
             margin: 10px auto;
+            border-radius: 50%;
             box-shadow: 0 0 20px rgba(0,0,0,0.9);
             overflow: hidden;
+        }
+
+        /* VASTE ACHTERGROND AFBEELDING MET ABSOLUTE CONTROLE */
+        .clock-bg-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
         }
 
         .clock-center-dot {
@@ -88,7 +94,7 @@
             border: 1px solid #334155;
             border-radius: 50%;
             position: absolute;
-            top: 50%;
+            top: 48%; /* Exact uitgelijnd op het zwaardhandvat */
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 10;
@@ -97,7 +103,7 @@
         /* ZILVERKLEURIGE KROONWIJZERS & GROENE SECONDEWIJZER */
         .hand {
             position: absolute;
-            bottom: 50%;
+            bottom: 52%; /* Komt exact overeen met de middelpuntpositie */
             left: 50%;
             transform-origin: bottom center;
             transform: translateX(-50%) rotate(0deg);
@@ -217,6 +223,8 @@
     <!-- KLOK SECTIE -->
     <div class="section clock-section">
         <div class="clock-face" id="klokFace">
+            <!-- Achtergrond als HTML element voor absolute controle -->
+            <img src="clock-face.png" alt="Klok Wijzerplaat" class="clock-bg-img">
             <div class="clock-center-dot"></div>
             <!-- Uurwijzer: Zilverkleurig Kroonpijltje -->
             <div class="hand hour-hand" id="hourHand">
@@ -235,7 +243,7 @@
         </div>
         <div style="font-size: 0.85rem; color: var(--text-gold); margin-top: 4px; font-weight: bold;">ABORU</div>
         <div class="digital-date" id="digitalDate">woensdag 21 oktober 2026</div>
-        <div class="digital-time" id="digitalTime">23:52:18</div>
+        <div class="digital-time" id="digitalTime">23:57:18</div>
     </div>
 
     <!-- DAGELIJKS WOORD -->
