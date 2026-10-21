@@ -59,7 +59,7 @@
             margin-bottom: 12px;
         }
 
-        /* KLOK STYLING */
+        /* KLOK STYLING ZONDER GELE BUITENRAND */
         .clock-section {
             display: flex;
             flex-direction: column;
@@ -73,11 +73,12 @@
             background-size: 108%;
             background-position: center 53%;
             background-repeat: no-repeat;
-            border: 4px solid var(--border-gold);
+            /* Gele buitenrand is hier verwijderd zodat de afbeelding prominent is */
+            border: none;
             border-radius: 50%;
             position: relative;
             margin: 10px auto;
-            box-shadow: 0 0 15px rgba(0,0,0,0.8);
+            box-shadow: 0 0 20px rgba(0,0,0,0.9);
             overflow: hidden;
         }
 
@@ -235,7 +236,7 @@
         </div>
         <div style="font-size: 0.85rem; color: var(--text-gold); margin-top: 4px; font-weight: bold;">ABORU</div>
         <div class="digital-date" id="digitalDate">woensdag 21 oktober 2026</div>
-        <div class="digital-time" id="digitalTime">02:56:00</div>
+        <div class="digital-time" id="digitalTime">03:14:00</div>
     </div>
 
     <!-- DAGELIJKS WOORD -->
@@ -276,7 +277,7 @@
         <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 4px;" id="alarmStatus">Geen wekker ingesteld</div>
     </div>
 
-    <!-- MINI TV & LINKS (Alles speelt hier direct af!) -->
+    <!-- MINI TV & LINKS -->
     <div class="section">
         <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 6px;">📺 MINI TV & LINKS</div>
         <div class="btn-row">
@@ -286,7 +287,7 @@
         <button onclick="laadInMiniTV('https://www.youtube.com/embed/Q6W78dSEa1M')" style="margin-top: 4px;">⛰️ Gunung Batu</button>
         
         <!-- Interne Mini TV Scherm -->
-        <div id="miniTvContainer" class="media-frame" style="display:block;">
+        <div id="miniTvContainer" class="media-frame">
             <input type="text" id="miniTvUrl" value="https://youtu.be/WTSLipAWHow" placeholder="Plak YouTube link hier" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:4px;">
             <div class="btn-row">
                 <button onclick="startMiniTV()">Laad Mini TV</button>
