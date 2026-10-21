@@ -59,7 +59,7 @@
             margin-bottom: 12px;
         }
 
-        /* KLOK PASSEND BINNEN HET KADER MET ZICHTBARE CIJFERS */
+        /* KLOK EXACT UITGELIJND OP DE 9-3 LIJN */
         .clock-section {
             display: flex;
             flex-direction: column;
@@ -67,11 +67,11 @@
         }
 
         .clock-face {
-            width: 250px;
-            height: 250px;
+            width: 230px;
+            height: 230px;
             background-image: url('clock-face.png');
             background-size: 100%;
-            background-position: center center;
+            background-position: center 48%; /* Exact gecorrigeerd op de 9-3 as */
             background-repeat: no-repeat;
             border: none;
             border-radius: 50%;
@@ -94,7 +94,7 @@
             z-index: 10;
         }
 
-        /* ZILVERKLEURIGE KROONWIJZERS & GROENE SECONDEWIJZER (Netjes aangepast aan 250px klok) */
+        /* ZILVERKLEURIGE KROONWIJZERS & GROENE SECONDEWIJZER */
         .hand {
             position: absolute;
             bottom: 50%;
@@ -105,18 +105,18 @@
         }
 
         .hour-hand {
-            width: 14px;
-            height: 68px;
+            width: 13px;
+            height: 62px;
         }
 
         .minute-hand {
-            width: 12px;
-            height: 92px;
+            width: 11px;
+            height: 84px;
         }
 
         .second-hand {
             width: 2px;
-            height: 102px;
+            height: 94px;
             background-color: #00ff66;
             z-index: 6;
             transform-origin: bottom center;
@@ -235,7 +235,7 @@
         </div>
         <div style="font-size: 0.85rem; color: var(--text-gold); margin-top: 4px; font-weight: bold;">ABORU</div>
         <div class="digital-date" id="digitalDate">woensdag 21 oktober 2026</div>
-        <div class="digital-time" id="digitalTime">22:18:09</div>
+        <div class="digital-time" id="digitalTime">22:26:06</div>
     </div>
 
     <!-- DAGELIJKS WOORD -->
