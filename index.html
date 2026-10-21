@@ -59,7 +59,7 @@
             margin-bottom: 12px;
         }
 
-        /* KLOK STYLING ZONDER GELE BUITENRAND */
+        /* KLOK STYLING - EXACT GEÜTILISEERD OP 9-3 AS */
         .clock-section {
             display: flex;
             flex-direction: column;
@@ -71,9 +71,8 @@
             height: 260px;
             background-image: url('clock-face.png');
             background-size: 108%;
-            background-position: center 53%;
+            background-position: center 51.5%; /* Exact uitgelijnd op de 9-3 as */
             background-repeat: no-repeat;
-            /* Gele buitenrand is hier verwijderd zodat de afbeelding prominent is */
             border: none;
             border-radius: 50%;
             position: relative;
@@ -85,8 +84,8 @@
         .clock-center-dot {
             width: 10px;
             height: 10px;
-            background: var(--text-gold);
-            border: 1px solid #000;
+            background: #cbd5e1;
+            border: 1px solid #334155;
             border-radius: 50%;
             position: absolute;
             top: 50%;
@@ -95,7 +94,7 @@
             z-index: 10;
         }
 
-        /* WITGOUDEN KROONPIJLTJES & GROENE SECONDEWIJZER */
+        /* ZILVERKLEURIGE KROONWIJZERS & GROENE SECONDEWIJZER */
         .hand {
             position: absolute;
             bottom: 50%;
@@ -219,16 +218,16 @@
     <div class="section clock-section">
         <div class="clock-face" id="klokFace">
             <div class="clock-center-dot"></div>
-            <!-- Uurwijzer: Witgoud Kroonpijltje -->
+            <!-- Uurwijzer: Zilverkleurig Kroonpijltje -->
             <div class="hand hour-hand" id="hourHand">
                 <svg viewBox="0 0 20 100" width="100%" height="100%">
-                    <path d="M10 0 L19 20 L13 20 L13 100 L7 100 L7 20 L1 20 Z" fill="#e8edf2" stroke="#4a5568" stroke-width="1.2"/>
+                    <path d="M10 0 L19 20 L13 20 L13 100 L7 100 L7 20 L1 20 Z" fill="#e2e8f0" stroke="#475569" stroke-width="1.2"/>
                 </svg>
             </div>
-            <!-- Minuutwijzer: Witgoud Kroonpijltje -->
+            <!-- Minuutwijzer: Zilverkleurig Kroonpijltje -->
             <div class="hand minute-hand" id="minuteHand">
                 <svg viewBox="0 0 16 100" width="100%" height="100%">
-                    <path d="M8 0 L16 16 L11 16 L11 100 L5 100 L5 16 L0 16 Z" fill="#f0f4f8" stroke="#4a5568" stroke-width="1.2"/>
+                    <path d="M8 0 L16 16 L11 16 L11 100 L5 100 L5 16 L0 16 Z" fill="#f8fafc" stroke="#475569" stroke-width="1.2"/>
                 </svg>
             </div>
             <!-- Groene Secondewijzer -->
@@ -236,7 +235,7 @@
         </div>
         <div style="font-size: 0.85rem; color: var(--text-gold); margin-top: 4px; font-weight: bold;">ABORU</div>
         <div class="digital-date" id="digitalDate">woensdag 21 oktober 2026</div>
-        <div class="digital-time" id="digitalTime">03:14:00</div>
+        <div class="digital-time" id="digitalTime">03:26:00</div>
     </div>
 
     <!-- DAGELIJKS WOORD -->
@@ -281,17 +280,17 @@
     <div class="section">
         <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 6px;">📺 MINI TV & LINKS</div>
         <div class="btn-row">
-            <button onclick="laadInMiniTV('https://youtu.be/WTSLipAWHow')">📺 YouTube TV</button>
-            <button onclick="laadInMiniTV('https://www.youtube.com/embed/dQw4w9WgXcQ')">📘 Facebook</button>
+            <button onclick="toggleMiniTV()">📺 YouTube TV (Mini)</button>
+            <button onclick="window.open('https://www.facebook.com', '_blank')">📘 Facebook</button>
         </div>
-        <button onclick="laadInMiniTV('https://www.youtube.com/embed/Q6W78dSEa1M')" style="margin-top: 4px;">⛰️ Gunung Batu</button>
+        <button onclick="window.open('https://www.youtube.com/results?search_query=Gunung+Batu', '_blank')" style="margin-top: 4px;">⛰️ Gunung Batu</button>
         
-        <!-- Interne Mini TV Scherm -->
+        <!-- Interne Mini TV Scherm voor YouTube -->
         <div id="miniTvContainer" class="media-frame">
             <input type="text" id="miniTvUrl" value="https://youtu.be/WTSLipAWHow" placeholder="Plak YouTube link hier" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:4px;">
             <div class="btn-row">
                 <button onclick="startMiniTV()">Laad Mini TV</button>
-                <button onclick="sluitMiniTV()" style="background: #d9534f; color:white;">Sluit TV</button>
+                <button onclick="toggleMiniTV()" style="background: #d9534f; color:white;">Sluit TV</button>
             </div>
             <iframe id="miniTvPlayer" width="100%" height="180" src="" frameborder="0" allow="autoplay" style="margin-top:6px;"></iframe>
         </div>
@@ -388,11 +387,15 @@
         container.style.display = 'none';
     }
 
-    // --- MINI TV LOGICA VOOR ALLE KNOPPEN ---
-    function laadInMiniTV(url) {
-        document.getElementById('miniTvContainer').style.display = 'block';
-        document.getElementById('miniTvUrl').value = url;
-        startMiniTV();
+    // --- MINI TV LOGICA VOOR YOUTUBE ---
+    function toggleMiniTV() {
+        const container = document.getElementById('miniTvContainer');
+        if (container.style.display === 'block') {
+            container.style.display = 'none';
+            document.getElementById('miniTvPlayer').src = "";
+        } else {
+            container.style.display = 'block';
+        }
     }
 
     function startMiniTV() {
@@ -402,12 +405,6 @@
         
         let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
         iframe.src = playUrl;
-    }
-
-    function sluitMiniTV() {
-        const iframe = document.getElementById('miniTvPlayer');
-        iframe.src = "";
-        document.getElementById('miniTvContainer').style.display = 'none';
     }
 
     // --- WEKKER FUNCTIE ---
