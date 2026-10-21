@@ -1,1 +1,347 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <link rel="manifest" href="manifest.json?v=10">
+    <link rel="icon" type="image/png" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mena Muria Klok & Eeuwkalender</title>
+    <style>
+        body {
+            background-color: #0b0804;
+            color: #d4af37;
+            font-family: 'Times New Roman', serif, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 10px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            border: 1px solid #d4af37;
+            border-radius: 12px;
+            padding: 15px;
+            background: #110d06;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+        h1 {
+            font-size: 20px;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            color: #f3e5ab;
+        }
+        .subtitle {
+            font-size: 11px;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            color: #c5a059;
+        }
+        .section-box {
+            border: 1px solid #d4af37;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 15px;
+            background: #0f0a05;
+        }
+        .section-title {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        /* RONDE KLOK */
+        .clock-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 10px auto;
+            border-radius: 50%;
+            overflow: hidden;
+            background-image: url('clock-face.png?v=10');
+            background-size: cover;
+            background-position: center 47%;
+            background-repeat: no-repeat;
+            border: none;
+            box-shadow: none;
+        }
+
+        /* ABORU TEKST ONDER DE KLOK */
+        .aboru-title {
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: #f3e5ab;
+            margin-top: 8px;
+            margin-bottom: 4px;
+            text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+        }
+
+        /* WIJZERS MET KROONPEN STIJL */
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            z-index: 10;
+            filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.9));
+        }
+        .hour-hand { 
+            width: 10px; 
+            height: 62px; 
+            background: linear-gradient(135deg, #fff3cd 0%, #d4af37 50%, #aa820a 100%); 
+            margin-left: -5px; 
+            clip-path: polygon(50% 0%, 100% 25%, 70% 100%, 30% 100%, 0% 25%);
+        }
+        .minute-hand { 
+            width: 7px; 
+            height: 98px; 
+            background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #8b6914 100%); 
+            margin-left: -3.5px; 
+            clip-path: polygon(50% 0%, 100% 20%, 75% 100%, 25% 100%, 0% 20%);
+        }
+        .second-hand { 
+            width: 1.5px; 
+            height: 108px; 
+            background: #00ff66; 
+            margin-left: -0.75px; 
+            z-index: 11; 
+        }
+        .center-dot {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 12px; height: 12px;
+            background: radial-gradient(circle, #ffcc00 0%, #8b0000 100%);
+            border: 2px solid #d4af37;
+            border-radius: 50%;
+            margin: -6px 0 0 -6px;
+            z-index: 12;
+        }
+
+        /* DIGITALE TIJD & DATUM */
+        .digital-time-section {
+            margin-top: 8px;
+            padding: 5px;
+            border-top: 1px dashed rgba(212, 175, 55, 0.3);
+        }
+        .date-line {
+            font-size: 13px;
+            color: #c5a059;
+            margin-bottom: 4px;
+            margin-top: 5px;
+        }
+        .time-line {
+            font-size: 28px;
+            font-weight: bold;
+            color: #f3e5ab;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        /* BIJBELTEKST */
+        .bible-verse {
+            font-style: italic;
+            font-size: 13px;
+            color: #f3e5ab;
+            line-height: 1.4;
+            padding: 8px 5px;
+            min-height: 40px;
+        }
+        .bible-ref {
+            font-size: 11px;
+            font-weight: bold;
+            color: #d4af37;
+            margin-top: 4px;
+            font-style: normal;
+        }
+
+        /* UI ELEMENTS */
+        select, input[type="text"], input[type="number"], input[type="time"], button, .link-button {
+            background-color: #1a1205;
+            color: #f3e5ab;
+            border: 1px solid #d4af37;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin: 4px 0;
+            box-sizing: border-box;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        select, input[type="text"], input[type="time"] { width: 100%; }
+        button, .link-button {
+            cursor: pointer;
+            font-weight: bold;
+            background: linear-gradient(to bottom, #d4af37, #aa820a);
+            color: #0b0804;
+        }
+        button:hover, .link-button:hover { opacity: 0.9; }
+
+        iframe {
+            border-radius: 6px;
+            border: 1px solid #d4af37;
+            width: 100%;
+            height: 200px;
+        }
+        .status-text {
+            font-size: 11px;
+            font-style: italic;
+            margin-top: 5px;
+            color: #c5a059;
+        }
+        table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 5px;
+            font-size: 12px;
+            text-align: center;
+        }
+        th { color: #f3e5ab; }
+        td.today-cell {
+            background: #d4af37;
+            color: #0b0804;
+            font-weight: bold;
+            border-radius: 50%;
+        }
+
+        #tvPlayerContainer {
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>MENA MURIA</h1>
+    <div class="subtitle">KLOK • RADIO STREAM • EEUWKALENDER</div>
+
+    <!-- KLOK & DIGITALE TIJD -->
+    <div class="section-box">
+        <div class="clock-container">
+            <div class="hand hour-hand" id="hourHand"></div>
+            <div class="hand minute-hand" id="minuteHand"></div>
+            <div class="hand second-hand" id="secondHand"></div>
+            <div class="center-dot"></div>
+        </div>
+
+        <div class="aboru-title">ABORU</div>
+
+        <div class="digital-time-section">
+            <div class="date-line" id="digitalDateOnly">Laden...</div>
+            <div class="time-line" id="digitalTimeOnly">00:00:00</div>
+        </div>
+    </div>
+
+    <!-- DAGELIJKS WOORD -->
+    <div class="section-box">
+        <div class="section-title">📖 DAGELIJKS WOORD</div>
+        <div class="bible-verse" id="bibleVerseText">Laden van dagtekst...</div>
+        <div class="bible-ref" id="bibleVerseRef"></div>
+    </div>
+
+    <!-- STREAM & RADIO SPELER -->
+    <div class="section-box">
+        <div class="section-title">📻 STREAM & RADIO SPELER</div>
+        
+        <select id="stationSelect">
+            <option value="https://youtu.be/Q6W78dSEa1M">Carlos Santana (Wekker Concert)</option>
+            <option value="https://youtu.be/4y9szAi9Dhc">Edwine Samuels (Herfstparty)</option>
+            <option value="https://icecast.omroep.nl/radio1-bb-mp3">NPO Radio 1 (Audio)</option>
+            <option value="https://icecast.omroep.nl/radio2-bb-mp3">NPO Radio 2 (Audio)</option>
+            <option value="https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO_10.mp3">Radio 10 (Audio)</option>
+        </select>
+
+        <input type="text" id="mediaUrl" value="https://youtu.be/Q6W78dSEa1M" placeholder="Plak YouTube of Stream URL..." />
+        
+        <div style="display: flex; gap: 5px;">
+            <button id="playBtn" style="flex: 1;">▶ Play</button>
+            <button id="stopBtn" style="flex: 1;">⏹ Stop</button>
+        </div>
+
+        <div style="margin-top: 6px;">
+            <a href="https://nl.radio.net/" target="_blank" class="link-button" style="width: 100%;">🌐 Radio.net (Alle Zenders)</a>
+        </div>
+
+        <div id="mediaOutput">
+            <div class="status-text" id="playerStatus">Speler gereed</div>
+        </div>
+    </div>
+
+    <!-- WEKKER -->
+    <div class="section-box">
+        <div class="section-title">⏰ WEKKER / ALARM</div>
+        <div style="display: flex; gap: 5px;">
+            <input type="time" id="alarmTime" value="07:00" style="flex: 2;" />
+            <button id="setAlarmBtn" style="flex: 1;">Zet Wekker</button>
+        </div>
+        <div class="status-text" id="alarmStatus">Geen wekker ingesteld</div>
+    </div>
+
+    <!-- MINI TV & LINKS -->
+    <div class="section-box">
+        <div class="section-title">📺 MINI TV & LINKS</div>
+        <div style="display: flex; gap: 5px; margin-bottom: 5px;">
+            <button id="showYtTvBtn" style="flex: 1;">📺 YouTube TV</button>
+            <button id="showGunungBtn" style="flex: 1; background: linear-gradient(to bottom, #e5c158, #b8860b);">⛪ Gunung Batu</button>
+        </div>
+        <div style="display: flex; gap: 5px;">
+            <a href="https://share.google/OjtH32V2ynojkQ1mW" target="_blank" class="link-button" style="flex: 1;">📘 Facebook</a>
+        </div>
+
+        <div id="tvPlayerContainer">
+            <button id="closeTvBtn" style="background:#8b0000; color:#fff; width:100%; margin-bottom:5px;">✖ Sluit Mini TV</button>
+            <iframe id="tvIframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <!-- EEUWKALENDER -->
+    <div class="section-box">
+        <div class="section-title">📅 EEUWKALENDER</div>
+        <div style="display: flex; gap: 5px; justify-content: center; margin-bottom: 8px;">
+            <button id="todayBtn">Vandaag</button>
+        </div>
+        <div style="display: flex; gap: 5px;">
+            <select id="monthSelect" style="flex: 2;">
+                <option value="0">Januari</option>
+                <option value="1">Februari</option>
+                <option value="2">Maart</option>
+                <option value="3">April</option>
+                <option value="4">Mei</option>
+                <option value="5">Juni</option>
+                <option value="6">Juli</option>
+                <option value="7">Augustus</option>
+                <option value="8">September</option>
+                <option value="9">Oktober</option>
+                <option value="10">November</option>
+                <option value="11">December</option>
+            </select>
+            <input type="number" id="yearInput" style="flex: 1; text-align: center;" />
+        </div>
+        <button id="goToYearBtn" style="width: 100%; margin-top: 5px;">Ga naar jaar</button>
+        
+        <div id="calendarContainer" style="margin-top: 10px;">
+            <div style="font-size: 13px; font-weight: bold; color: #f3e5ab;" id="calMonthYearTitle">Laden...</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="color: #f3e5ab;">Ma</th>
+                        <th>Di</th>
+                        <th>Wo</th>
+                        <th>Do</th>
+                        <th>Vr</th>
+                        <th style="color: #ff9999;">Za</th>
+                        <th style="color: #ff9999;">Zo</th>
+                    </tr>
+                </thead>
+                <tbody id="calendarBody"></tbody>
+            </table>
+        </div>
+        
+        <div class="status-text" id="selectedDateInfo" style="margin-top: 10px; border-top: 1px dashed #d4af37; padding-top: 5px;">
 
