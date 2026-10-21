@@ -59,7 +59,7 @@
             margin-bottom: 12px;
         }
 
-        /* KLOK STYLING - EXACT GEÜTILISEERD OP 9-3 AS */
+        /* KLOK STYLING */
         .clock-section {
             display: flex;
             flex-direction: column;
@@ -71,7 +71,7 @@
             height: 260px;
             background-image: url('clock-face.png');
             background-size: 108%;
-            background-position: center 51.5%; /* Exact uitgelijnd op de 9-3 as */
+            background-position: center 51.5%;
             background-repeat: no-repeat;
             border: none;
             border-radius: 50%;
@@ -235,7 +235,7 @@
         </div>
         <div style="font-size: 0.85rem; color: var(--text-gold); margin-top: 4px; font-weight: bold;">ABORU</div>
         <div class="digital-date" id="digitalDate">woensdag 21 oktober 2026</div>
-        <div class="digital-time" id="digitalTime">03:26:00</div>
+        <div class="digital-time" id="digitalTime">15:00:00</div>
     </div>
 
     <!-- DAGELIJKS WOORD -->
@@ -276,7 +276,7 @@
         <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 4px;" id="alarmStatus">Geen wekker ingesteld</div>
     </div>
 
-    <!-- MINI TV & LINKS -->
+    <!-- MINI TV & LINKS MET VORIGE / VOLGENDE KNOPPEN -->
     <div class="section">
         <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 6px;">📺 MINI TV & LINKS</div>
         <div class="btn-row">
@@ -285,12 +285,17 @@
         </div>
         <button onclick="window.open('https://www.youtube.com/results?search_query=Gunung+Batu', '_blank')" style="margin-top: 4px;">⛰️ Gunung Batu</button>
         
-        <!-- Interne Mini TV Scherm voor YouTube -->
+        <!-- Interne Mini TV Scherm met Vorige (⏮) en Volgende (⏭) knoppen -->
         <div id="miniTvContainer" class="media-frame">
             <input type="text" id="miniTvUrl" value="https://youtu.be/WTSLipAWHow" placeholder="Plak YouTube link hier" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:4px;">
             <div class="btn-row">
                 <button onclick="startMiniTV()">Laad Mini TV</button>
-                <button onclick="toggleMiniTV()" style="background: #d9534f; color:white;">Sluit TV</button>
+                <button onclick="sluitMiniTV()" style="background: #d9534f; color:white;">Sluit TV</button>
+            </div>
+            <!-- Vorige en Volgende driehoeks knoppen -->
+            <div class="btn-row" style="margin-top: 6px;">
+                <button onclick="vorigNummer()" style="background: linear-gradient(to bottom, #c9a227, #997512);">⏮ Vorige</button>
+                <button onclick="volgendNummer()" style="background: linear-gradient(to bottom, #c9a227, #997512);">Volgende ⏭</button>
             </div>
             <iframe id="miniTvPlayer" width="100%" height="180" src="" frameborder="0" allow="autoplay" style="margin-top:6px;"></iframe>
         </div>
@@ -348,7 +353,14 @@
     setInterval(updateKlok, 1000);
     updateKlok();
 
-    // --- HELPER OM YOUTUBE LINKS OM TE ZETTEN NAAR EMBED ---
+    // --- PLAYLIST VOOR MINI TV (VORIGE / VOLGENDE) ---
+    const miniTvPlaylist = [
+        "https://youtu.be/WTSLipAWHow", // Standaard / Gunung Batu / Melodie
+        "https://www.youtube.com/embed/Q6W78dSEa1M", // Carlos Santana
+        "https://www.youtube.com/embed/dQw4w9WgXcQ"  // Extra sfeerclip
+    ];
+    let huidigePlaylistIndex = 0;
+
     function converteerYouTubeLink(url) {
         if (!url) return '';
         if (url.includes('/embed/')) return url;
@@ -361,6 +373,18 @@
         }
         
         return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+    }
+
+    function volgendNummer() {
+        huidigePlaylistIndex = (huidigePlaylistIndex + 1) % miniTvPlaylist.length;
+        document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
+        startMiniTV();
+    }
+
+    function vorigNummer() {
+        huidigePlaylistIndex = (huidigePlaylistIndex - 1 + miniTvPlaylist.length) % miniTvPlaylist.length;
+        document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
+        startMiniTV();
     }
 
     // --- MUZIEK SPELER ---
@@ -387,7 +411,7 @@
         container.style.display = 'none';
     }
 
-    // --- MINI TV LOGICA VOOR YOUTUBE ---
+    // --- MINI TV LOGICA ---
     function toggleMiniTV() {
         const container = document.getElementById('miniTvContainer');
         if (container.style.display === 'block') {
@@ -395,6 +419,8 @@
             document.getElementById('miniTvPlayer').src = "";
         } else {
             container.style.display = 'block';
+            document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
+            startMiniTV();
         }
     }
 
@@ -405,6 +431,12 @@
         
         let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
         iframe.src = playUrl;
+    }
+
+    function sluitMiniTV() {
+        const iframe = document.getElementById('miniTvPlayer');
+        iframe.src = "";
+        document.getElementById('miniTvContainer').style.display = 'none';
     }
 
     // --- WEKKER FUNCTIE ---
