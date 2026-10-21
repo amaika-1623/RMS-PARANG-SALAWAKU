@@ -235,7 +235,7 @@
         </div>
         <div style="font-size: 0.85rem; color: var(--text-gold); margin-top: 4px; font-weight: bold;">ABORU</div>
         <div class="digital-date" id="digitalDate">woensdag 21 oktober 2026</div>
-        <div class="digital-time" id="digitalTime">02:39:00</div>
+        <div class="digital-time" id="digitalTime">02:56:00</div>
     </div>
 
     <!-- DAGELIJKS WOORD -->
@@ -261,7 +261,6 @@
             <button onclick="window.open('https://radio.net', '_blank')">🌍 Radio.net</button>
             <button onclick="window.open('https://www.radio.net/search?q=streaming', '_blank')">📻 Streaming Radios</button>
         </div>
-        <!-- Bredere speler -->
         <div id="playerContainer" class="media-frame">
             <iframe id="youtubePlayer" width="100%" height="180" src="" frameborder="0" allow="autoplay"></iframe>
         </div>
@@ -277,21 +276,21 @@
         <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 4px;" id="alarmStatus">Geen wekker ingesteld</div>
     </div>
 
-    <!-- MINI TV & LINKS -->
+    <!-- MINI TV & LINKS (Alles speelt hier direct af!) -->
     <div class="section">
         <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 6px;">📺 MINI TV & LINKS</div>
         <div class="btn-row">
-            <button onclick="toggleMiniTV()">📺 YouTube TV (Mini)</button>
-            <button onclick="window.open('https://www.facebook.com', '_blank')">📘 Facebook</button>
+            <button onclick="laadInMiniTV('https://youtu.be/WTSLipAWHow')">📺 YouTube TV</button>
+            <button onclick="laadInMiniTV('https://www.youtube.com/embed/dQw4w9WgXcQ')">📘 Facebook</button>
         </div>
-        <button onclick="window.open('https://www.youtube.com/results?search_query=Gunung+Batu', '_blank')" style="margin-top: 4px;">⛰️ Gunung Batu</button>
+        <button onclick="laadInMiniTV('https://www.youtube.com/embed/Q6W78dSEa1M')" style="margin-top: 4px;">⛰️ Gunung Batu</button>
         
-        <!-- Interne Mini TV Scherm met automatische link-omzetting -->
-        <div id="miniTvContainer" class="media-frame">
+        <!-- Interne Mini TV Scherm -->
+        <div id="miniTvContainer" class="media-frame" style="display:block;">
             <input type="text" id="miniTvUrl" value="https://youtu.be/WTSLipAWHow" placeholder="Plak YouTube link hier" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:4px;">
             <div class="btn-row">
                 <button onclick="startMiniTV()">Laad Mini TV</button>
-                <button onclick="toggleMiniTV()" style="background: #d9534f; color:white;">Sluit TV</button>
+                <button onclick="sluitMiniTV()" style="background: #d9534f; color:white;">Sluit TV</button>
             </div>
             <iframe id="miniTvPlayer" width="100%" height="180" src="" frameborder="0" allow="autoplay" style="margin-top:6px;"></iframe>
         </div>
@@ -352,7 +351,6 @@
     // --- HELPER OM YOUTUBE LINKS OM TE ZETTEN NAAR EMBED ---
     function converteerYouTubeLink(url) {
         if (!url) return '';
-        // Als het al een embed link is
         if (url.includes('/embed/')) return url;
         
         let videoId = '';
@@ -389,15 +387,11 @@
         container.style.display = 'none';
     }
 
-    // --- MINI TV LOGICA ---
-    function toggleMiniTV() {
-        const container = document.getElementById('miniTvContainer');
-        if (container.style.display === 'block') {
-            container.style.display = 'none';
-            document.getElementById('miniTvPlayer').src = "";
-        } else {
-            container.style.display = 'block';
-        }
+    // --- MINI TV LOGICA VOOR ALLE KNOPPEN ---
+    function laadInMiniTV(url) {
+        document.getElementById('miniTvContainer').style.display = 'block';
+        document.getElementById('miniTvUrl').value = url;
+        startMiniTV();
     }
 
     function startMiniTV() {
@@ -407,6 +401,12 @@
         
         let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
         iframe.src = playUrl;
+    }
+
+    function sluitMiniTV() {
+        const iframe = document.getElementById('miniTvPlayer');
+        iframe.src = "";
+        document.getElementById('miniTvContainer').style.display = 'none';
     }
 
     // --- WEKKER FUNCTIE ---
