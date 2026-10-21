@@ -59,7 +59,7 @@
             margin-bottom: 12px;
         }
 
-        /* KLOK PROMINENT EN VOLUIT BINNEN HET KADER */
+        /* KLOK PASSEND BINNEN HET KADER MET ZICHTBARE CIJFERS */
         .clock-section {
             display: flex;
             flex-direction: column;
@@ -67,16 +67,16 @@
         }
 
         .clock-face {
-            width: 320px;
-            height: 320px;
+            width: 250px;
+            height: 250px;
             background-image: url('clock-face.png');
-            background-size: 108%;
-            background-position: center 51.5%;
+            background-size: 100%;
+            background-position: center center;
             background-repeat: no-repeat;
             border: none;
             border-radius: 50%;
             position: relative;
-            margin: 5px auto;
+            margin: 10px auto;
             box-shadow: 0 0 20px rgba(0,0,0,0.9);
             overflow: hidden;
         }
@@ -94,7 +94,7 @@
             z-index: 10;
         }
 
-        /* ZILVERKLEURIGE KROONWIJZERS & GROENE SECONDEWIJZER (Langer gemaakt voor grotere klok) */
+        /* ZILVERKLEURIGE KROONWIJZERS & GROENE SECONDEWIJZER (Netjes aangepast aan 250px klok) */
         .hand {
             position: absolute;
             bottom: 50%;
@@ -106,17 +106,17 @@
 
         .hour-hand {
             width: 14px;
-            height: 90px;
+            height: 68px;
         }
 
         .minute-hand {
             width: 12px;
-            height: 125px;
+            height: 92px;
         }
 
         .second-hand {
             width: 2px;
-            height: 135px;
+            height: 102px;
             background-color: #00ff66;
             z-index: 6;
             transform-origin: bottom center;
@@ -214,7 +214,7 @@
         <p>KLOK • RADIO STREAM • EEUWKALENDER</p>
     </header>
 
-    <!-- KLOK SECTIE (GROOT EN PROMINENT) -->
+    <!-- KLOK SECTIE -->
     <div class="section clock-section">
         <div class="clock-face" id="klokFace">
             <div class="clock-center-dot"></div>
@@ -235,7 +235,7 @@
         </div>
         <div style="font-size: 0.85rem; color: var(--text-gold); margin-top: 4px; font-weight: bold;">ABORU</div>
         <div class="digital-date" id="digitalDate">woensdag 21 oktober 2026</div>
-        <div class="digital-time" id="digitalTime">22:12:12</div>
+        <div class="digital-time" id="digitalTime">22:18:09</div>
     </div>
 
     <!-- DAGELIJKS WOORD -->
