@@ -70,7 +70,6 @@
             width: 260px;
             height: 260px;
             background-image: url('clock-face.png');
-            /* Achtergrond iets naar beneden gezet (50% 55%) zodat het zwaard-handvat exact in het midden valt */
             background-size: 108%;
             background-position: center 53%;
             background-repeat: no-repeat;
@@ -95,7 +94,7 @@
             z-index: 10;
         }
 
-        /* WATERPAS WIJZERS MET PIJL- / KROONPIJLTJES */
+        /* WITGOUDEN KROONPIJLTJES & GROENE SECONDEWIJZER */
         .hand {
             position: absolute;
             bottom: 50%;
@@ -201,8 +200,9 @@
             font-weight: bold;
         }
 
-        iframe {
+        .media-frame {
             display: none;
+            margin-top: 8px;
         }
     </style>
 </head>
@@ -214,20 +214,20 @@
         <p>KLOK • RADIO STREAM • EEUWKALENDER</p>
     </header>
 
-    <!-- KLOK SECTIE -->
+    <!-- KLOK SECTIE MET WITGOUDEN KROONPIJLTJES -->
     <div class="section clock-section">
         <div class="clock-face" id="klokFace">
             <div class="clock-center-dot"></div>
-            <!-- Uurwijzer met Pijlmodel -->
+            <!-- Uurwijzer: Witgoud Kroonpijltje -->
             <div class="hand hour-hand" id="hourHand">
                 <svg viewBox="0 0 20 100" width="100%" height="100%">
-                    <path d="M10 0 L19 20 L13 20 L13 100 L7 100 L7 20 L1 20 Z" fill="#e6ca65" stroke="#0d0b07" stroke-width="1.2"/>
+                    <path d="M10 0 L19 20 L13 20 L13 100 L7 100 L7 20 L1 20 Z" fill="#e8edf2" stroke="#4a5568" stroke-width="1.2"/>
                 </svg>
             </div>
-            <!-- Minuutwijzer met Pijlmodel -->
+            <!-- Minuutwijzer: Witgoud Kroonpijltje -->
             <div class="hand minute-hand" id="minuteHand">
                 <svg viewBox="0 0 16 100" width="100%" height="100%">
-                    <path d="M8 0 L16 16 L11 16 L11 100 L5 100 L5 16 L0 16 Z" fill="#f4edd3" stroke="#0d0b07" stroke-width="1.2"/>
+                    <path d="M8 0 L16 16 L11 16 L11 100 L5 100 L5 16 L0 16 Z" fill="#f0f4f8" stroke="#4a5568" stroke-width="1.2"/>
                 </svg>
             </div>
             <!-- Groene Secondewijzer -->
@@ -235,7 +235,7 @@
         </div>
         <div style="font-size: 0.85rem; color: var(--text-gold); margin-top: 4px; font-weight: bold;">ABORU</div>
         <div class="digital-date" id="digitalDate">woensdag 21 oktober 2026</div>
-        <div class="digital-time" id="digitalTime">01:57:00</div>
+        <div class="digital-time" id="digitalTime">02:22:00</div>
     </div>
 
     <!-- DAGELIJKS WOORD -->
@@ -248,17 +248,22 @@
     <!-- STREAM & RADIO SPELER -->
     <div class="section">
         <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 6px;">📻 STREAM & RADIO SPELER</div>
-        <select id="stationSelect">
-            <option>Carlos Santana (Wekker Concert)</option>
+        <select id="stationSelect" onchange="kiesStation()">
+            <option value="https://www.youtube.com/embed/Q6W78dSEa1M">Carlos Santana (Wekker Concert)</option>
+            <option value="https://www.youtube.com/embed/placeholderEdwine">Edwine Samuels</option>
         </select>
         <input type="text" id="streamUrl" value="https://www.youtube.com/embed/Q6W78dSEa1M" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-top:6px;">
         <div class="btn-row" style="margin-top: 8px;">
             <button onclick="playMusic()">▶ Play</button>
             <button onclick="stopMusic()" style="background: linear-gradient(to bottom, #d9534f, #c9302c); color: white;">⏹ Stop</button>
         </div>
-        <button onclick="window.open('https://radio.net', '_blank')" style="margin-top: 6px;">🌍 Radio.net (Alle Zenders)</button>
-        <div id="playerContainer" style="margin-top: 6px;">
-            <iframe id="youtubePlayer" width="100%" height="80" src="" frameborder="0" allow="autoplay"></iframe>
+        <div class="btn-row" style="margin-top: 6px;">
+            <button onclick="window.open('https://radio.net', '_blank')">🌍 Radio.net</button>
+            <button onclick="window.open('https://www.radio.net/search?q=streaming', '_blank')">📻 Streaming Radios</button>
+        </div>
+        <!-- Bredere speler -->
+        <div id="playerContainer" class="media-frame">
+            <iframe id="youtubePlayer" width="100%" height="160" src="" frameborder="0" allow="autoplay"></iframe>
         </div>
     </div>
 
@@ -276,10 +281,20 @@
     <div class="section">
         <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 6px;">📺 MINI TV & LINKS</div>
         <div class="btn-row">
-            <button onclick="window.open('https://www.youtube.com', '_blank')">📺 YouTube TV</button>
+            <button onclick="toggleMiniTV()">📺 YouTube TV (Mini)</button>
             <button onclick="window.open('https://www.facebook.com', '_blank')">📘 Facebook</button>
         </div>
         <button onclick="window.open('https://www.youtube.com/results?search_query=Gunung+Batu', '_blank')" style="margin-top: 4px;">⛰️ Gunung Batu</button>
+        
+        <!-- Interne Mini TV Scherm -->
+        <div id="miniTvContainer" class="media-frame">
+            <input type="text" id="miniTvUrl" value="https://www.youtube.com/embed/live_stream?channel=UC..." placeholder="YouTube Embed URL" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:4px;">
+            <div class="btn-row">
+                <button onclick="startMiniTV()">Laad Mini TV</button>
+                <button onclick="toggleMiniTV()" style="background: #d9534f; color:white;">Sluit TV</button>
+            </div>
+            <iframe id="miniTvPlayer" width="100%" height="160" src="" frameborder="0" allow="autoplay" style="margin-top:6px;"></iframe>
+        </div>
     </div>
 
     <!-- EEUWKALENDER -->
@@ -335,18 +350,43 @@
     updateKlok();
 
     // --- MUZIEK SPELER ---
+    function kiesStation() {
+        const select = document.getElementById('stationSelect');
+        document.getElementById('streamUrl').value = select.value;
+    }
+
     function playMusic() {
         const iframe = document.getElementById('youtubePlayer');
+        const container = document.getElementById('playerContainer');
         const urlInput = document.getElementById('streamUrl').value;
-        iframe.style.display = 'block';
+        container.style.display = 'block';
         let playUrl = urlInput.includes('?') ? urlInput + '&autoplay=1' : urlInput + '?autoplay=1';
         iframe.src = playUrl;
     }
 
     function stopMusic() {
         const iframe = document.getElementById('youtubePlayer');
+        const container = document.getElementById('playerContainer');
         iframe.src = "";
-        iframe.style.display = 'none';
+        container.style.display = 'none';
+    }
+
+    // --- MINI TV LOGICA ---
+    function toggleMiniTV() {
+        const container = document.getElementById('miniTvContainer');
+        if (container.style.display === 'block') {
+            container.style.display = 'none';
+            document.getElementById('miniTvPlayer').src = "";
+        } else {
+            container.style.display = 'block';
+        }
+    }
+
+    function startMiniTV() {
+        const iframe = document.getElementById('miniTvPlayer');
+        const urlInput = document.getElementById('miniTvUrl').value;
+        let playUrl = urlInput.includes('?') ? urlInput + '&autoplay=1' : urlInput + '?autoplay=1';
+        iframe.src = playUrl;
     }
 
     // --- WEKKER FUNCTIE ---
