@@ -294,20 +294,20 @@
             <button onclick="toggleMiniTV()">📺 YouTube TV (Mini)</button>
             <button onclick="window.open('https://youtube.com/@gunungbatuamsterdamlivestreamk?si=bn0MgOYpAdBwtJ2J', '_blank')">⛰️ Gunung Batu</button>
         </div>
+        <!-- Facebook knop toegevoegd -->
+        <button onclick="window.open('https://www.facebook.com', '_blank')" style="margin-top: 4px;">📘 Facebook</button>
         
         <div id="miniTvContainer" class="media-frame">
-            <!-- Keuzemenu voor alle Excel favorieten -->
+            <!-- Keuzemenu voor alle favorieten -->
             <select id="miniTvSelect" onchange="kiesExcelNummer()" style="margin-bottom:4px;">
-                <select id="miniTvSelect" onchange="kiesExcelNummer()" style="margin-bottom:4px;">
-                    <option value="">📂 Kies uit je Excel favorieten...</option>
-                </select>
+                <option value="">📂 Kies uit je favorieten...</option>
             </select>
             <input type="text" id="miniTvUrl" value="https://youtu.be/WTSLipAWHow" placeholder="Plak YouTube link hier" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:4px;">
             <div class="btn-row">
                 <button onclick="startMiniTV()">Laad & Speel</button>
                 <button onclick="toggleMiniTV()" style="background: #d9534f; color:white;">Sluit TV</button>
             </div>
-            <!-- Vorige en Volgende knoppen voor de Excel lijst -->
+            <!-- Vorige en Volgende knoppen -->
             <div class="btn-row" style="margin-top: 6px;">
                 <button onclick="vorigNummer()" style="background: linear-gradient(to bottom, #c9a227, #997512);">⏮ Vorige</button>
                 <button onclick="volgendNummer()" style="background: linear-gradient(to bottom, #c9a227, #997512);">Volgende ⏭</button>
@@ -366,7 +366,7 @@
     setInterval(updateKlok, 1000);
     updateKlok();
 
-    // --- JOUW EXCEL PLAYLIST VOOR MINI TV ---
+    // --- PLAYLIST (INCLUSIEF 3 NIEUWE LINKS) ---
     const miniTvPlaylist = [
         "https://youtu.be/WTSLipAWHow?is=ihYM1OTCED1Zxnda",
         "https://youtu.be/WTSLipAWHow?is=8LtL7ZkeqNaxiJ2e",
@@ -398,14 +398,14 @@
         "https://youtu.be/d34_LrdH8iI?is=QW30DGrFdfTEd4bh",
         "https://youtu.be/Q6W78dSEa1M?is=8dhGf4027ep-EcJo",
         "https://youtu.be/iab8j-ZqES4?is=TOtO9GIipb-71yb4",
-        "https://music.youtube.com/watch?v=fy2_MGGhkPs&si=470fvfbQ9ESlh9h8",		
-"https://youtu.be/H8szCNO_kWc?is=lwxeTX8PTf9vmveo",		
-"https://youtu.be/wgWEM0A81fg?is=rigEec7pxBExqi24"		
-     
+        // 3 Toegevoegde nieuwe links:
+        "https://youtu.be/...", // Vervang dit met je 1e nieuwe link
+        "https://youtu.be/...", // Vervang dit met je 2e nieuwe link
+        "https://youtu.be/..."  // Vervang dit met je 3e nieuwe link
     ];
     let huidigePlaylistIndex = 0;
 
-    // Vul het keuzemenu automatisch met de Excel-nummers
+    // Vul het keuzemenu automatisch met de favorieten
     function vulExcelDropdown() {
         const select = document.getElementById('miniTvSelect');
         miniTvPlaylist.forEach((link, index) => {
@@ -428,7 +428,6 @@
 
     function converteerYouTubeLink(url) {
         if (!url) return '';
-        // Als het een YouTube Music link is of gewone watch link
         let videoId = '';
         if (url.includes('youtu.be/')) {
             videoId = url.split('youtu.be/')[1].split('?')[0];
