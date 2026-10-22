@@ -384,7 +384,6 @@
     ];
     let huidigePlaylistIndex = 0;
 
-    // Controleer of er opgeslagen links in het geheugen van de browser staan
     if (localStorage.getItem('menaMuriaPlaylist')) {
         try {
             miniTvPlaylist = JSON.parse(localStorage.getItem('menaMuriaPlaylist'));
@@ -403,7 +402,6 @@
     }
     vulExcelDropdown();
 
-    // Functie om de geplakte Excel lijst automatisch uit te lezen en op te slaan
     function importeerExcelLijst() {
         const tekst = document.getElementById('excelInput').value;
         if (!tekst.trim()) {
@@ -411,7 +409,6 @@
             return;
         }
 
-        // Zoek alle web-links (http:// of https://) in de geplakte tekst
         const gevondenLinks = tekst.match(/https?:\/\/[^\s]+/g);
 
         if (gevondenLinks && gevondenLinks.length > 0) {
@@ -520,7 +517,7 @@
         if(tijd) {
             document.getElementById('alarmStatus').innerText = `Wekker ingesteld om ${tijd} uur`;
         } else {
-            document.getElementById('alarmStatus'].innerText = `Geen wekker ingesteld`;
+            document.getElementById('alarmStatus').innerText = `Geen wekker ingesteld`;
         }
     }
 
