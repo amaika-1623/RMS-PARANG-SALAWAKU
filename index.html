@@ -2,312 +2,326 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <link rel="manifest" href="manifest.json?v=9">
-    <link rel="icon" type="image/png" href="icon-192.png">
-    <link rel="apple-touch-icon" href="icon-192.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mena Muria Klok & Eeuwkalender</title>
+    <title>Mena Muria Klok & Radio</title>
     <style>
+        :root {
+            --bg-color: #0d0b07;
+            --card-bg: #14110b;
+            --border-gold: #d4af37;
+            --text-gold: #e6ca65;
+            --text-light: #f4edd3;
+        }
+
         body {
-            background-color: #0b0804;
-            color: #d4af37;
-            font-family: 'Times New Roman', serif, sans-serif;
-            text-align: center;
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        .container {
+
+        .app-container {
+            width: 100%;
             max-width: 400px;
-            margin: 0 auto;
-            border: 1px solid #d4af37;
+            background: var(--card-bg);
+            border: 2px solid var(--border-gold);
             border-radius: 12px;
             padding: 15px;
-            background: #110d06;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+            box-sizing: border-box;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
         }
-        h1 {
-            font-size: 20px;
+
+        header h1 {
+            color: var(--text-gold);
+            font-size: 1.5rem;
+            margin: 0 0 5px 0;
             letter-spacing: 2px;
-            margin-bottom: 5px;
-            color: #f3e5ab;
         }
-        .subtitle {
-            font-size: 11px;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
-            color: #c5a059;
-        }
-        .section-box {
-            border: 1px solid #d4af37;
-            border-radius: 8px;
-            padding: 10px;
-            margin-top: 15px;
-            background: #0f0a05;
-        }
-        .section-title {
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 8px;
+
+        header p {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin: 0 0 15px 0;
+            opacity: 0.8;
             letter-spacing: 1px;
         }
 
-        /* RONDE KLOK */
-        .clock-container {
+        .section {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-gold);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        /* KLOK SECTIE */
+        .clock-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .clock-face {
+            width: 230px;
+            height: 230px;
             position: relative;
-            width: 280px;
-            height: 280px;
             margin: 10px auto;
             border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0,0,0,0.9);
             overflow: hidden;
-            background-image: url('clock-face.png?v=9');
-            background-size: cover;
-            background-position: center 47%;
-            background-repeat: no-repeat;
-            border: none;
-            box-shadow: none;
         }
 
-        /* ABORU TEKST ONDER DE KLOK */
-        .aboru-title {
-            font-size: 18px;
-            font-weight: bold;
-            letter-spacing: 3px;
-            color: #f3e5ab;
-            margin-top: 8px;
-            margin-bottom: 4px;
-            text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+        /* VASTE ACHTERGROND AFBEELDING */
+        .clock-bg-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
         }
 
-        /* WIJZERS */
+        .clock-center-dot {
+            width: 10px;
+            height: 10px;
+            background: #cbd5e1;
+            border: 1px solid #334155;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        /* WIJZERS: EXACT GECENTREERD OP HET MIDDELPUNT EN LOPEN OVER DE AS 9-3 */
         .hand {
             position: absolute;
-            bottom: 50%;
+            top: 50%;
             left: 50%;
-            transform-origin: bottom center;
-            z-index: 10;
-            filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.9));
-        }
-        .hour-hand { 
-            width: 10px; 
-            height: 62px; 
-            background: linear-gradient(135deg, #fff3cd 0%, #d4af37 50%, #aa820a 100%); 
-            margin-left: -5px; 
-            clip-path: polygon(50% 0%, 100% 25%, 70% 100%, 30% 100%, 0% 25%);
-        }
-        .minute-hand { 
-            width: 7px; 
-            height: 98px; 
-            background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #8b6914 100%); 
-            margin-left: -3.5px; 
-            clip-path: polygon(50% 0%, 100% 20%, 75% 100%, 25% 100%, 0% 20%);
-        }
-        .second-hand { 
-            width: 1.5px; 
-            height: 108px; 
-            background: #ff3333; 
-            margin-left: -0.75px; 
-            z-index: 11; 
-        }
-        .center-dot {
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 12px; height: 12px;
-            background: radial-gradient(circle, #ffcc00 0%, #8b0000 100%);
-            border: 2px solid #d4af37;
-            border-radius: 50%;
-            margin: -6px 0 0 -6px;
-            z-index: 12;
+            transform-origin: 50% 100%;
+            transform: translate(-50%, -100%) rotate(0deg);
+            z-index: 5;
         }
 
-        /* DIGITALE TIJD & DATUM */
-        .digital-time-section {
-            margin-top: 8px;
-            padding: 5px;
-            border-top: 1px dashed rgba(212, 175, 55, 0.3);
+        .hour-hand {
+            width: 13px;
+            height: 62px;
         }
-        .date-line {
-            font-size: 13px;
-            color: #c5a059;
-            margin-bottom: 4px;
+
+        .minute-hand {
+            width: 11px;
+            height: 84px;
+        }
+
+        .second-hand {
+            width: 2px;
+            height: 94px;
+            background-color: #00ff66;
+            z-index: 6;
+            transform-origin: 50% 100%;
+        }
+
+        .digital-date {
+            font-size: 0.9rem;
+            color: var(--text-gold);
             margin-top: 5px;
         }
-        .time-line {
-            font-size: 28px;
+
+        .digital-time {
+            font-size: 1.4rem;
             font-weight: bold;
-            color: #f3e5ab;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            letter-spacing: 1px;
+            color: var(--text-light);
         }
 
-        /* BIJBELTEKST */
-        .bible-verse {
-            font-style: italic;
-            font-size: 13px;
-            color: #f3e5ab;
-            line-height: 1.4;
-            padding: 8px 5px;
-            min-height: 40px;
-        }
-        .bible-ref {
-            font-size: 11px;
+        /* KNOPPEN EN INPUTS */
+        select, button, input {
+            background: linear-gradient(to bottom, #d4af37, #aa8c2c);
+            color: #0d0b07;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
             font-weight: bold;
-            color: #d4af37;
-            margin-top: 4px;
-            font-style: normal;
-        }
-
-        /* UI ELEMENTS */
-        select, input[type="text"], input[type="number"], input[type="time"], button, .link-button {
-            background-color: #1a1205;
-            color: #f3e5ab;
-            border: 1px solid #d4af37;
-            padding: 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            margin: 4px 0;
-            box-sizing: border-box;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
-        select, input[type="text"], input[type="time"] { width: 100%; }
-        button, .link-button {
             cursor: pointer;
-            font-weight: bold;
-            background: linear-gradient(to bottom, #d4af37, #aa820a);
-            color: #0b0804;
-        }
-        button:hover, .link-button:hover { opacity: 0.9; }
-
-        iframe {
-            border-radius: 6px;
-            border: 1px solid #d4af37;
+            font-size: 0.85rem;
+            margin: 4px 0;
             width: 100%;
-            height: 200px;
-        }
-        .status-text {
-            font-size: 11px;
-            font-style: italic;
-            margin-top: 5px;
-            color: #c5a059;
-        }
-        table {
-            width: 100%;
-            margin-top: 10px;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 5px;
-            font-size: 12px;
-            text-align: center;
-        }
-        th { color: #f3e5ab; }
-        td.today-cell {
-            background: #d4af37;
-            color: #0b0804;
-            font-weight: bold;
-            border-radius: 50%;
+            box-sizing: border-box;
         }
 
-        #tvPlayerContainer {
+        select {
+            background: #1f1910;
+            color: var(--text-gold);
+            border: 1px solid var(--border-gold);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* EEUWKALENDER GRID */
+        .calendar-header {
+            font-size: 0.9rem;
+            color: var(--text-gold);
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
+            font-size: 0.75rem;
+            margin-top: 8px;
+        }
+
+        .calendar-day-name {
+            color: var(--text-gold);
+            font-weight: bold;
+            padding: 4px 0;
+        }
+
+        .calendar-cell {
+            background: rgba(255,255,255,0.05);
+            padding: 6px 0;
+            border-radius: 3px;
+            color: var(--text-light);
+        }
+
+        .calendar-cell.empty {
+            background: transparent;
+        }
+
+        .calendar-cell.today {
+            background: var(--border-gold);
+            color: #0d0b07;
+            font-weight: bold;
+        }
+
+        .media-frame {
             display: none;
-            margin-top: 10px;
+            margin-top: 8px;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>MENA MURIA</h1>
-    <div class="subtitle">KLOK • RADIO STREAM • EEUWKALENDER</div>
+<div class="app-container">
+    <header>
+        <h1>MENA MURIA</h1>
+        <p>KLOK • RADIO STREAM • EEUWKALENDER</p>
+    </header>
 
-    <!-- KLOK & DIGITALE TIJD -->
-    <div class="section-box">
-        <div class="clock-container">
-            <div class="hand hour-hand" id="hourHand"></div>
-            <div class="hand minute-hand" id="minuteHand"></div>
+    <!-- KLOK SECTIE -->
+    <div class="section clock-section">
+        <div class="clock-face" id="klokFace">
+            <img src="clock-face.png" alt="Klok Wijzerplaat" class="clock-bg-img">
+            <div class="clock-center-dot"></div>
+            
+            <!-- Uurwijzer -->
+            <div class="hand hour-hand" id="hourHand">
+                <svg viewBox="0 0 20 100" width="100%" height="100%">
+                    <path d="M10 0 L19 20 L13 20 L13 100 L7 100 L7 20 L1 20 Z" fill="#e2e8f0" stroke="#475569" stroke-width="1.2"/>
+                </svg>
+            </div>
+            
+            <!-- Minuutwijzer -->
+            <div class="hand minute-hand" id="minuteHand">
+                <svg viewBox="0 0 16 100" width="100%" height="100%">
+                    <path d="M8 0 L16 16 L11 16 L11 100 L5 100 L5 16 L0 16 Z" fill="#f8fafc" stroke="#475569" stroke-width="1.2"/>
+                </svg>
+            </div>
+            
+            <!-- Groene Secondewijzer -->
             <div class="hand second-hand" id="secondHand"></div>
-            <div class="center-dot"></div>
         </div>
-
-        <div class="aboru-title">ABORU</div>
-
-        <div class="digital-time-section">
-            <div class="date-line" id="digitalDateOnly">Laden...</div>
-            <div class="time-line" id="digitalTimeOnly">00:00:00</div>
-        </div>
+        <div style="font-size: 0.85rem; color: var(--text-gold); margin-top: 4px; font-weight: bold;">ABORU</div>
+        <div class="digital-date" id="digitalDate">woensdag 21 oktober 2026</div>
+        <div class="digital-time" id="digitalTime">23:57:18</div>
     </div>
 
     <!-- DAGELIJKS WOORD -->
-    <div class="section-box">
-        <div class="section-title">📖 DAGELIJKS WOORD</div>
-        <div class="bible-verse" id="bibleVerseText">Laden van dagtekst...</div>
-        <div class="bible-ref" id="bibleVerseRef"></div>
+    <div class="section">
+        <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 4px;">📖 DAGELIJKS WOORD</div>
+        <div style="font-size: 0.85rem; font-style: italic;">"De Heer is mijn herder, mij ontbreekt niets."</div>
+        <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 4px;">Psalm 23:1</div>
     </div>
 
     <!-- STREAM & RADIO SPELER -->
-    <div class="section-box">
-        <div class="section-title">📻 STREAM & RADIO SPELER</div>
-        
-        <select id="stationSelect">
-            <option value="https://youtu.be/Q6W78dSEa1M">Carlos Santana (Wekker Concert)</option>
-            <option value="https://youtu.be/4y9szAi9Dhc">Edwine Samuels (Herfstparty)</option>
-            <option value="https://icecast.omroep.nl/radio1-bb-mp3">NPO Radio 1 (Audio)</option>
-            <option value="https://icecast.omroep.nl/radio2-bb-mp3">NPO Radio 2 (Audio)</option>
-            <option value="https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO_10.mp3">Radio 10 (Audio)</option>
+    <div class="section">
+        <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 6px;">📻 STREAM & RADIO SPELER</div>
+        <select id="stationSelect" onchange="kiesStation()">
+            <option value="https://www.youtube.com/embed/Q6W78dSEa1M">Carlos Santana (Wekker Concert)</option>
+            <option value="https://stream.qmusic.nl/qmusic/aac">Qmusic AAC</option>
+            <option value="https://stream.qmusic.nl/qmusic/mp3">Qmusic MP3</option>
         </select>
+        <input type="text" id="streamUrl" value="https://www.youtube.com/embed/Q6W78dSEa1M" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-top:6px;">
+        <div class="btn-row" style="margin-top: 8px;">
+            <button onclick="playMusic()">▶ Play</button>
+            <button onclick="stopMusic()" style="background: linear-gradient(to bottom, #d9534f, #c9302c); color: white;">⏹ Stop</button>
+        </div>
+        <div class="btn-row" style="margin-top: 6px;">
+            <button onclick="window.open('https://radio.net', '_blank')">🌍 Radio.net</button>
+            <button onclick="window.open('https://www.radio.net/search?q=streaming', '_blank')">📻 Streaming Radios</button>
+        </div>
+        <div id="playerContainer" class="media-frame">
+            <iframe id="youtubePlayer" width="100%" height="180" src="" frameborder="0" allow="autoplay"></iframe>
+        </div>
+    </div>
 
-        <input type="text" id="mediaUrl" value="https://youtu.be/Q6W78dSEa1M" placeholder="Plak YouTube of Stream URL..." />
+    <!-- WEKKER / ALARM -->
+    <div class="section">
+        <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 6px;">⏰ WEKKER / ALARM</div>
+        <div class="btn-row">
+            <input type="time" id="alarmTijd" value="07:00" style="text-align: center; background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold);">
+            <button onclick="zetWekker()" style="width: auto; padding: 8px 16px;">Zet Wekker</button>
+        </div>
+        <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 4px;" id="alarmStatus">Geen wekker ingesteld</div>
+    </div>
+
+    <!-- MINI TV & LINKS -->
+    <div class="section">
+        <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 6px;">📺 MINI TV & FAVORITTEN LIJST</div>
+        <div class="btn-row">
+            <button onclick="toggleMiniTV()">📺 YouTube TV (Mini)</button>
+            <button onclick="window.open('https://youtube.com/@gunungbatuamsterdamlivestreamk?si=bn0MgOYpAdBwtJ2J', '_blank')">⛰️ Gunung Batu</button>
+        </div>
         
-        <div style="display: flex; gap: 5px;">
-            <button id="playBtn" style="flex: 1;">▶ Play</button>
-            <button id="stopBtn" style="flex: 1;">⏹ Stop</button>
-        </div>
-
-        <div style="margin-top: 6px;">
-            <a href="https://nl.radio.net/" target="_blank" class="link-button" style="width: 100%;">🌐 Radio.net (Alle Zenders)</a>
-        </div>
-
-        <div id="mediaOutput">
-            <div class="status-text" id="playerStatus">Speler gereed</div>
-        </div>
-    </div>
-
-    <!-- WEKKER -->
-    <div class="section-box">
-        <div class="section-title">⏰ WEKKER / ALARM</div>
-        <div style="display: flex; gap: 5px;">
-            <input type="time" id="alarmTime" value="07:00" style="flex: 2;" />
-            <button id="setAlarmBtn" style="flex: 1;">Zet Wekker</button>
-        </div>
-        <div class="status-text" id="alarmStatus">Geen wekker ingesteld</div>
-    </div>
-
-    <!-- MINI TV -->
-    <div class="section-box">
-        <div class="section-title">📺 MINI TV & LINKS</div>
-        <div style="display: flex; gap: 5px; margin-bottom: 5px;">
-            <button id="showYtTvBtn" style="flex: 1;">📺 YouTube TV</button>
-            <button id="showGunungBtn" style="flex: 1; background: linear-gradient(to bottom, #e5c158, #b8860b);">⛪ Gunung Batu</button>
-        </div>
-        <div style="display: flex; gap: 5px;">
-            <a href="https://share.google/OjtH32V2ynojkQ1mW" target="_blank" class="link-button" style="flex: 1;">📘 Facebook</a>
-        </div>
-
-        <div id="tvPlayerContainer">
-            <button id="closeTvBtn" style="background:#8b0000; color:#fff; width:100%; margin-bottom:5px;">✖ Sluit Mini TV</button>
-            <iframe id="tvIframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <div id="miniTvContainer" class="media-frame">
+            <!-- Keuzemenu voor alle Excel favorieten -->
+            <select id="miniTvSelect" onchange="kiesExcelNummer()" style="margin-bottom:4px;">
+                <select id="miniTvSelect" onchange="kiesExcelNummer()" style="margin-bottom:4px;">
+                    <option value="">📂 Kies uit je Excel favorieten...</option>
+                </select>
+            </select>
+            <input type="text" id="miniTvUrl" value="https://youtu.be/WTSLipAWHow" placeholder="Plak YouTube link hier" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:4px;">
+            <div class="btn-row">
+                <button onclick="startMiniTV()">Laad & Speel</button>
+                <button onclick="toggleMiniTV()" style="background: #d9534f; color:white;">Sluit TV</button>
+            </div>
+            <!-- Vorige en Volgende knoppen voor de Excel lijst -->
+            <div class="btn-row" style="margin-top: 6px;">
+                <button onclick="vorigNummer()" style="background: linear-gradient(to bottom, #c9a227, #997512);">⏮ Vorige</button>
+                <button onclick="volgendNummer()" style="background: linear-gradient(to bottom, #c9a227, #997512);">Volgende ⏭</button>
+            </div>
+            <iframe id="miniTvPlayer" width="100%" height="180" src="" frameborder="0" allow="autoplay" style="margin-top:6px;"></iframe>
         </div>
     </div>
 
     <!-- EEUWKALENDER -->
-    <div class="section-box">
-        <div class="section-title">📅 EEUWKALENDER</div>
-        <div style="display: flex; gap: 5px; justify-content: center; margin-bottom: 8px;">
-            <button id="todayBtn">Vandaag</button>
-        </div>
-        <div style="display: flex; gap: 5px;">
-            <select id="monthSelect" style="flex: 2;">
+    <div class="section">
+        <div class="calendar-header">📅 EEUWKALENDER</div>
+        <button onclick="gaNaarVandaag()">Vandaag</button>
+        <div class="btn-row" style="margin-top: 6px;">
+            <select id="maandSelect" onchange="bouwKalender()">
                 <option value="0">Januari</option>
                 <option value="1">Februari</option>
                 <option value="2">Maart</option>
@@ -317,336 +331,231 @@
                 <option value="6">Juli</option>
                 <option value="7">Augustus</option>
                 <option value="8">September</option>
-                <option value="9">Oktober</option>
+                <option value="9" selected>Oktober</option>
                 <option value="10">November</option>
                 <option value="11">December</option>
             </select>
-            <input type="number" id="yearInput" style="flex: 1; text-align: center;" />
+            <input type="number" id="jaarInput" value="2026" onchange="bouwKalender()" style="width: 80px; text-align: center;">
         </div>
-        <button id="goToYearBtn" style="width: 100%; margin-top: 5px;">Ga naar jaar</button>
+        <button onclick="bouwKalender()" style="margin-top: 6px;">Ga naar jaar / maand</button>
         
-        <div id="calendarContainer" style="margin-top: 10px;">
-            <div style="font-size: 13px; font-weight: bold; color: #f3e5ab;" id="calMonthYearTitle">Laden...</div>
-            <table>
-                <thead>
-                    <tr>
-                        <th style="color: #f3e5ab;">Ma</th>
-                        <th>Di</th>
-                        <th>Wo</th>
-                        <th>Do</th>
-                        <th>Vr</th>
-                        <th style="color: #ff9999;">Za</th>
-                        <th style="color: #ff9999;">Zo</th>
-                    </tr>
-                </thead>
-                <tbody id="calendarBody"></tbody>
-            </table>
-        </div>
-        
-        <div class="status-text" id="selectedDateInfo" style="margin-top: 10px; border-top: 1px dashed #d4af37; padding-top: 5px;">
-            Geselecteerde datum: Laden...
-        </div>
+        <div class="calendar-grid" id="kalenderGrid"></div>
     </div>
-
 </div>
 
 <script>
-    let activeAlarm = null;
-    let currentVerseDay = null;
-    const months = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
+    // --- KLOK LOGICA ---
+    function updateKlok() {
+        const nu = new Date();
+        const seconden = nu.getSeconds();
+        const minuten = nu.getMinutes();
+        const uren = nu.getHours();
 
-    const bibleVerses = [
-        { text: "De HEERE is mijn Herder, mij zal niets ontbreken.", ref: "Psalm 23:1" },
-        { text: "Uw woord is een lamp voor mijn voet en een licht op mijn pad.", ref: "Psalm 119:105" },
-        { text: "Vertrouw op de HEERE met heel je hart, en steun op je eigen inzicht niet.", ref: "Spreuken 3:5" },
-        { text: "Wees niet bevreesd, want Ik ben met u; wees niet ontsteld, want Ik ben uw God.", ref: "Jesaja 41:10" },
-        { text: "De vreugde van de HEERE is uw kracht.", ref: "Nehemia 8:11" },
-        { text: "Want alzo lief heeft God de wereld gehad, dat Hij Zijn eniggeboren Zoon gegeven heeft.", ref: "Johannes 3:16" },
-        { text: "Ik vermag alle dingen door Christus, Die mij kracht geeft.", ref: "Filippenzen 4:13" },
-        { text: "Wees in geen ding bezorgd, maar laat uw verlangens in alles door bidden en smeken bekend worden bij God.", ref: "Filippenzen 4:6" },
-        { text: "De HEERE is mijn licht en mijn heil, voor wie zou ik vrezen?", ref: "Psalm 27:1" },
-        { text: "Zo zoek eerst het Koninkrijk van God en Zijn gerechtigheid, en al deze dingen zullen u erbij gegeven worden.", ref: "Mattheüs 6:33" },
-        { text: "Komt herwaarts tot Mij, allen die vermoeid en belast zijt, en Ik zal u rust geven.", ref: "Mattheüs 11:28" },
-        { text: "Wees sterk en moedig, schrik niet en wees niet ontsteld, want de HEERE, uw God, is met u.", ref: "Jozua 1:9" },
-        { text: "En wij weten dat voor hen die God liefhebben, alle dingen meewerken ten goede.", ref: "Romeinen 8:28" },
-        { text: "Liefde is geduldig, liefde is vriendelijk.", ref: "1 Korinthiërs 13:4" },
-        { text: "God is ons een toevlucht en sterkte, zeer beproefd bevonden als hulp in benauwdheden.", ref: "Psalm 46:2" },
-        { text: "U zult de waarheid kennen, en de waarheid zal u vrijmaken.", ref: "Johannes 8:32" },
-        { text: "Zij die de HEERE verwachten, zullen hun kracht vernieuwen, zij zullen hun vleugels uitslaan als arenden.", ref: "Jesaja 40:31" },
-        { text: "Werp al uw zorgen op Hem, want Hij zorgt voor u.", ref: "1 Petrus 5:7" },
-        { text: "Dit is de dag die de HEERE gemaakt heeft; laten wij daarin verheugd en verblijd zijn.", ref: "Psalm 118:24" },
-        { text: "Gezegend is de mens die op de HEERE vertrouwt, wiens vertrouwen de HEERE is.", ref: "Jeremia 17:7" }
-    ];
+        const secGraden = seconden * 6;
+        const minGraden = minuten * 6 + seconden * 0.1;
+        const uurGraden = (uren % 12) * 30 + minuten * 0.5;
 
-    function updateDailyVerse() {
-        try {
-            const today = new Date();
-            const startOfYear = new Date(today.getFullYear(), 0, 0);
-            const diff = today - startOfYear;
-            const oneDay = 1000 * 60 * 60 * 24;
-            const dayOfYear = Math.floor(diff / oneDay);
-            
-            if (currentVerseDay !== dayOfYear) {
-                currentVerseDay = dayOfYear;
-                const index = dayOfYear % bibleVerses.length;
-                const vText = document.getElementById('bibleVerseText');
-                const vRef = document.getElementById('bibleVerseRef');
-                if (vText) vText.innerText = `"${bibleVerses[index].text}"`;
-                if (vRef) vRef.innerText = `— ${bibleVerses[index].ref}`;
-            }
-        } catch (e) { console.error(e); }
+        document.getElementById('secondHand').style.transform = `translate(-50%, -100%) rotate(${secGraden}deg)`;
+        document.getElementById('minuteHand').style.transform = `translate(-50%, -100%) rotate(${minGraden}deg)`;
+        document.getElementById('hourHand').style.transform = `translate(-50%, -100%) rotate(${uurGraden}deg)`;
+
+        const optiesDagen = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('digitalDate').innerText = nu.toLocaleDateString('nl-NL', optiesDagen);
+        document.getElementById('digitalTime').innerText = nu.toLocaleTimeString('nl-NL');
     }
+    setInterval(updateKlok, 1000);
+    updateKlok();
 
-    function playAlarmSound() {
-        try {
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
+    // --- JOUW EXCEL PLAYLIST VOOR MINI TV ---
+    const miniTvPlaylist = [
+        "https://youtu.be/WTSLipAWHow?is=ihYM1OTCED1Zxnda",
+        "https://youtu.be/WTSLipAWHow?is=8LtL7ZkeqNaxiJ2e",
+        "https://youtu.be/v_sTi3mHYew?is=xB2Zt68-H-_RxU5i",
+        "https://youtu.be/4DIH_f5f9i4?is=9KANQlrfIHYgwfon",
+        "https://youtu.be/4j9KbjLOEJM?is=7Ui1Kqw_MFNd065A",
+        "https://youtu.be/kae_J-tY6B4?is=F6OnrlR43thsLekn",
+        "https://youtu.be/DoaRPnAi60Y?is=Wq15cHK8gRvtJCcV",
+        "https://music.youtube.com/watch?v=X3BWXepHuPY&si=ImnEXfXYtEATXWg_",
+        "https://youtu.be/7DW9pHzwMck?is=ksaHFilCYcgKFQUe",
+        "https://youtu.be/09IQ42NwpXE?is=j1GnZG4r7aADzHGf",
+        "https://youtu.be/1K3iYEPo_5s?is=CnYGprYlSytmSy_o",
+        "https://youtu.be/TEhNMG2du8k?is=hj-weJdWawXLjKKz",
+        "https://youtu.be/4q2fdYSf66k?is=dnIkTCgYDnawn7Ou",
+        "https://youtu.be/H8szCNO_kWc?is=FUQYqcmElsO5Hbmc",
+        "https://youtu.be/Ib88tFArvd0?is=OgAWAs-lgssFyDX4",
+        "https://youtu.be/imyCp17uNyk?is=o_NJcNuy4sIb5h4a",
+        "https://youtu.be/mgACEylEtAE?is=Mea-1vXmcLtufJ66",
+        "https://music.youtube.com/watch?v=d_0khAAItqg&si=oDI1UC7nHq_w2rRX",
+        "https://youtu.be/OZNrr3UX9mA?is=MYPdbaUoy15DEZNX",
+        "https://youtu.be/K_ajbYkG9fo?is=7K774rqwcGolpD36",
+        "https://youtu.be/6mJvUmx56Ko?is=W153_Kp5F4nJo0S2",
+        "https://youtu.be/Q6W78dSEa1M?is=45eNcpkPoQmDWDYd",
+        "https://youtu.be/aVsaRz2mCU4?is=rSzysZwOHBmPjGIK",
+        "https://www.youtube.com/live/9-Plc0og-e8?is=nQNn6Y21_vVIQahQ",
+        "https://youtu.be/UffLNP-s2xQ?is=lYiKLZfUVvCs9BUz",
+        "https://youtu.be/ZrBxv8VzYuo?is=jkHvc_r5AXHrPLaW",
+        "https://music.youtube.com/watch?v=BsJisD7n8_Q&si=Z7Xs_aoKkQXZVKHs",
+        "https://youtu.be/d34_LrdH8iI?is=QW30DGrFdfTEd4bh",
+        "https://youtu.be/Q6W78dSEa1M?is=8dhGf4027ep-EcJo",
+        "https://youtu.be/iab8j-ZqES4?is=TOtO9GIipb-71yb4"
+    ];
+    let huidigePlaylistIndex = 0;
 
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
-            gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+    // Vul het keuzemenu automatisch met de Excel-nummers
+    function vulExcelDropdown() {
+        const select = document.getElementById('miniTvSelect');
+        miniTvPlaylist.forEach((link, index) => {
+            const opt = document.createElement('option');
+            opt.value = link;
+            opt.text = `Favoriet #${index + 1} (${link.substring(8, 25)}...)`;
+            select.appendChild(opt);
+        });
+    }
+    vulExcelDropdown();
 
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-
-            oscillator.start();
-            oscillator.stop(audioCtx.currentTime + 1.0);
-        } catch (e) {
-            console.log("Audio niet ondersteund");
+    function kiesExcelNummer() {
+        const select = document.getElementById('miniTvSelect');
+        if (select.value) {
+            document.getElementById('miniTvUrl').value = select.value;
+            huidigePlaylistIndex = select.selectedIndex - 1;
+            startMiniTV();
         }
     }
 
-    function updateClock() {
-        try {
-            const now = new Date();
-            const seconds = now.getSeconds();
-            const minutes = now.getMinutes();
-            const hours = now.getHours();
-
-            const secondDeg = seconds * 6;
-            const minuteDeg = minutes * 6 + seconds * 0.1;
-            const hourDeg = (hours % 12) * 30 + minutes * 0.5;
-
-            const hourHand = document.getElementById('hourHand');
-            const minuteHand = document.getElementById('minuteHand');
-            const secondHand = document.getElementById('secondHand');
-
-            if (hourHand) hourHand.style.transform = `rotate(${hourDeg}deg)`;
-            if (minuteHand) minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
-            if (secondHand) secondHand.style.transform = `rotate(${secondDeg}deg)`;
-
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const dateElem = document.getElementById('digitalDateOnly');
-            if (dateElem) dateElem.innerText = now.toLocaleDateString('nl-NL', options);
-
-            const timeString = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
-            const timeElem = document.getElementById('digitalTimeOnly');
-            if (timeElem) timeElem.innerText = timeString;
-
-            updateDailyVerse();
-
-            const alarmCheckString = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
-            if (activeAlarm && activeAlarm === alarmCheckString && seconds === 0) {
-                playAlarmSound();
-                const mediaUrlInput = document.getElementById('mediaUrl');
-                const playBtn = document.getElementById('playBtn');
-                if (mediaUrlInput) mediaUrlInput.value = "https://youtu.be/Q6W78dSEa1M";
-                if (playBtn) playBtn.click();
-                
-                const alarmStatus = document.getElementById('alarmStatus');
-                if (alarmStatus) {
-                    alarmStatus.innerText = `🔔 WEKKER GAAT AF (${alarmCheckString})!`;
-                    alarmStatus.style.color = "#ff4444";
-                }
-            }
-        } catch (e) { console.error(e); }
+    function converteerYouTubeLink(url) {
+        if (!url) return '';
+        // Als het een YouTube Music link is of gewone watch link
+        let videoId = '';
+        if (url.includes('youtu.be/')) {
+            videoId = url.split('youtu.be/')[1].split('?')[0];
+        } else if (url.includes('watch?v=')) {
+            videoId = url.split('watch?v=').pop().split('&')[0];
+        }
+        
+        if (videoId) {
+            return `https://www.youtube.com/embed/${videoId}`;
+        }
+        return url;
     }
 
-    function generateCalendar(year, month) {
-        try {
-            const body = document.getElementById('calendarBody');
-            if (!body) return;
-            body.innerHTML = '';
-            
-            const today = new Date();
-            const currentYear = today.getFullYear();
-            const currentMonth = today.getMonth();
-            const currentDate = today.getDate();
-
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-            
-            let startDay = firstDay.getDay() - 1;
-            if (startDay === -1) startDay = 6;
-            
-            let date = 1;
-            let html = '';
-
-            const mSelect = document.getElementById('monthSelect');
-            const yInput = document.getElementById('yearInput');
-            const cTitle = document.getElementById('calMonthYearTitle');
-
-            if (mSelect) mSelect.value = month;
-            if (yInput) yInput.value = year;
-            if (cTitle) cTitle.innerText = `${months[month]} ${year}`;
-
-            for (let i = 0; i < 6; i++) {
-                let row = '<tr>';
-                for (let j = 0; j < 7; j++) {
-                    if (i === 0 && j < startDay) {
-                        row += '<td></td>';
-                    } else if (date > lastDay.getDate()) {
-                        row += '<td></td>';
-                    } else {
-                        let isToday = (date === currentDate && month === currentMonth && year === currentYear);
-                        let classAttr = isToday ? 'class="today-cell"' : '';
-                        row += `<td ${classAttr}>${date}</td>`;
-                        date++;
-                    }
-                }
-                row += '</tr>';
-                html += row;
-                if (date > lastDay.getDate()) break;
-            }
-            body.innerHTML = html;
-
-            const selDate = new Date(year, month, (year === currentYear && month === currentMonth) ? currentDate : 1);
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const sInfo = document.getElementById('selectedDateInfo');
-            if (sInfo) sInfo.innerText = "Geselecteerde datum: " + selDate.toLocaleDateString('nl-NL', options);
-        } catch (e) { console.error(e); }
+    function volgendNummer() {
+        huidigePlaylistIndex = (huidigePlaylistIndex + 1) % miniTvPlaylist.length;
+        document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
+        document.getElementById('miniTvSelect').selectedIndex = huidigePlaylistIndex + 1;
+        startMiniTV();
     }
 
-    // Directe uitvoering
-    updateClock();
-    setInterval(updateClock, 1000);
+    function vorigNummer() {
+        huidigePlaylistIndex = (huidigePlaylistIndex - 1 + miniTvPlaylist.length) % miniTvPlaylist.length;
+        document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
+        document.getElementById('miniTvSelect').selectedIndex = huidigePlaylistIndex + 1;
+        startMiniTV();
+    }
 
-    const initialNow = new Date();
-    generateCalendar(initialNow.getFullYear(), initialNow.getMonth());
+    // --- MUZIEK SPELER ---
+    function kiesStation() {
+        const select = document.getElementById('stationSelect');
+        document.getElementById('streamUrl').value = select.value;
+    }
 
-    // Event listeners voor knoppen
-    document.addEventListener('DOMContentLoaded', function() {
-        try {
-            const stationSelect = document.getElementById('stationSelect');
-            if (stationSelect) {
-                stationSelect.addEventListener('change', function() {
-                    const mUrl = document.getElementById('mediaUrl');
-                    if (mUrl) mUrl.value = this.value;
-                });
-            }
+    function playMusic() {
+        const iframe = document.getElementById('youtubePlayer');
+        const container = document.getElementById('playerContainer');
+        let urlInput = document.getElementById('streamUrl').value;
+        let embedUrl = converteerYouTubeLink(urlInput);
+        
+        container.style.display = 'block';
+        let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
+        iframe.src = playUrl;
+    }
 
-            const playBtn = document.getElementById('playBtn');
-            if (playBtn) {
-                playBtn.addEventListener('click', function() {
-                    const urlInput = document.getElementById('mediaUrl').value.trim();
-                    const outputDiv = document.getElementById('mediaOutput');
-                    if (!urlInput) {
-                        outputDiv.innerHTML = `<div class="status-text" style="color:red;">Voer een URL in</div>`;
-                        return;
-                    }
-                    if (urlInput.includes("youtube.com") || urlInput.includes("youtu.be")) {
-                        let videoId = "";
-                        if (urlInput.includes("youtu.be/")) {
-                            videoId = urlInput.split("youtu.be/")[1].split("?")[0].split("&")[0];
-                        } else if (urlInput.includes("watch?v=")) {
-                            videoId = urlInput.split("watch?v=")[1].split("&")[0];
-                        }
-                        if (videoId) {
-                            outputDiv.innerHTML = `<div style="margin-top:10px;"><iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><div class="status-text">Video actief</div></div>`;
-                        } else {
-                            outputDiv.innerHTML = `<div class="status-text" style="color:red;">Kon YouTube ID niet verwerken</div>`;
-                        }
-                    } else {
-                        outputDiv.innerHTML = `<div style="margin-top:10px;"><audio id="audioStream" controls autoplay style="width:100%;"><source src="${urlInput}" type="audio/mpeg">Browser ondersteunt dit audio-element niet.</audio><div class="status-text">Audiostream actief</div></div>`;
-                    }
-                });
-            }
+    function stopMusic() {
+        const iframe = document.getElementById('youtubePlayer');
+        const container = document.getElementById('playerContainer');
+        iframe.src = "";
+        container.style.display = 'none';
+    }
 
-            const stopBtn = document.getElementById('stopBtn');
-            if (stopBtn) {
-                stopBtn.addEventListener('click', function() {
-                    const outputDiv = document.getElementById('mediaOutput');
-                    if (outputDiv) outputDiv.innerHTML = `<div class="status-text">Speler gestopt</div>`;
-                });
-            }
+    // --- MINI TV LOGICA ---
+    function toggleMiniTV() {
+        const container = document.getElementById('miniTvContainer');
+        if (container.style.display === 'block') {
+            container.style.display = 'none';
+            document.getElementById('miniTvPlayer').src = "";
+        } else {
+            container.style.display = 'block';
+            document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
+            document.getElementById('miniTvSelect').selectedIndex = huidigePlaylistIndex + 1;
+            startMiniTV();
+        }
+    }
 
-            const showYtTvBtn = document.getElementById('showYtTvBtn');
-            if (showYtTvBtn) {
-                showYtTvBtn.addEventListener('click', function() {
-                    const container = document.getElementById('tvPlayerContainer');
-                    const iframe = document.getElementById('tvIframe');
-                    if (iframe) iframe.src = "https://www.youtube.com/embed/Q6W78dSEa1M?autoplay=1";
-                    if (container) container.style.display = 'block';
-                });
-            }
+    function startMiniTV() {
+        const iframe = document.getElementById('miniTvPlayer');
+        let urlInput = document.getElementById('miniTvUrl').value;
+        let embedUrl = converteerYouTubeLink(urlInput);
+        
+        let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
+        iframe.src = playUrl;
+    }
 
-            const showGunungBtn = document.getElementById('showGunungBtn');
-            if (showGunungBtn) {
-                showGunungBtn.addEventListener('click', function() {
-                    window.open("https://youtube.com/@gunungbatuamsterdamlivestreamk/live", "_blank");
-                });
-            }
+    // --- WEKKER FUNCTIE ---
+    function zetWekker() {
+        const tijd = document.getElementById('alarmTijd').value;
+        if(tijd) {
+            document.getElementById('alarmStatus').innerText = `Wekker ingesteld om ${tijd} uur`;
+        } else {
+            document.getElementById('alarmStatus').innerText = `Geen wekker ingesteld`;
+        }
+    }
 
-            const closeTvBtn = document.getElementById('closeTvBtn');
-            if (closeTvBtn) {
-                closeTvBtn.addEventListener('click', function() {
-                    const container = document.getElementById('tvPlayerContainer');
-                    const iframe = document.getElementById('tvIframe');
-                    if (iframe) iframe.src = "";
-                    if (container) container.style.display = 'none';
-                });
-            }
+    // --- VOLLEDIGE EEUWKALENDER ---
+    function bouwKalender() {
+        const maand = parseInt(document.getElementById('maandSelect').value);
+        const jaar = parseInt(document.getElementById('jaarInput').value);
+        const grid = document.getElementById('kalenderGrid');
+        grid.innerHTML = '';
 
-            const setAlarmBtn = document.getElementById('setAlarmBtn');
-            if (setAlarmBtn) {
-                setAlarmBtn.addEventListener('click', function() {
-                    const alarmTimeInput = document.getElementById('alarmTime');
-                    const statusDiv = document.getElementById('alarmStatus');
-                    if (alarmTimeInput && alarmTimeInput.value) {
-                        activeAlarm = alarmTimeInput.value;
-                        if (statusDiv) {
-                            statusDiv.innerText = `Wekker ingesteld om ${activeAlarm} uur`;
-                            statusDiv.style.color = "#f3e5ab";
-                        }
-                    } else {
-                        activeAlarm = null;
-                        if (statusDiv) {
-                            statusDiv.innerText = `Geen wekker ingesteld`;
-                            statusDiv.style.color = "#c5a059";
-                        }
-                    }
-                });
-            }
-
-            const goToYearBtn = document.getElementById('goToYearBtn');
-            if (goToYearBtn) {
-                goToYearBtn.addEventListener('click', function() {
-                    const m = parseInt(document.getElementById('monthSelect').value);
-                    const y = parseInt(document.getElementById('yearInput').value);
-                    if (!isNaN(y)) generateCalendar(y, m);
-                });
-            }
-
-            const todayBtn = document.getElementById('todayBtn');
-            if (todayBtn) {
-                todayBtn.addEventListener('click', function() {
-                    const curr = new Date();
-                    generateCalendar(curr.getFullYear(), curr.getMonth());
-                });
-            }
-        } catch (e) { console.error(e); }
-    });
-</script>
-
-<script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-            for(let registration of registrations) {
-                registration.unregister();
-            }
+        const dNamen = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
+        dNamen.forEach(d => {
+            const div = document.createElement('div');
+            div.className = 'calendar-day-name';
+            div.innerText = d;
+            grid.appendChild(div);
         });
+
+        let eersteDagIndex = new Date(jaar, maand, 1).getDay();
+        eersteDagIndex = (eersteDagIndex === 0) ? 6 : eersteDagIndex - 1;
+
+        const aantalDagen = new Date(jaar, maand + 1, 0).getDate();
+
+        for (let i = 0; i < eersteDagIndex; i++) {
+            const leeg = document.createElement('div');
+            leeg.className = 'calendar-cell empty';
+            grid.appendChild(leeg);
+        }
+
+        const vandaag = new Date();
+        for (let dag = 1; dag <= aantalDagen; dag++) {
+            const cel = document.createElement('div');
+            cel.className = 'calendar-cell';
+            cel.innerText = dag;
+
+            if (dag === vandaag.getDate() && maand === vandaag.getMonth() && jaar === vandaag.getFullYear()) {
+                cel.classList.add('today');
+            }
+            grid.appendChild(cel);
+        }
     }
+
+    function gaNaarVandaag() {
+        const vandaag = new Date();
+        document.getElementById('maandSelect').value = vandaag.getMonth();
+        document.getElementById('jaarInput').value = vandaag.getFullYear();
+        bouwKalender();
+    }
+
+    bouwKalender();
 </script>
 
 </body>
