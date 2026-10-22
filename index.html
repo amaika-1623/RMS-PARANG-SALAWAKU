@@ -142,7 +142,7 @@
         }
 
         /* KNOPPEN EN INPUTS */
-        select, button, input {
+        select, button, input, textarea {
             background: linear-gradient(to bottom, #d4af37, #aa8c2c);
             color: #0d0b07;
             border: none;
@@ -156,10 +156,16 @@
             box-sizing: border-box;
         }
 
-        select {
+        select, textarea {
             background: #1f1910;
             color: var(--text-gold);
             border: 1px solid var(--border-gold);
+        }
+
+        textarea {
+            resize: vertical;
+            font-family: monospace;
+            font-size: 0.75rem;
         }
 
         .btn-row {
@@ -287,27 +293,31 @@
         <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 4px;" id="alarmStatus">Geen wekker ingesteld</div>
     </div>
 
-    <!-- MINI TV & LINKS -->
+    <!-- MINI TV & EXCEL IMPORT -->
     <div class="section">
-        <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 6px;">📺 MINI TV & FAVORITTEN LIJST</div>
+        <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 6px;">📺 MINI TV & EXCEL LIJST IMPORTEREN</div>
         <div class="btn-row">
             <button onclick="toggleMiniTV()">📺 YouTube TV (Mini)</button>
             <button onclick="window.open('https://youtube.com/@gunungbatuamsterdamlivestreamk?si=bn0MgOYpAdBwtJ2J', '_blank')">⛰️ Gunung Batu</button>
         </div>
-        <!-- Facebook knop toegevoegd -->
         <button onclick="window.open('https://www.facebook.com', '_blank')" style="margin-top: 4px;">📘 Facebook</button>
         
+        <!-- Import Veld voor Excel lijst -->
+        <div style="margin-top: 8px; text-align: left;">
+            <label style="font-size: 0.7rem; color: var(--text-gold);">📥 Plak hieronder je Excel kopie (alle regels/links):</label>
+            <textarea id="excelInput" rows="3" placeholder="Plak hier je complete Excel lijst..."></textarea>
+            <button onclick="importeerExcelLijst()" style="background: linear-gradient(to bottom, #28a745, #1e7e34); color: white; margin-top: 4px;">💾 Sla Excel Lijst Op in Geheugen</button>
+        </div>
+
         <div id="miniTvContainer" class="media-frame">
-            <!-- Keuzemenu voor alle favorieten -->
             <select id="miniTvSelect" onchange="kiesExcelNummer()" style="margin-bottom:4px;">
-                <option value="">📂 Kies uit je favorieten...</option>
+                <option value="">📂 Kies uit je geladen favorieten...</option>
             </select>
-            <input type="text" id="miniTvUrl" value="https://youtu.be/WTSLipAWHow" placeholder="Plak YouTube link hier" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:4px;">
+            <input type="text" id="miniTvUrl" value="https://youtu.be/WTSLipAWHow" placeholder="YouTube link" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:4px;">
             <div class="btn-row">
                 <button onclick="startMiniTV()">Laad & Speel</button>
                 <button onclick="toggleMiniTV()" style="background: #d9534f; color:white;">Sluit TV</button>
             </div>
-            <!-- Vorige en Volgende knoppen -->
             <div class="btn-row" style="margin-top: 6px;">
                 <button onclick="vorigNummer()" style="background: linear-gradient(to bottom, #c9a227, #997512);">⏮ Vorige</button>
                 <button onclick="volgendNummer()" style="background: linear-gradient(to bottom, #c9a227, #997512);">Volgende ⏭</button>
@@ -366,56 +376,54 @@
     setInterval(updateKlok, 1000);
     updateKlok();
 
-    // --- PLAYLIST (INCLUSIEF 3 NIEUWE LINKS) ---
-    const miniTvPlaylist = [
+    // --- PLAYLIST & EXCEL OPSLAG MECHANISME ---
+    let miniTvPlaylist = [
         "https://youtu.be/WTSLipAWHow?is=ihYM1OTCED1Zxnda",
         "https://youtu.be/WTSLipAWHow?is=8LtL7ZkeqNaxiJ2e",
-        "https://youtu.be/v_sTi3mHYew?is=xB2Zt68-H-_RxU5i",
-        "https://youtu.be/4DIH_f5f9i4?is=9KANQlrfIHYgwfon",
-        "https://youtu.be/4j9KbjLOEJM?is=7Ui1Kqw_MFNd065A",
-        "https://youtu.be/kae_J-tY6B4?is=F6OnrlR43thsLekn",
-        "https://youtu.be/DoaRPnAi60Y?is=Wq15cHK8gRvtJCcV",
-        "https://music.youtube.com/watch?v=X3BWXepHuPY&si=ImnEXfXYtEATXWg_",
-        "https://youtu.be/7DW9pHzwMck?is=ksaHFilCYcgKFQUe",
-        "https://youtu.be/09IQ42NwpXE?is=j1GnZG4r7aADzHGf",
-        "https://youtu.be/1K3iYEPo_5s?is=CnYGprYlSytmSy_o",
-        "https://youtu.be/TEhNMG2du8k?is=hj-weJdWawXLjKKz",
-        "https://youtu.be/4q2fdYSf66k?is=dnIkTCgYDnawn7Ou",
-        "https://youtu.be/H8szCNO_kWc?is=FUQYqcmElsO5Hbmc",
-        "https://youtu.be/Ib88tFArvd0?is=OgAWAs-lgssFyDX4",
-        "https://youtu.be/imyCp17uNyk?is=o_NJcNuy4sIb5h4a",
-        "https://youtu.be/mgACEylEtAE?is=Mea-1vXmcLtufJ66",
-        "https://music.youtube.com/watch?v=d_0khAAItqg&si=oDI1UC7nHq_w2rRX",
-        "https://youtu.be/OZNrr3UX9mA?is=MYPdbaUoy15DEZNX",
-        "https://youtu.be/K_ajbYkG9fo?is=7K774rqwcGolpD36",
-        "https://youtu.be/6mJvUmx56Ko?is=W153_Kp5F4nJo0S2",
-        "https://youtu.be/Q6W78dSEa1M?is=45eNcpkPoQmDWDYd",
-        "https://youtu.be/aVsaRz2mCU4?is=rSzysZwOHBmPjGIK",
-        "https://www.youtube.com/live/9-Plc0og-e8?is=nQNn6Y21_vVIQahQ",
-        "https://youtu.be/UffLNP-s2xQ?is=lYiKLZfUVvCs9BUz",
-        "https://youtu.be/ZrBxv8VzYuo?is=jkHvc_r5AXHrPLaW",
-        "https://music.youtube.com/watch?v=BsJisD7n8_Q&si=Z7Xs_aoKkQXZVKHs",
-        "https://youtu.be/d34_LrdH8iI?is=QW30DGrFdfTEd4bh",
-        "https://youtu.be/Q6W78dSEa1M?is=8dhGf4027ep-EcJo",
-        "https://youtu.be/iab8j-ZqES4?is=TOtO9GIipb-71yb4",
-        // 3 Toegevoegde nieuwe links:
-        "https://youtu.be/...", // Vervang dit met je 1e nieuwe link
-        "https://youtu.be/...", // Vervang dit met je 2e nieuwe link
-        "https://youtu.be/..."  // Vervang dit met je 3e nieuwe link
+        "https://youtu.be/v_sTi3mHYew?is=xB2Zt68-H-_RxU5i"
     ];
     let huidigePlaylistIndex = 0;
 
-    // Vul het keuzemenu automatisch met de favorieten
+    // Controleer of er opgeslagen links in het geheugen van de browser staan
+    if (localStorage.getItem('menaMuriaPlaylist')) {
+        try {
+            miniTvPlaylist = JSON.parse(localStorage.getItem('menaMuriaPlaylist'));
+        } catch(e) {}
+    }
+
     function vulExcelDropdown() {
         const select = document.getElementById('miniTvSelect');
+        select.innerHTML = '<option value="">📂 Kies uit je geladen favorieten...</option>';
         miniTvPlaylist.forEach((link, index) => {
             const opt = document.createElement('option');
             opt.value = link;
-            opt.text = `Favoriet #${index + 1} (${link.substring(8, 25)}...)`;
+            opt.text = `Favoriet #${index + 1} (${link.substring(8, 35)}...)`;
             select.appendChild(opt);
         });
     }
     vulExcelDropdown();
+
+    // Functie om de geplakte Excel lijst automatisch uit te lezen en op te slaan
+    function importeerExcelLijst() {
+        const tekst = document.getElementById('excelInput').value;
+        if (!tekst.trim()) {
+            alert("Plak eerst je lijst in het veld!");
+            return;
+        }
+
+        // Zoek alle web-links (http:// of https://) in de geplakte tekst
+        const gevondenLinks = tekst.match(/https?:\/\/[^\s]+/g);
+
+        if (gevondenLinks && gevondenLinks.length > 0) {
+            miniTvPlaylist = gevondenLinks;
+            localStorage.setItem('menaMuriaPlaylist', JSON.stringify(miniTvPlaylist));
+            vulExcelDropdown();
+            huidigePlaylistIndex = 0;
+            alert(`Succes! Er zijn ${gevondenLinks.length} links opgeslagen in je app.`);
+        } else {
+            alert("Geen geldige links gevonden in de geplakte tekst.");
+        }
+    }
 
     function kiesExcelNummer() {
         const select = document.getElementById('miniTvSelect');
@@ -442,6 +450,7 @@
     }
 
     function volgendNummer() {
+        if (miniTvPlaylist.length === 0) return;
         huidigePlaylistIndex = (huidigePlaylistIndex + 1) % miniTvPlaylist.length;
         document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
         document.getElementById('miniTvSelect').selectedIndex = huidigePlaylistIndex + 1;
@@ -449,6 +458,7 @@
     }
 
     function vorigNummer() {
+        if (miniTvPlaylist.length === 0) return;
         huidigePlaylistIndex = (huidigePlaylistIndex - 1 + miniTvPlaylist.length) % miniTvPlaylist.length;
         document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
         document.getElementById('miniTvSelect').selectedIndex = huidigePlaylistIndex + 1;
@@ -487,8 +497,10 @@
             document.getElementById('miniTvPlayer').src = "";
         } else {
             container.style.display = 'block';
-            document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
-            document.getElementById('miniTvSelect').selectedIndex = huidigePlaylistIndex + 1;
+            if (miniTvPlaylist.length > 0) {
+                document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
+                document.getElementById('miniTvSelect').selectedIndex = huidigePlaylistIndex + 1;
+            }
             startMiniTV();
         }
     }
@@ -508,7 +520,7 @@
         if(tijd) {
             document.getElementById('alarmStatus').innerText = `Wekker ingesteld om ${tijd} uur`;
         } else {
-            document.getElementById('alarmStatus').innerText = `Geen wekker ingesteld`;
+            document.getElementById('alarmStatus'].innerText = `Geen wekker ingesteld`;
         }
     }
 
