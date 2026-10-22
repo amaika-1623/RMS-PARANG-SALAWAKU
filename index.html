@@ -76,7 +76,7 @@
             overflow: hidden;
         }
 
-        /* VASTE ACHTERGROND AFBEELDING MET ABSOLUTE CONTROLE */
+        /* VASTE ACHTERGROND AFBEELDING */
         .clock-bg-img {
             position: absolute;
             top: 0;
@@ -94,19 +94,19 @@
             border: 1px solid #334155;
             border-radius: 50%;
             position: absolute;
-            top: 48%; /* Exact uitgelijnd op het zwaardhandvat */
+            top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 10;
         }
 
-        /* ZILVERKLEURIGE KROONWIJZERS & GROENE SECONDEWIJZER */
+        /* WIJZERS: EXACT GECENTREERD OP HET MIDDELPUNT */
         .hand {
             position: absolute;
-            bottom: 52%; /* Komt exact overeen met de middelpuntpositie */
+            top: 50%;
             left: 50%;
-            transform-origin: bottom center;
-            transform: translateX(-50%) rotate(0deg);
+            transform-origin: 50% 100%; /* Draaipunt exact onderaan in het midden van de wijzer */
+            transform: translate(-50%, -100%) rotate(0deg);
             z-index: 5;
         }
 
@@ -125,7 +125,7 @@
             height: 94px;
             background-color: #00ff66;
             z-index: 6;
-            transform-origin: bottom center;
+            transform-origin: 50% 100%;
         }
 
         .digital-date {
@@ -223,288 +223,9 @@
     <!-- KLOK SECTIE -->
     <div class="section clock-section">
         <div class="clock-face" id="klokFace">
-            <!-- Achtergrond als HTML element voor absolute controle -->
             <img src="clock-face.png" alt="Klok Wijzerplaat" class="clock-bg-img">
             <div class="clock-center-dot"></div>
-            <!-- Uurwijzer: Zilverkleurig Kroonpijltje -->
+            
+            <!-- Uurwijzer -->
             <div class="hand hour-hand" id="hourHand">
-                <svg viewBox="0 0 20 100" width="100%" height="100%">
-                    <path d="M10 0 L19 20 L13 20 L13 100 L7 100 L7 20 L1 20 Z" fill="#e2e8f0" stroke="#475569" stroke-width="1.2"/>
-                </svg>
-            </div>
-            <!-- Minuutwijzer: Zilverkleurig Kroonpijltje -->
-            <div class="hand minute-hand" id="minuteHand">
-                <svg viewBox="0 0 16 100" width="100%" height="100%">
-                    <path d="M8 0 L16 16 L11 16 L11 100 L5 100 L5 16 L0 16 Z" fill="#f8fafc" stroke="#475569" stroke-width="1.2"/>
-                </svg>
-            </div>
-            <!-- Groene Secondewijzer -->
-            <div class="hand second-hand" id="secondHand"></div>
-        </div>
-        <div style="font-size: 0.85rem; color: var(--text-gold); margin-top: 4px; font-weight: bold;">ABORU</div>
-        <div class="digital-date" id="digitalDate">woensdag 21 oktober 2026</div>
-        <div class="digital-time" id="digitalTime">23:57:18</div>
-    </div>
-
-    <!-- DAGELIJKS WOORD -->
-    <div class="section">
-        <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 4px;">📖 DAGELIJKS WOORD</div>
-        <div style="font-size: 0.85rem; font-style: italic;">"De Heer is mijn herder, mij ontbreekt niets."</div>
-        <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 4px;">Psalm 23:1</div>
-    </div>
-
-    <!-- STREAM & RADIO SPELER -->
-    <div class="section">
-        <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 6px;">📻 STREAM & RADIO SPELER</div>
-        <select id="stationSelect" onchange="kiesStation()">
-            <option value="https://www.youtube.com/embed/Q6W78dSEa1M">Carlos Santana (Wekker Concert)</option>
-            <option value="https://www.youtube.com/embed/placeholderEdwine">Edwine Samuels</option>
-        </select>
-        <input type="text" id="streamUrl" value="https://www.youtube.com/embed/Q6W78dSEa1M" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-top:6px;">
-        <div class="btn-row" style="margin-top: 8px;">
-            <button onclick="playMusic()">▶ Play</button>
-            <button onclick="stopMusic()" style="background: linear-gradient(to bottom, #d9534f, #c9302c); color: white;">⏹ Stop</button>
-        </div>
-        <div class="btn-row" style="margin-top: 6px;">
-            <button onclick="window.open('https://radio.net', '_blank')">🌍 Radio.net</button>
-            <button onclick="window.open('https://www.radio.net/search?q=streaming', '_blank')">📻 Streaming Radios</button>
-        </div>
-        <div id="playerContainer" class="media-frame">
-            <iframe id="youtubePlayer" width="100%" height="180" src="" frameborder="0" allow="autoplay"></iframe>
-        </div>
-    </div>
-
-    <!-- WEKKER / ALARM -->
-    <div class="section">
-        <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 6px;">⏰ WEKKER / ALARM</div>
-        <div class="btn-row">
-            <input type="time" id="alarmTijd" value="07:00" style="text-align: center; background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold);">
-            <button onclick="zetWekker()" style="width: auto; padding: 8px 16px;">Zet Wekker</button>
-        </div>
-        <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 4px;" id="alarmStatus">Geen wekker ingesteld</div>
-    </div>
-
-    <!-- MINI TV & LINKS -->
-    <div class="section">
-        <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 6px;">📺 MINI TV & LINKS</div>
-        <div class="btn-row">
-            <button onclick="toggleMiniTV()">📺 YouTube TV (Mini)</button>
-            <button onclick="window.open('https://www.facebook.com', '_blank')">📘 Facebook</button>
-        </div>
-        <button onclick="window.open('https://www.youtube.com/results?search_query=Gunung+Batu', '_blank')" style="margin-top: 4px;">⛰️ Gunung Batu</button>
-        
-        <!-- Interne Mini TV Scherm -->
-        <div id="miniTvContainer" class="media-frame">
-            <input type="text" id="miniTvUrl" value="https://youtu.be/WTSLipAWHow" placeholder="Plak YouTube link hier" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:4px;">
-            <div class="btn-row">
-                <button onclick="startMiniTV()">Laad Mini TV</button>
-                <button onclick="toggleMiniTV()" style="background: #d9534f; color:white;">Sluit TV</button>
-            </div>
-            <!-- Vorige en Volgende driehoeks knoppen -->
-            <div class="btn-row" style="margin-top: 6px;">
-                <button onclick="vorigNummer()" style="background: linear-gradient(to bottom, #c9a227, #997512);">⏮ Vorige</button>
-                <button onclick="volgendNummer()" style="background: linear-gradient(to bottom, #c9a227, #997512);">Volgende ⏭</button>
-            </div>
-            <iframe id="miniTvPlayer" width="100%" height="180" src="" frameborder="0" allow="autoplay" style="margin-top:6px;"></iframe>
-        </div>
-    </div>
-
-    <!-- EEUWKALENDER -->
-    <div class="section">
-        <div class="calendar-header">📅 EEUWKALENDER</div>
-        <button onclick="gaNaarVandaag()">Vandaag</button>
-        <div class="btn-row" style="margin-top: 6px;">
-            <select id="maandSelect" onchange="bouwKalender()">
-                <option value="0">Januari</option>
-                <option value="1">Februari</option>
-                <option value="2">Maart</option>
-                <option value="3">April</option>
-                <option value="4">Mei</option>
-                <option value="5">Juni</option>
-                <option value="6">Juli</option>
-                <option value="7">Augustus</option>
-                <option value="8">September</option>
-                <option value="9" selected>Oktober</option>
-                <option value="10">November</option>
-                <option value="11">December</option>
-            </select>
-            <input type="number" id="jaarInput" value="2026" onchange="bouwKalender()" style="width: 80px; text-align: center;">
-        </div>
-        <button onclick="bouwKalender()" style="margin-top: 6px;">Ga naar jaar / maand</button>
-        
-        <div class="calendar-grid" id="kalenderGrid">
-            <!-- Wordt dynamisch gevuld -->
-        </div>
-    </div>
-</div>
-
-<script>
-    // --- KLOK LOGICA ---
-    function updateKlok() {
-        const nu = new Date();
-        const seconden = nu.getSeconds();
-        const minuten = nu.getMinutes();
-        const uren = nu.getHours();
-
-        const secGraden = seconden * 6;
-        const minGraden = minuten * 6 + seconden * 0.1;
-        const uurGraden = (uren % 12) * 30 + minuten * 0.5;
-
-        document.getElementById('secondHand').style.transform = `translateX(-50%) rotate(${secGraden}deg)`;
-        document.getElementById('minuteHand').style.transform = `translateX(-50%) rotate(${minGraden}deg)`;
-        document.getElementById('hourHand').style.transform = `translateX(-50%) rotate(${uurGraden}deg)`;
-
-        const optiesDagen = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('digitalDate').innerText = nu.toLocaleDateString('nl-NL', optiesDagen);
-        document.getElementById('digitalTime').innerText = nu.toLocaleTimeString('nl-NL');
-    }
-    setInterval(updateKlok, 1000);
-    updateKlok();
-
-    // --- PLAYLIST VOOR MINI TV ---
-    const miniTvPlaylist = [
-        "https://youtu.be/WTSLipAWHow",
-        "https://www.youtube.com/embed/Q6W78dSEa1M",
-        "https://www.youtube.com/embed/dQw4w9WgXcQ"
-    ];
-    let huidigePlaylistIndex = 0;
-
-    function converteerYouTubeLink(url) {
-        if (!url) return '';
-        if (url.includes('/embed/')) return url;
-        
-        let videoId = '';
-        if (url.includes('youtu.be/')) {
-            videoId = url.split('youtu.be/')[1].split('?')[0];
-        } else if (url.includes('watch?v=')) {
-            videoId = url.split('watch?v=')[1].split('&')[0];
-        }
-        
-        return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
-    }
-
-    function volgendNummer() {
-        huidigePlaylistIndex = (huidigePlaylistIndex + 1) % miniTvPlaylist.length;
-        document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
-        startMiniTV();
-    }
-
-    function vorigNummer() {
-        huidigePlaylistIndex = (huidigePlaylistIndex - 1 + miniTvPlaylist.length) % miniTvPlaylist.length;
-        document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
-        startMiniTV();
-    }
-
-    // --- MUZIEK SPELER ---
-    function kiesStation() {
-        const select = document.getElementById('stationSelect');
-        document.getElementById('streamUrl').value = select.value;
-    }
-
-    function playMusic() {
-        const iframe = document.getElementById('youtubePlayer');
-        const container = document.getElementById('playerContainer');
-        let urlInput = document.getElementById('streamUrl').value;
-        let embedUrl = converteerYouTubeLink(urlInput);
-        
-        container.style.display = 'block';
-        let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
-        iframe.src = playUrl;
-    }
-
-    function stopMusic() {
-        const iframe = document.getElementById('youtubePlayer');
-        const container = document.getElementById('playerContainer');
-        iframe.src = "";
-        container.style.display = 'none';
-    }
-
-    // --- MINI TV LOGICA ---
-    function toggleMiniTV() {
-        const container = document.getElementById('miniTvContainer');
-        if (container.style.display === 'block') {
-            container.style.display = 'none';
-            document.getElementById('miniTvPlayer').src = "";
-        } else {
-            container.style.display = 'block';
-            document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
-            startMiniTV();
-        }
-    }
-
-    function startMiniTV() {
-        const iframe = document.getElementById('miniTvPlayer');
-        let urlInput = document.getElementById('miniTvUrl').value;
-        let embedUrl = converteerYouTubeLink(urlInput);
-        
-        let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
-        iframe.src = playUrl;
-    }
-
-    function sluitMiniTV() {
-        const iframe = document.getElementById('miniTvPlayer');
-        iframe.src = "";
-        document.getElementById('miniTvContainer').style.display = 'none';
-    }
-
-    // --- WEKKER FUNCTIE ---
-    function zetWekker() {
-        const tijd = document.getElementById('alarmTijd').value;
-        if(tijd) {
-            document.getElementById('alarmStatus').innerText = `Wekker ingesteld om ${tijd} uur`;
-        } else {
-            document.getElementById('alarmStatus').innerText = `Geen wekker ingesteld`;
-        }
-    }
-
-    // --- VOLLEDIGE EEUWKALENDER ---
-    function bouwKalender() {
-        const maand = parseInt(document.getElementById('maandSelect').value);
-        const jaar = parseInt(document.getElementById('jaarInput').value);
-        const grid = document.getElementById('kalenderGrid');
-        grid.innerHTML = '';
-
-        const dNamen = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
-        dNamen.forEach(d => {
-            const div = document.createElement('div');
-            div.className = 'calendar-day-name';
-            div.innerText = d;
-            grid.appendChild(div);
-        });
-
-        let eersteDagIndex = new Date(jaar, maand, 1).getDay();
-        eersteDagIndex = (eersteDagIndex === 0) ? 6 : eersteDagIndex - 1;
-
-        const aantalDagen = new Date(jaar, maand + 1, 0).getDate();
-
-        for (let i = 0; i < eersteDagIndex; i++) {
-            const leeg = document.createElement('div');
-            leeg.className = 'calendar-cell empty';
-            grid.appendChild(leeg);
-        }
-
-        const vandaag = new Date();
-        for (let dag = 1; dag <= aantalDagen; dag++) {
-            const cel = document.createElement('div');
-            cel.className = 'calendar-cell';
-            cel.innerText = dag;
-
-            if (dag === vandaag.getDate() && maand === vandaag.getMonth() && jaar === vandaag.getFullYear()) {
-                cel.classList.add('today');
-            }
-            grid.appendChild(cel);
-        }
-    }
-
-    function gaNaarVandaag() {
-        const vandaag = new Date();
-        document.getElementById('maandSelect').value = vandaag.getMonth();
-        document.getElementById('jaarInput').value = vandaag.getFullYear();
-        bouwKalender();
-    }
-
-    bouwKalender();
-</script>
-
-</body>
-</html>
+                <svg viewBox="0 0 20 10
