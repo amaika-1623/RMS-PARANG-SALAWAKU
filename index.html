@@ -67,65 +67,65 @@
         }
 
         .clock-face {
-            width: 230px;
-            height: 230px;
+            width: 280px;
+            height: 280px;
             position: relative;
             margin: 10px auto;
             border-radius: 50%;
-            box-shadow: 0 0 20px rgba(0,0,0,0.9);
             overflow: hidden;
-        }
-
-        /* VASTE ACHTERGROND AFBEELDING */
-        .clock-bg-img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 1;
+            background-image: url('clock-face.png?v=9');
+            background-size: cover;
+            background-position: center 51%;
+            background-repeat: no-repeat;
+            box-shadow: 0 0 20px rgba(0,0,0,0.9);
         }
 
         .clock-center-dot {
-            width: 10px;
-            height: 10px;
-            background: #cbd5e1;
-            border: 1px solid #334155;
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle, #ffcc00 0%, #8b0000 100%);
+            border: 2px solid var(--border-gold);
             border-radius: 50%;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 10;
+            z-index: 12;
         }
 
-        /* WIJZERS: EXACT GECENTREERD OP HET MIDDELPUNT EN LOPEN OVER DE AS 9-3 */
+        /* WIJZERS */
         .hand {
             position: absolute;
-            top: 50%;
+            bottom: 50%;
             left: 50%;
-            transform-origin: 50% 100%;
-            transform: translate(-50%, -100%) rotate(0deg);
-            z-index: 5;
+            transform-origin: bottom center;
+            z-index: 10;
+            filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.9));
         }
 
         .hour-hand {
-            width: 13px;
+            width: 10px;
             height: 62px;
+            background: linear-gradient(135deg, #fff3cd 0%, #d4af37 50%, #aa820a 100%);
+            margin-left: -5px;
+            clip-path: polygon(50% 0%, 100% 25%, 70% 100%, 30% 100%, 0% 25%);
         }
 
         .minute-hand {
-            width: 11px;
-            height: 84px;
+            width: 7px;
+            height: 98px;
+            background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #8b6914 100%);
+            margin-left: -3.5px;
+            clip-path: polygon(50% 0%, 100% 20%, 75% 100%, 25% 100%, 0% 20%);
         }
 
         .second-hand {
-            width: 2px;
-            height: 94px;
-            background-color: #00ff66;
-            z-index: 6;
-            transform-origin: 50% 100%;
+            width: 1.5px;
+            height: 108px;
+            background: #00ff66;
+            margin-left: -0.75px;
+            z-index: 11;
+            transform-origin: bottom center;
         }
 
         .digital-date {
@@ -229,36 +229,21 @@
     <!-- KLOK SECTIE -->
     <div class="section clock-section">
         <div class="clock-face" id="klokFace">
-            <img src="clock-face.png" alt="Klok Wijzerplaat" class="clock-bg-img">
-            <div class="clock-center-dot"></div>
-            
-            <!-- Uurwijzer -->
-            <div class="hand hour-hand" id="hourHand">
-                <svg viewBox="0 0 20 100" width="100%" height="100%">
-                    <path d="M10 0 L19 20 L13 20 L13 100 L7 100 L7 20 L1 20 Z" fill="#e2e8f0" stroke="#475569" stroke-width="1.2"/>
-                </svg>
-            </div>
-            
-            <!-- Minuutwijzer -->
-            <div class="hand minute-hand" id="minuteHand">
-                <svg viewBox="0 0 16 100" width="100%" height="100%">
-                    <path d="M8 0 L16 16 L11 16 L11 100 L5 100 L5 16 L0 16 Z" fill="#f8fafc" stroke="#475569" stroke-width="1.2"/>
-                </svg>
-            </div>
-            
-            <!-- Groene Secondewijzer -->
+            <div class="hand hour-hand" id="hourHand"></div>
+            <div class="hand minute-hand" id="minuteHand"></div>
             <div class="hand second-hand" id="secondHand"></div>
+            <div class="clock-center-dot"></div>
         </div>
         <div style="font-size: 0.85rem; color: var(--text-gold); margin-top: 4px; font-weight: bold;">ABORU</div>
-        <div class="digital-date" id="digitalDate">woensdag 21 oktober 2026</div>
-        <div class="digital-time" id="digitalTime">23:57:18</div>
+        <div class="digital-date" id="digitalDate">Laden...</div>
+        <div class="digital-time" id="digitalTime">00:00:00</div>
     </div>
 
     <!-- DAGELIJKS WOORD -->
     <div class="section">
         <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 4px;">📖 DAGELIJKS WOORD</div>
-        <div style="font-size: 0.85rem; font-style: italic;">"De Heer is mijn herder, mij ontbreekt niets."</div>
-        <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 4px;">Psalm 23:1</div>
+        <div style="font-size: 0.85rem; font-style: italic;" id="bibleVerseText">"De Heer is mijn herder, mij ontbreekt niets."</div>
+        <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 4px;" id="bibleVerseRef">Psalm 23:1</div>
     </div>
 
     <!-- STREAM & RADIO SPELER -->
@@ -355,6 +340,8 @@
 
 <script>
     // --- KLOK LOGICA ---
+    let activeAlarm = null;
+
     function updateKlok() {
         const nu = new Date();
         const seconden = nu.getSeconds();
@@ -365,22 +352,37 @@
         const minGraden = minuten * 6 + seconden * 0.1;
         const uurGraden = (uren % 12) * 30 + minuten * 0.5;
 
-        document.getElementById('secondHand').style.transform = `translate(-50%, -100%) rotate(${secGraden}deg)`;
-        document.getElementById('minuteHand').style.transform = `translate(-50%, -100%) rotate(${minGraden}deg)`;
-        document.getElementById('hourHand').style.transform = `translate(-50%, -100%) rotate(${uurGraden}deg)`;
+        const hourHand = document.getElementById('hourHand');
+        const minuteHand = document.getElementById('minuteHand');
+        const secondHand = document.getElementById('secondHand');
+
+        if (hourHand) hourHand.style.transform = `rotate(${uurGraden}deg)`;
+        if (minuteHand) minuteHand.style.transform = `rotate(${minGraden}deg)`;
+        if (secondHand) secondHand.style.transform = `rotate(${secGraden}deg)`;
 
         const optiesDagen = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('digitalDate').innerText = nu.toLocaleDateString('nl-NL', optiesDagen);
-        document.getElementById('digitalTime').innerText = nu.toLocaleTimeString('nl-NL');
+        const dateElem = document.getElementById('digitalDate');
+        if (dateElem) dateElem.innerText = nu.toLocaleDateString('nl-NL', optiesDagen);
+
+        const timeElem = document.getElementById('digitalTime');
+        if (timeElem) timeElem.innerText = String(uren).padStart(2, '0') + ':' + String(minuten).padStart(2, '0') + ':' + String(seconden).padStart(2, '0');
+
+        // Wekker controle
+        if (activeAlarm) {
+            const currentAlarmStr = String(uren).padStart(2, '0') + ':' + String(minuten).padStart(2, '0');
+            if (activeAlarm === currentAlarmStr && seconden === 0) {
+                document.getElementById('alarmStatus').innerText = `🔔 WEKKER GAAT AF!`;
+                playMusic();
+            }
+        }
     }
     setInterval(updateKlok, 1000);
     updateKlok();
 
     // --- PLAYLIST & EXCEL OPSLAG MECHANISME ---
     let miniTvPlaylist = [
-        "https://youtu.be/WTSLipAWHow?is=ihYM1OTCED1Zxnda",
-        "https://youtu.be/WTSLipAWHow?is=8LtL7ZkeqNaxiJ2e",
-        "https://youtu.be/v_sTi3mHYew?is=xB2Zt68-H-_RxU5i"
+        "https://youtu.be/WTSLipAWHow",
+        "https://youtu.be/v_sTi3mHYew"
     ];
     let huidigePlaylistIndex = 0;
 
@@ -392,6 +394,7 @@
 
     function vulExcelDropdown() {
         const select = document.getElementById('miniTvSelect');
+        if (!select) return;
         select.innerHTML = '<option value="">📂 Kies uit je geladen favorieten...</option>';
         miniTvPlaylist.forEach((link, index) => {
             const opt = document.createElement('option');
@@ -424,7 +427,7 @@
 
     function kiesExcelNummer() {
         const select = document.getElementById('miniTvSelect');
-        if (select.value) {
+        if (select && select.value) {
             document.getElementById('miniTvUrl').value = select.value;
             huidigePlaylistIndex = select.selectedIndex - 1;
             startMiniTV();
@@ -435,9 +438,11 @@
         if (!url) return '';
         let videoId = '';
         if (url.includes('youtu.be/')) {
-            videoId = url.split('youtu.be/')[1].split('?')[0];
+            videoId = url.split('youtu.be/')[1].split('?')[0].split('&')[0];
         } else if (url.includes('watch?v=')) {
             videoId = url.split('watch?v=').pop().split('&')[0];
+        } else if (url.includes('/embed/')) {
+            videoId = url.split('/embed/').pop().split('?')[0];
         }
         
         if (videoId) {
@@ -450,7 +455,8 @@
         if (miniTvPlaylist.length === 0) return;
         huidigePlaylistIndex = (huidigePlaylistIndex + 1) % miniTvPlaylist.length;
         document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
-        document.getElementById('miniTvSelect').selectedIndex = huidigePlaylistIndex + 1;
+        const select = document.getElementById('miniTvSelect');
+        if (select) select.selectedIndex = huidigePlaylistIndex + 1;
         startMiniTV();
     }
 
@@ -458,7 +464,8 @@
         if (miniTvPlaylist.length === 0) return;
         huidigePlaylistIndex = (huidigePlaylistIndex - 1 + miniTvPlaylist.length) % miniTvPlaylist.length;
         document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
-        document.getElementById('miniTvSelect').selectedIndex = huidigePlaylistIndex + 1;
+        const select = document.getElementById('miniTvSelect');
+        if (select) select.selectedIndex = huidigePlaylistIndex + 1;
         startMiniTV();
     }
 
@@ -496,7 +503,8 @@
             container.style.display = 'block';
             if (miniTvPlaylist.length > 0) {
                 document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
-                document.getElementById('miniTvSelect').selectedIndex = huidigePlaylistIndex + 1;
+                const select = document.getElementById('miniTvSelect');
+                if (select) select.selectedIndex = huidigePlaylistIndex + 1;
             }
             startMiniTV();
         }
@@ -515,8 +523,10 @@
     function zetWekker() {
         const tijd = document.getElementById('alarmTijd').value;
         if(tijd) {
+            activeAlarm = tijd;
             document.getElementById('alarmStatus').innerText = `Wekker ingesteld om ${tijd} uur`;
         } else {
+            activeAlarm = null;
             document.getElementById('alarmStatus').innerText = `Geen wekker ingesteld`;
         }
     }
@@ -568,6 +578,16 @@
     }
 
     bouwKalender();
+</script>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                registration.unregister();
+            }
+        });
+    }
 </script>
 
 </body>
