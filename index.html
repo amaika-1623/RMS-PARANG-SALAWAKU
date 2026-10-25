@@ -242,8 +242,8 @@
     <!-- DAGELIJKS WOORD -->
     <div class="section">
         <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 4px;">📖 DAGELIJKS WOORD</div>
-        <div style="font-size: 0.85rem; font-style: italic;" id="bibleVerseText">"De Heer is mijn herder, mij ontbreekt niets."</div>
-        <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 4px;" id="bibleVerseRef">Psalm 23:1</div>
+        <div style="font-size: 0.85rem; font-style: italic;" id="bibleVerseText">Laden...</div>
+        <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 4px;" id="bibleVerseRef">Laden...</div>
     </div>
 
     <!-- STREAM & RADIO SPELER -->
@@ -339,6 +339,37 @@
 </div>
 
 <script>
+    // --- DAGELIJKKS WOORD LOGICA ---
+    const bijbelVerzen = [
+        { tekst: "De HEERE is mijn Herder, mij zal niets ontbreken.", ref: "Psalm 23:1" },
+        { tekst: "Uw woord is een lamp voor mijn voet en een licht op mijn pad.", ref: "Psalm 119:105" },
+        { tekst: "Vertrouw op de HEERE met heel je hart, en steun op je eigen inzicht niet.", ref: "Spreuken 3:5" },
+        { tekst: "Wees niet bevreesd, want Ik ben met u; wees niet ontsteld, want Ik ben uw God.", ref: "Jesaja 41:10" },
+        { tekst: "De vreugde van de HEERE is uw kracht.", ref: "Nehemia 8:11" },
+        { tekst: "Want alzo lief heeft God de wereld gehad, dat Hij Zijn eniggeboren Zoon gegeven heeft.", ref: "Johannes 3:16" },
+        { tekst: "Ik vermag alle dingen door Christus, Die mij kracht geeft.", ref: "Filippenzen 4:13" },
+        { tekst: "Wees in geen ding bezorgd, maar laat uw verlangens in alles door bidden en smeken bekend worden bij God.", ref: "Filippenzen 4:6" },
+        { tekst: "De HEERE is mijn licht en mijn heil, voor wie zou ik vrezen?", ref: "Psalm 27:1" },
+        { tekst: "Zo zoek eerst het Koninkrijk van God en Zijn gerechtigheid, en al deze dingen zullen u erbij gegeven worden.", ref: "Mattheüs 6:33" }
+    ];
+
+    function updateDagelijksWoord() {
+        const nu = new Date();
+        const start = new Date(nu.getFullYear(), 0, 0);
+        const diff = nu - start;
+        const eenDag = 1000 * 60 * 60 * 24;
+        const dagVanHetJaar = Math.floor(diff / eenDag);
+        
+        const index = dagVanHetJaar % bijbelVerzen.length;
+        const huidigVers = bijbelVerzen[index];
+
+        const vText = document.getElementById('bibleVerseText');
+        const vRef = document.getElementById('bibleVerseRef');
+
+        if (vText) vText.innerText = `"${huidigVers.tekst}"`;
+        if (vRef) vRef.innerText = huidigVers.ref;
+    }
+
     // --- KLOK LOGICA ---
     let activeAlarm = null;
 
@@ -367,7 +398,6 @@
         const timeElem = document.getElementById('digitalTime');
         if (timeElem) timeElem.innerText = String(uren).padStart(2, '0') + ':' + String(minuten).padStart(2, '0') + ':' + String(seconden).padStart(2, '0');
 
-        // Wekker controle
         if (activeAlarm) {
             const currentAlarmStr = String(uren).padStart(2, '0') + ':' + String(minuten).padStart(2, '0');
             if (activeAlarm === currentAlarmStr && seconden === 0) {
@@ -376,8 +406,10 @@
             }
         }
     }
+    
     setInterval(updateKlok, 1000);
     updateKlok();
+    updateDagelijksWoord();
 
     // --- PLAYLIST & EXCEL OPSLAG MECHANISME ---
     let miniTvPlaylist = [
