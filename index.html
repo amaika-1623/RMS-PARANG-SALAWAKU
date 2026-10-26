@@ -292,16 +292,16 @@
         
         <!-- Import Veld voor Excel lijst -->
         <div style="margin-top: 8px; text-align: left;">
-            <label style="font-size: 0.7rem; color: var(--text-gold);">📥 Plak hieronder je Excel kopie (alle regels/links):</label>
-            <textarea id="excelInput" rows="3" placeholder="Plak hier je complete Excel lijst..."></textarea>
-            <button onclick="importeerExcelLijst()" style="background: linear-gradient(to bottom, #28a745, #1e7e34); color: white; margin-top: 4px;">💾 Sla Excel Lijst Op in Geheugen</button>
+            <label style="font-size: 0.7rem; color: var(--text-gold);">📥 Plak hieronder je Excel kopie of OneDrive links:</label>
+            <textarea id="excelInput" rows="3" placeholder="Plak hier je complete Excel lijst of OneDrive linkjes..."></textarea>
+            <button onclick="importeerExcelLijst()" style="background: linear-gradient(to bottom, #28a745, #1e7e34); color: white; margin-top: 4px;">💾 Sla Lijst Op in Geheugen</button>
         </div>
 
         <div id="miniTvContainer" class="media-frame">
             <select id="miniTvSelect" onchange="kiesExcelNummer()" style="margin-bottom:4px;">
                 <option value="">📂 Kies uit je geladen favorieten...</option>
             </select>
-            <input type="text" id="miniTvUrl" value="https://youtu.be/WTSLipAWHow" placeholder="YouTube link" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:4px;">
+            <input type="text" id="miniTvUrl" value="https://youtu.be/WTSLipAWHow" placeholder="YouTube of OneDrive link" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:4px;">
             <div class="btn-row">
                 <button onclick="startMiniTV()">Laad & Speel</button>
                 <button onclick="toggleMiniTV()" style="background: #d9534f; color:white;">Sluit TV</button>
@@ -310,7 +310,11 @@
                 <button onclick="vorigNummer()" style="background: linear-gradient(to bottom, #c9a227, #997512);">⏮ Vorige</button>
                 <button onclick="volgendNummer()" style="background: linear-gradient(to bottom, #c9a227, #997512);">Volgende ⏭</button>
             </div>
-            <iframe id="miniTvPlayer" width="100%" height="180" src="" frameborder="0" allow="autoplay" style="margin-top:6px;"></iframe>
+            <!-- Hier gebruiken we een HTML5 video-element voor directe media/OneDrive bestanden en een iframe voor YouTube -->
+            <div id="mediaPlayerWrapper" style="margin-top:6px;">
+                <iframe id="miniTvPlayer" width="100%" height="180" src="" frameborder="0" allow="autoplay" style="display:block;"></iframe>
+                <video id="miniTvVideo" width="100%" height="180" controls autoplay style="display:none; background:#000;"></video>
+            </div>
         </div>
     </div>
 
@@ -528,12 +532,13 @@
         container.style.display = 'none';
     }
 
-    // --- MINI TV LOGICA ---
+    // --- MINI TV LOGICA (ONDERSTEUTENT YOUTUBE & ONEDRIVE DIRECTE VIDEO) ---
     function toggleMiniTV() {
         const container = document.getElementById('miniTvContainer');
         if (container.style.display === 'block') {
             container.style.display = 'none';
             document.getElementById('miniTvPlayer').src = "";
+            document.getElementById('miniTvVideo').pause();
         } else {
             container.style.display = 'block';
             if (miniTvPlaylist.length > 0) {
@@ -546,12 +551,35 @@
     }
 
     function startMiniTV() {
+        let urlInput = document.getElementById('miniTvUrl').value.trim();
         const iframe = document.getElementById('miniTvPlayer');
-        let urlInput = document.getElementById('miniTvUrl').value;
-        let embedUrl = converteerYouTubeLink(urlInput);
-        
-        let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
-        iframe.src = playUrl;
+        const videoElement = document.getElementById('miniTvVideo');
+
+        // Controleer of het een OneDrive/Directe videolink of MP4 is
+        if (urlInput.includes('onedrive.live.com') || urlInput.includes('.mp4')) {
+            iframe.style.display = 'none';
+            iframe.src = "";
+            videoElement.style.display = 'block';
+            
+            // Als het een OneDrive share link is, probeer hem om te zetten naar een download/stream link indien mogelijk
+            let directUrl = urlInput;
+            if (directUrl.includes('onedrive.live.com') && !directUrl.includes('download=1')) {
+                directUrl += (directUrl.includes('?') ? '&' : '?') + 'download=1';
+            }
+            
+            videoElement.src = directUrl;
+            videoElement.play().catch(e => console.log("Autoplay vereist interactie"));
+        } else {
+            // Anders behandelen als YouTube video
+            videoElement.style.display = 'none';
+            videoElement.pause();
+            videoElement.src = "";
+            
+            iframe.style.display = 'block';
+            let embedUrl = converteerYouTubeLink(urlInput);
+            let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
+            iframe.src = playUrl;
+        }
     }
 
     // --- WEKKER FUNCTIE ---
