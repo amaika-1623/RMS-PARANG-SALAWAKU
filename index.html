@@ -75,7 +75,7 @@
             overflow: hidden;
             background-image: url('clock-face.png?v=9');
             background-size: cover;
-            background-position: center 35.25%;
+            background-position: center 36.25%;
             background-repeat: no-repeat;
             box-shadow: 0 0 20px rgba(0,0,0,0.9);
         }
@@ -292,8 +292,8 @@
         
         <!-- Import Veld voor Excel lijst -->
         <div style="margin-top: 8px; text-align: left;">
-            <label style="font-size: 0.7rem; color: var(--text-gold);">📥 Plak hieronder je Excel kopie of OneDrive links:</label>
-            <textarea id="excelInput" rows="3" placeholder="Plak hier je complete Excel lijst of OneDrive linkjes..."></textarea>
+            <label style="font-size: 0.7rem; color: var(--text-gold);">📥 Plak hieronder je Excel kopie of YouTube links:</label>
+            <textarea id="excelInput" rows="3" placeholder="Plak hier je complete Excel lijst of linkjes..."></textarea>
             <button onclick="importeerExcelLijst()" style="background: linear-gradient(to bottom, #28a745, #1e7e34); color: white; margin-top: 4px;">💾 Sla Lijst Op in Geheugen</button>
         </div>
 
@@ -301,7 +301,7 @@
             <select id="miniTvSelect" onchange="kiesExcelNummer()" style="margin-bottom:4px;">
                 <option value="">📂 Kies uit je geladen favorieten...</option>
             </select>
-            <input type="text" id="miniTvUrl" value="https://youtu.be/WTSLipAWHow" placeholder="YouTube of OneDrive link" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:4px;">
+            <input type="text" id="miniTvUrl" value="https://youtu.be/WTSLipAWHow" placeholder="YouTube link" style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:4px;">
             <div class="btn-row">
                 <button onclick="startMiniTV()">Laad & Speel</button>
                 <button onclick="toggleMiniTV()" style="background: #d9534f; color:white;">Sluit TV</button>
@@ -310,7 +310,6 @@
                 <button onclick="vorigNummer()" style="background: linear-gradient(to bottom, #c9a227, #997512);">⏮ Vorige</button>
                 <button onclick="volgendNummer()" style="background: linear-gradient(to bottom, #c9a227, #997512);">Volgende ⏭</button>
             </div>
-            <!-- Hier gebruiken we een HTML5 video-element voor directe media/OneDrive bestanden en een iframe voor YouTube -->
             <div id="mediaPlayerWrapper" style="margin-top:6px;">
                 <iframe id="miniTvPlayer" width="100%" height="180" src="" frameborder="0" allow="autoplay" style="display:block;"></iframe>
                 <video id="miniTvVideo" width="100%" height="180" controls autoplay style="display:none; background:#000;"></video>
@@ -418,7 +417,7 @@
     updateKlok();
     updateDagelijksWoord();
 
-    // --- PLAYLIST & EXCEL OPSLAG MECHANISME ---
+    // --- PLAYLIST & EXCEL OPSLAG MECHANISME MET GEHEUGENBEHOUD ---
     let miniTvPlaylist = [
         "https://youtu.be/WTSLipAWHow",
         "https://youtu.be/v_sTi3mHYew"
@@ -431,6 +430,10 @@
         } catch(e) {}
     }
 
+    if (localStorage.getItem('menaMuriaLastIndex')) {
+        huidigePlaylistIndex = parseInt(localStorage.getItem('menaMuriaLastIndex')) || 0;
+    }
+
     function vulExcelDropdown() {
         const select = document.getElementById('miniTvSelect');
         if (!select) return;
@@ -441,6 +444,10 @@
             opt.text = `Favoriet #${index + 1} (${link.substring(8, 35)}...)`;
             select.appendChild(opt);
         });
+        if (miniTvPlaylist.length > 0 && huidigePlaylistIndex < miniTvPlaylist.length) {
+            select.selectedIndex = huidigePlaylistIndex + 1;
+            document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
+        }
     }
     vulExcelDropdown();
 
@@ -456,8 +463,9 @@
         if (gevondenLinks && gevondenLinks.length > 0) {
             miniTvPlaylist = gevondenLinks;
             localStorage.setItem('menaMuriaPlaylist', JSON.stringify(miniTvPlaylist));
-            vulExcelDropdown();
             huidigePlaylistIndex = 0;
+            localStorage.setItem('menaMuriaLastIndex', 0);
+            vulExcelDropdown();
             alert(`Succes! Er zijn ${gevondenLinks.length} links opgeslagen in je app.`);
         } else {
             alert("Geen geldige links gevonden in de geplakte tekst.");
@@ -469,6 +477,7 @@
         if (select && select.value) {
             document.getElementById('miniTvUrl').value = select.value;
             huidigePlaylistIndex = select.selectedIndex - 1;
+            localStorage.setItem('menaMuriaLastIndex', huidigePlaylistIndex);
             startMiniTV();
         }
     }
@@ -493,6 +502,7 @@
     function volgendNummer() {
         if (miniTvPlaylist.length === 0) return;
         huidigePlaylistIndex = (huidigePlaylistIndex + 1) % miniTvPlaylist.length;
+        localStorage.setItem('menaMuriaLastIndex', huidigePlaylistIndex);
         document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
         const select = document.getElementById('miniTvSelect');
         if (select) select.selectedIndex = huidigePlaylistIndex + 1;
@@ -502,6 +512,7 @@
     function vorigNummer() {
         if (miniTvPlaylist.length === 0) return;
         huidigePlaylistIndex = (huidigePlaylistIndex - 1 + miniTvPlaylist.length) % miniTvPlaylist.length;
+        localStorage.setItem('menaMuriaLastIndex', huidigePlaylistIndex);
         document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
         const select = document.getElementById('miniTvSelect');
         if (select) select.selectedIndex = huidigePlaylistIndex + 1;
@@ -530,128 +541,3 @@
         const container = document.getElementById('playerContainer');
         iframe.src = "";
         container.style.display = 'none';
-    }
-
-    // --- MINI TV LOGICA (ONDERSTEUTENT YOUTUBE & ONEDRIVE DIRECTE VIDEO) ---
-    function toggleMiniTV() {
-        const container = document.getElementById('miniTvContainer');
-        if (container.style.display === 'block') {
-            container.style.display = 'none';
-            document.getElementById('miniTvPlayer').src = "";
-            document.getElementById('miniTvVideo').pause();
-        } else {
-            container.style.display = 'block';
-            if (miniTvPlaylist.length > 0) {
-                document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
-                const select = document.getElementById('miniTvSelect');
-                if (select) select.selectedIndex = huidigePlaylistIndex + 1;
-            }
-            startMiniTV();
-        }
-    }
-
-    function startMiniTV() {
-        let urlInput = document.getElementById('miniTvUrl').value.trim();
-        const iframe = document.getElementById('miniTvPlayer');
-        const videoElement = document.getElementById('miniTvVideo');
-
-        // Controleer of het een OneDrive/Directe videolink of MP4 is
-        if (urlInput.includes('onedrive.live.com') || urlInput.includes('.mp4')) {
-            iframe.style.display = 'none';
-            iframe.src = "";
-            videoElement.style.display = 'block';
-            
-            // Als het een OneDrive share link is, probeer hem om te zetten naar een download/stream link indien mogelijk
-            let directUrl = urlInput;
-            if (directUrl.includes('onedrive.live.com') && !directUrl.includes('download=1')) {
-                directUrl += (directUrl.includes('?') ? '&' : '?') + 'download=1';
-            }
-            
-            videoElement.src = directUrl;
-            videoElement.play().catch(e => console.log("Autoplay vereist interactie"));
-        } else {
-            // Anders behandelen als YouTube video
-            videoElement.style.display = 'none';
-            videoElement.pause();
-            videoElement.src = "";
-            
-            iframe.style.display = 'block';
-            let embedUrl = converteerYouTubeLink(urlInput);
-            let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
-            iframe.src = playUrl;
-        }
-    }
-
-    // --- WEKKER FUNCTIE ---
-    function zetWekker() {
-        const tijd = document.getElementById('alarmTijd').value;
-        if(tijd) {
-            activeAlarm = tijd;
-            document.getElementById('alarmStatus').innerText = `Wekker ingesteld om ${tijd} uur`;
-        } else {
-            activeAlarm = null;
-            document.getElementById('alarmStatus').innerText = `Geen wekker ingesteld`;
-        }
-    }
-
-    // --- VOLLEDIGE EEUWKALENDER ---
-    function bouwKalender() {
-        const maand = parseInt(document.getElementById('maandSelect').value);
-        const jaar = parseInt(document.getElementById('jaarInput').value);
-        const grid = document.getElementById('kalenderGrid');
-        grid.innerHTML = '';
-
-        const dNamen = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
-        dNamen.forEach(d => {
-            const div = document.createElement('div');
-            div.className = 'calendar-day-name';
-            div.innerText = d;
-            grid.appendChild(div);
-        });
-
-        let eersteDagIndex = new Date(jaar, maand, 1).getDay();
-        eersteDagIndex = (eersteDagIndex === 0) ? 6 : eersteDagIndex - 1;
-
-        const aantalDagen = new Date(jaar, maand + 1, 0).getDate();
-
-        for (let i = 0; i < eersteDagIndex; i++) {
-            const leeg = document.createElement('div');
-            leeg.className = 'calendar-cell empty';
-            grid.appendChild(leeg);
-        }
-
-        const vandaag = new Date();
-        for (let dag = 1; dag <= aantalDagen; dag++) {
-            const cel = document.createElement('div');
-            cel.className = 'calendar-cell';
-            cel.innerText = dag;
-
-            if (dag === vandaag.getDate() && maand === vandaag.getMonth() && jaar === vandaag.getFullYear()) {
-                cel.classList.add('today');
-            }
-            grid.appendChild(cel);
-        }
-    }
-
-    function gaNaarVandaag() {
-        const vandaag = new Date();
-        document.getElementById('maandSelect').value = vandaag.getMonth();
-        document.getElementById('jaarInput').value = vandaag.getFullYear();
-        bouwKalender();
-    }
-
-    bouwKalender();
-</script>
-
-<script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-            for(let registration of registrations) {
-                registration.unregister();
-            }
-        });
-    }
-</script>
-
-</body>
-</html>
