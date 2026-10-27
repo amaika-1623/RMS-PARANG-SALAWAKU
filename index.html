@@ -200,16 +200,32 @@
             padding: 6px 0;
             border-radius: 3px;
             color: var(--text-light);
+            cursor: pointer;
+            position: relative;
+            min-height: 28px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .calendar-cell:hover {
+            background: rgba(212, 175, 55, 0.2);
         }
 
         .calendar-cell.empty {
             background: transparent;
+            cursor: default;
         }
 
         .calendar-cell.today {
             background: var(--border-gold);
             color: #0d0b07;
             font-weight: bold;
+        }
+
+        .calendar-cell.has-note {
+            border: 1px dashed var(--text-gold);
         }
 
         .media-frame {
@@ -290,7 +306,6 @@
             <button onclick="window.open('https://www.facebook.com', '_blank')">📘 Facebook</button>
         </div>
         
-        <!-- Import Veld voor Excel lijst -->
         <div style="margin-top: 8px; text-align: left;">
             <label style="font-size: 0.7rem; color: var(--text-gold);">📥 Plak hieronder je Excel kopie of YouTube links:</label>
             <textarea id="excelInput" rows="3" placeholder="Plak hier je complete Excel lijst of linkjes..."></textarea>
@@ -317,9 +332,9 @@
         </div>
     </div>
 
-    <!-- EEUWKALENDER -->
+    <!-- EEUWKALENDER MET NOTITIES & HERINNERINGEN -->
     <div class="section">
-        <div class="calendar-header">📅 EEUWKALENDER</div>
+        <div class="calendar-header">📅 EEUWKALENDER & HERINNERINGEN</div>
         <button onclick="gaNaarVandaag()">Vandaag</button>
         <div class="btn-row" style="margin-top: 6px;">
             <select id="maandSelect" onchange="bouwKalender()">
@@ -332,7 +347,7 @@
                 <option value="6">Juli</option>
                 <option value="7">Augustus</option>
                 <option value="8">September</option>
-                <option value="9" selected>Oktober</option>
+                <option value="9">Oktober</option>
                 <option value="10">November</option>
                 <option value="11">December</option>
             </select>
@@ -341,6 +356,7 @@
         <button onclick="bouwKalender()" style="margin-top: 6px;">Ga naar jaar / maand</button>
         
         <div class="calendar-grid" id="kalenderGrid"></div>
+        <div id="kalenderMelding" style="font-size: 0.75rem; color: var(--text-gold); margin-top: 8px; font-style: italic;"></div>
     </div>
 </div>
 
@@ -417,7 +433,7 @@
     updateKlok();
     updateDagelijksWoord();
 
-    // --- PLAYLIST & EXCEL OPSLAG MECHANISME MET GEHEUGENBEHOUD ---
+    // --- PLAYLIST & EXCEL OPSLAG MECHANISME ---
     let miniTvPlaylist = [
         "https://youtu.be/WTSLipAWHow",
         "https://youtu.be/v_sTi3mHYew"
@@ -573,93 +589,4 @@
             
             let directUrl = urlInput;
             if (directUrl.includes('onedrive.live.com') && !directUrl.includes('download=1')) {
-                directUrl += (directUrl.includes('?') ? '&' : '?') + 'download=1';
-            }
-            
-            videoElement.src = directUrl;
-            videoElement.play().catch(e => console.log("Autoplay vereist interactie"));
-        } else {
-            videoElement.style.display = 'none';
-            videoElement.pause();
-            videoElement.src = "";
-            
-            iframe.style.display = 'block';
-            let embedUrl = converteerYouTubeLink(urlInput);
-            let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
-            iframe.src = playUrl;
-        }
-    }
-
-    // --- WEKKER FUNCTIE ---
-    function zetWekker() {
-        const tijd = document.getElementById('alarmTijd').value;
-        if(tijd) {
-            activeAlarm = tijd;
-            document.getElementById('alarmStatus').innerText = `Wekker ingesteld om ${tijd} uur`;
-        } else {
-            activeAlarm = null;
-            document.getElementById('alarmStatus').innerText = `Geen wekker ingesteld`;
-        }
-    }
-
-    // --- VOLLEDIGE EEUWKALENDER ---
-    function bouwKalender() {
-        const maand = parseInt(document.getElementById('maandSelect').value);
-        const jaar = parseInt(document.getElementById('jaarInput').value);
-        const grid = document.getElementById('kalenderGrid');
-        grid.innerHTML = '';
-
-        const dNamen = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
-        dNamen.forEach(d => {
-            const div = document.createElement('div');
-            div.className = 'calendar-day-name';
-            div.innerText = d;
-            grid.appendChild(div);
-        });
-
-        let eersteDagIndex = new Date(jaar, maand, 1).getDay();
-        eersteDagIndex = (eersteDagIndex === 0) ? 6 : eersteDagIndex - 1;
-
-        const aantalDagen = new Date(jaar, maand + 1, 0).getDate();
-
-        for (let i = 0; i < eersteDagIndex; i++) {
-            const leeg = document.createElement('div');
-            leeg.className = 'calendar-cell empty';
-            grid.appendChild(leeg);
-        }
-
-        const vandaag = new Date();
-        for (let dag = 1; dag <= aantalDagen; dag++) {
-            const cel = document.createElement('div');
-            cel.className = 'calendar-cell';
-            cel.innerText = dag;
-
-            if (dag === vandaag.getDate() && maand === vandaag.getMonth() && jaar === vandaag.getFullYear()) {
-                cel.classList.add('today');
-            }
-            grid.appendChild(cel);
-        }
-    }
-
-    function gaNaarVandaag() {
-        const vandaag = new Date();
-        document.getElementById('maandSelect').value = vandaag.getMonth();
-        document.getElementById('jaarInput').value = vandaag.getFullYear();
-        bouwKalender();
-    }
-
-    bouwKalender();
-</script>
-
-<script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-            for(let registration of registrations) {
-                registration.unregister();
-            }
-        });
-    }
-</script>
-
-</body>
-</html>
+                directUrl += (directUrl.includes('?') ? '&' : '?') + 'download
