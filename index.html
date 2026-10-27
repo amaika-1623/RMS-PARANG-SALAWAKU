@@ -562,31 +562,4 @@
     // --- MINI TV LOGICA ---
     function toggleMiniTV() {
         const container = document.getElementById('miniTvContainer');
-        if (container.style.display === 'block') {
-            container.style.display = 'none';
-            document.getElementById('miniTvPlayer').src = "";
-            document.getElementById('miniTvVideo').pause();
-        } else {
-            container.style.display = 'block';
-            if (miniTvPlaylist.length > 0) {
-                document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
-                const select = document.getElementById('miniTvSelect');
-                if (select) select.selectedIndex = huidigePlaylistIndex + 1;
-            }
-            startMiniTV();
-        }
-    }
-
-    function startMiniTV() {
-        let urlInput = document.getElementById('miniTvUrl').value.trim();
-        const iframe = document.getElementById('miniTvPlayer');
-        const videoElement = document.getElementById('miniTvVideo');
-
-        if (urlInput.includes('onedrive.live.com') || urlInput.includes('.mp4')) {
-            iframe.style.display = 'none';
-            iframe.src = "";
-            videoElement.style.display = 'block';
-            
-            let directUrl = urlInput;
-            if (directUrl.includes('onedrive.live.com') && !directUrl.includes('download=1')) {
-                directUrl += (directUrl.includes('?') ? '&' : '?') + 'download
+        if (container
