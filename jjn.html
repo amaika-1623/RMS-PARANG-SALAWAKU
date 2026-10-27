@@ -376,57 +376,62 @@
     ];
 
     function updateDagelijksWoord() {
-        const nu = new Date();
-        const start = new Date(nu.getFullYear(), 0, 0);
-        const diff = nu - start;
-        const eenDag = 1000 * 60 * 60 * 24;
-        const dagVanHetJaar = Math.floor(diff / eenDag);
-        
-        const index = dagVanHetJaar % bijbelVerzen.length;
-        const huidigVers = bijbelVerzen[index];
+        try {
+            const nu = new Date();
+            const start = new Date(nu.getFullYear(), 0, 0);
+            const diff = nu - start;
+            const eenDag = 1000 * 60 * 60 * 24;
+            const dagVanHetJaar = Math.floor(diff / eenDag);
+            
+            const index = dagVanHetJaar % bijbelVerzen.length;
+            const huidigVers = bijbelVerzen[index];
 
-        const vText = document.getElementById('bibleVerseText');
-        const vRef = document.getElementById('bibleVerseRef');
+            const vText = document.getElementById('bibleVerseText');
+            const vRef = document.getElementById('bibleVerseRef');
 
-        if (vText) vText.innerText = `"${huidigVers.tekst}"`;
-        if (vRef) vRef.innerText = huidigVers.ref;
+            if (vText) vText.innerText = `"${huidigVers.tekst}"`;
+            if (vRef) vRef.innerText = huidigVers.ref;
+        } catch(e) {}
     }
 
     // --- KLOK LOGICA ---
     let activeAlarm = null;
 
     function updateKlok() {
-        const nu = new Date();
-        const seconden = nu.getSeconds();
-        const minuten = nu.getMinutes();
-        const uren = nu.getHours();
+        try {
+            const nu = new Date();
+            const seconden = nu.getSeconds();
+            const minuten = nu.getMinutes();
+            const uren = nu.getHours();
 
-        const secGraden = seconden * 6;
-        const minGraden = minuten * 6 + seconden * 0.1;
-        const uurGraden = (uren % 12) * 30 + minuten * 0.5;
+            const secGraden = seconden * 6;
+            const minGraden = minuten * 6 + seconden * 0.1;
+            const uurGraden = (uren % 12) * 30 + minuten * 0.5;
 
-        const hourHand = document.getElementById('hourHand');
-        const minuteHand = document.getElementById('minuteHand');
-        const secondHand = document.getElementById('secondHand');
+            const hourHand = document.getElementById('hourHand');
+            const minuteHand = document.getElementById('minuteHand');
+            const secondHand = document.getElementById('secondHand');
 
-        if (hourHand) hourHand.style.transform = `rotate(${uurGraden}deg)`;
-        if (minuteHand) minuteHand.style.transform = `rotate(${minGraden}deg)`;
-        if (secondHand) secondHand.style.transform = `rotate(${secGraden}deg)`;
+            if (hourHand) hourHand.style.transform = `rotate(${uurGraden}deg)`;
+            if (minuteHand) minuteHand.style.transform = `rotate(${minGraden}deg)`;
+            if (secondHand) secondHand.style.transform = `rotate(${secGraden}deg)`;
 
-        const optiesDagen = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const dateElem = document.getElementById('digitalDate');
-        if (dateElem) dateElem.innerText = nu.toLocaleDateString('nl-NL', optiesDagen);
+            const optiesDagen = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateElem = document.getElementById('digitalDate');
+            if (dateElem) dateElem.innerText = nu.toLocaleDateString('nl-NL', optiesDagen);
 
-        const timeElem = document.getElementById('digitalTime');
-        if (timeElem) timeElem.innerText = String(uren).padStart(2, '0') + ':' + String(minuten).padStart(2, '0') + ':' + String(seconden).padStart(2, '0');
+            const timeElem = document.getElementById('digitalTime');
+            if (timeElem) timeElem.innerText = String(uren).padStart(2, '0') + ':' + String(minuten).padStart(2, '0') + ':' + String(seconden).padStart(2, '0');
 
-        if (activeAlarm) {
-            const currentAlarmStr = String(uren).padStart(2, '0') + ':' + String(minuten).padStart(2, '0');
-            if (activeAlarm === currentAlarmStr && seconden === 0) {
-                document.getElementById('alarmStatus').innerText = `🔔 WEKKER GAAT AF!`;
-                playMusic();
+            if (activeAlarm) {
+                const currentAlarmStr = String(uren).padStart(2, '0') + ':' + String(minuten).padStart(2, '0');
+                if (activeAlarm === currentAlarmStr && seconden === 0) {
+                    const statusElem = document.getElementById('alarmStatus');
+                    if (statusElem) statusElem.innerText = `🔔 WEKKER GAAT AF!`;
+                    playMusic();
+                }
             }
-        }
+        } catch(e) {}
     }
     
     setInterval(updateKlok, 1000);
@@ -462,13 +467,16 @@
         });
         if (miniTvPlaylist.length > 0 && huidigePlaylistIndex < miniTvPlaylist.length) {
             select.selectedIndex = huidigePlaylistIndex + 1;
-            document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
+            const urlInput = document.getElementById('miniTvUrl');
+            if (urlInput) urlInput.value = miniTvPlaylist[huidigePlaylistIndex];
         }
     }
     vulExcelDropdown();
 
     function importeerExcelLijst() {
-        const tekst = document.getElementById('excelInput').value;
+        const inputElem = document.getElementById('excelInput');
+        if (!inputElem) return;
+        const tekst = inputElem.value;
         if (!tekst.trim()) {
             alert("Plak eerst je lijst in het veld!");
             return;
@@ -490,8 +498,9 @@
 
     function kiesExcelNummer() {
         const select = document.getElementById('miniTvSelect');
-        if (select && select.value) {
-            document.getElementById('miniTvUrl').value = select.value;
+        const urlInput = document.getElementById('miniTvUrl');
+        if (select && select.value && urlInput) {
+            urlInput.value = select.value;
             huidigePlaylistIndex = select.selectedIndex - 1;
             localStorage.setItem('menaMuriaLastIndex', huidigePlaylistIndex);
             startMiniTV();
@@ -519,7 +528,8 @@
         if (miniTvPlaylist.length === 0) return;
         huidigePlaylistIndex = (huidigePlaylistIndex + 1) % miniTvPlaylist.length;
         localStorage.setItem('menaMuriaLastIndex', huidigePlaylistIndex);
-        document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
+        const urlInput = document.getElementById('miniTvUrl');
+        if (urlInput) urlInput.value = miniTvPlaylist[huidigePlaylistIndex];
         const select = document.getElementById('miniTvSelect');
         if (select) select.selectedIndex = huidigePlaylistIndex + 1;
         startMiniTV();
@@ -529,7 +539,8 @@
         if (miniTvPlaylist.length === 0) return;
         huidigePlaylistIndex = (huidigePlaylistIndex - 1 + miniTvPlaylist.length) % miniTvPlaylist.length;
         localStorage.setItem('menaMuriaLastIndex', huidigePlaylistIndex);
-        document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
+        const urlInput = document.getElementById('miniTvUrl');
+        if (urlInput) urlInput.value = miniTvPlaylist[huidigePlaylistIndex];
         const select = document.getElementById('miniTvSelect');
         if (select) select.selectedIndex = huidigePlaylistIndex + 1;
         startMiniTV();
@@ -538,15 +549,17 @@
     // --- MUZIEK SPELER ---
     function kiesStation() {
         const select = document.getElementById('stationSelect');
-        document.getElementById('streamUrl').value = select.value;
+        const streamUrl = document.getElementById('streamUrl');
+        if (select && streamUrl) streamUrl.value = select.value;
     }
 
     function playMusic() {
         const iframe = document.getElementById('youtubePlayer');
         const container = document.getElementById('playerContainer');
-        let urlInput = document.getElementById('streamUrl').value;
-        let embedUrl = converteerYouTubeLink(urlInput);
+        const urlInput = document.getElementById('streamUrl');
+        if (!iframe || !container || !urlInput) return;
         
+        let embedUrl = converteerYouTubeLink(urlInput.value);
         container.style.display = 'block';
         let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
         iframe.src = playUrl;
@@ -555,21 +568,26 @@
     function stopMusic() {
         const iframe = document.getElementById('youtubePlayer');
         const container = document.getElementById('playerContainer');
-        iframe.src = "";
-        container.style.display = 'none';
+        if (iframe) iframe.src = "";
+        if (container) container.style.display = 'none';
     }
 
     // --- MINI TV LOGICA ---
     function toggleMiniTV() {
         const container = document.getElementById('miniTvContainer');
+        const player = document.getElementById('miniTvPlayer');
+        const videoElem = document.getElementById('miniTvVideo');
+        if (!container) return;
+
         if (container.style.display === 'block') {
             container.style.display = 'none';
-            document.getElementById('miniTvPlayer').src = "";
-            document.getElementById('miniTvVideo').pause();
+            if (player) player.src = "";
+            if (videoElem) videoElem.pause();
         } else {
             container.style.display = 'block';
             if (miniTvPlaylist.length > 0) {
-                document.getElementById('miniTvUrl').value = miniTvPlaylist[huidigePlaylistIndex];
+                const urlInput = document.getElementById('miniTvUrl');
+                if (urlInput) urlInput.value = miniTvPlaylist[huidigePlaylistIndex];
                 const select = document.getElementById('miniTvSelect');
                 if (select) select.selectedIndex = huidigePlaylistIndex + 1;
             }
@@ -578,16 +596,19 @@
     }
 
     function startMiniTV() {
-        let urlInput = document.getElementById('miniTvUrl').value.trim();
+        const urlInput = document.getElementById('miniTvUrl');
         const iframe = document.getElementById('miniTvPlayer');
         const videoElement = document.getElementById('miniTvVideo');
+        if (!urlInput || !iframe || !videoElement) return;
 
-        if (urlInput.includes('onedrive.live.com') || urlInput.includes('.mp4')) {
+        let urlVal = urlInput.value.trim();
+
+        if (urlVal.includes('onedrive.live.com') || urlVal.includes('.mp4')) {
             iframe.style.display = 'none';
             iframe.src = "";
             videoElement.style.display = 'block';
             
-            let directUrl = urlInput;
+            let directUrl = urlVal;
             if (directUrl.includes('onedrive.live.com') && !directUrl.includes('download=1')) {
                 directUrl += (directUrl.includes('?') ? '&' : '?') + 'download=1';
             }
@@ -600,7 +621,7 @@
             videoElement.src = "";
             
             iframe.style.display = 'block';
-            let embedUrl = converteerYouTubeLink(urlInput);
+            let embedUrl = converteerYouTubeLink(urlVal);
             let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
             iframe.src = playUrl;
         }
@@ -608,13 +629,17 @@
 
     // --- WEKKER FUNCTIE ---
     function zetWekker() {
-        const tijd = document.getElementById('alarmTijd').value;
+        const tijdElem = document.getElementById('alarmTijd');
+        const statusElem = document.getElementById('alarmStatus');
+        if (!tijdElem || !statusElem) return;
+
+        const tijd = tijdElem.value;
         if(tijd) {
             activeAlarm = tijd;
-            document.getElementById('alarmStatus').innerText = `Wekker ingesteld om ${tijd} uur`;
+            statusElem.innerText = `Wekker ingesteld om ${tijd} uur`;
         } else {
             activeAlarm = null;
-            document.getElementById('alarmStatus').innerText = `Geen wekker ingesteld`;
+            statusElem.innerText = `Geen wekker ingesteld`;
         }
     }
 
@@ -627,9 +652,13 @@
     }
 
     function bouwKalender() {
-        const maand = parseInt(document.getElementById('maandSelect').value);
-        const jaar = parseInt(document.getElementById('jaarInput').value);
+        const maandSelect = document.getElementById('maandSelect');
+        const jaarInput = document.getElementById('jaarInput');
         const grid = document.getElementById('kalenderGrid');
+        if (!maandSelect || !jaarInput || !grid) return;
+
+        const maand = parseInt(maandSelect.value);
+        const jaar = parseInt(jaarInput.value);
         grid.innerHTML = '';
 
         const dNamen = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
@@ -674,7 +703,8 @@
 
             cel.onclick = function() {
                 const huidigeTekst = kalenderNotities[sleutel] || '';
-                const nieuweNotitie = prompt(`Voer verjaardag of afspraak in voor ${dag} ${document.getElementById('maandSelect').options[maand].text} ${jaar}:`, huidigeTekst);
+                const maandNaam = maandSelect.options[maand].text;
+                const nieuweNotitie = prompt(`Voer verjaardag of afspraak in voor ${dag} ${maandNaam} ${jaar}:`, huidigeTekst);
                 
                 if (nieuweNotitie !== null) {
                     if (nieuweNotitie.trim() === "") {
@@ -706,15 +736,19 @@
 
     function gaNaarVandaag() {
         const vandaag = new Date();
-        document.getElementById('maandSelect').value = vandaag.getMonth();
-        document.getElementById('jaarInput').value = vandaag.getFullYear();
+        const maandSelect = document.getElementById('maandSelect');
+        const jaarInput = document.getElementById('jaarInput');
+        if (maandSelect) maandSelect.value = vandaag.getMonth();
+        if (jaarInput) jaarInput.value = vandaag.getFullYear();
         bouwKalender();
     }
 
     // Automatisch instellen op heden bij opstarten
     const huidigeDatum = new Date();
-    document.getElementById('maandSelect').value = huidigeDatum.getMonth();
-    document.getElementById('jaarInput').value = huidigeDatum.getFullYear();
+    const mSelect = document.getElementById('maandSelect');
+    const jInput = document.getElementById('jaarInput');
+    if (mSelect) mSelect.value = huidigeDatum.getMonth();
+    if (jInput) jInput.value = huidigeDatum.getFullYear();
     bouwKalender();
 </script>
 
