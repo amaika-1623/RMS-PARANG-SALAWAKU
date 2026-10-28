@@ -356,7 +356,8 @@
         <button onclick="bouwKalender()" style="margin-top: 6px;">Ga naar jaar / maand</button>
         
         <div class="calendar-grid" id="kalenderGrid"></div>
-        <div id="kalenderMelding" style="font-size: 0.75rem; color: var(--text-gold); margin-top: 8px; font-style: italic;"></div>
+        <!-- Meldingen worden hieronder netjes onder elkaar getoond -->
+        <div id="kalenderMelding" style="font-size: 0.75rem; color: var(--text-gold); margin-top: 10px; font-style: italic; text-align: left; line-height: 1.4;"></div>
     </div>
 </div>
 
@@ -727,7 +728,9 @@
         const meldingDiv = document.getElementById('kalenderMelding');
         if (meldingDiv) {
             if (meldingenVandaag.length > 0) {
-                meldingDiv.innerHTML = `🔔 **Herinnering voor vandaag:** ${meldingenVandaag.join(' | ')}`;
+                // Vervang eventuele komma's of losse tekst door nette regels onder elkaar (<br>)
+                const opgemaakteTekst = meldingenVandaag.join('<br>').replace(/,/g, '<br>');
+                meldingDiv.innerHTML = `🔔 <b>Herinnering voor vandaag:</b><br>${opgemaakteTekst}`;
             } else {
                 meldingDiv.innerHTML = `💡 Tip: Klik op een dag in de kalender om een verjaardag of afspraak toe te voegen.`;
             }
