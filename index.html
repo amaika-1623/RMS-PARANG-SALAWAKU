@@ -407,8 +407,32 @@
             const vText = document.getElementById('bibleVerseText');
             const vRef = document.getElementById('bibleVerseRef');
 
-            if (vText) vText.innerText = `"${huidigVers.tekst}"`; if (vRef) vRef.innerText = huidigVers.ref; } catch(e) {} }  // --- KLOK LOGICA --- let activeAlarm = null;  function updateKlok() { try { const nu = new Date(); const seconden = nu.getSeconds(); const minuten = nu.getMinutes(); const uren = nu.getHours();  const secGraden = seconden * 6; const minGraden = minuten * 6 + seconden * 0.1; const uurGraden = (uren \% 12) * 30 + minuten * 0.5;  const hourHand = document.getElementById('hourHand'); const minuteHand = document.getElementById('minuteHand'); const secondHand = document.getElementById('secondHand');  if (hourHand) hourHand.style.transform = `rotate(${uurGraden}deg)`;
-            if (minuteHand) minuteHand.style.transform = `rotate(${minGraden}deg)`; if (secondHand) secondHand.style.transform = `rotate(${secGraden}deg)`;
+            if (vText) vText.innerText = `"${huidigVers.tekst}"`;
+            if (vRef) vRef.innerText = huidigVers.ref;
+        } catch(e) {}
+    }
+
+    // --- KLOK LOGICA ---
+    let activeAlarm = null;
+
+    function updateKlok() {
+        try {
+            const nu = new Date();
+            const seconden = nu.getSeconds();
+            const minuten = nu.getMinutes();
+            const uren = nu.getHours();
+
+            const secGraden = seconden * 6;
+            const minGraden = minuten * 6 + seconden * 0.1;
+            const uurGraden = (uren % 12) * 30 + minuten * 0.5;
+
+            const hourHand = document.getElementById('hourHand');
+            const minuteHand = document.getElementById('minuteHand');
+            const secondHand = document.getElementById('secondHand');
+
+            if (hourHand) hourHand.style.transform = `rotate(${uurGraden}deg)`;
+            if (minuteHand) minuteHand.style.transform = `rotate(${minGraden}deg)`;
+            if (secondHand) secondHand.style.transform = `rotate(${secGraden}deg)`;
 
             const optiesDagen = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             const dateElem = document.getElementById('digitalDate');
@@ -704,7 +728,7 @@
             cel.onclick = function() {
                 geselecteerdeSleutel = sleutel;
                 const maandNaam = maandSelect.options[maand].text;
-                document.getElementById('geselecteerdeDatumTitel').innerText = `Geselecteerde dag: ${dag} ${maandNaam}${jaar}`;
+                document.getElementById('geselecteerdeDatumTitel').innerText = `Geselecteerde dag: ${dag} ${maandNaam} ${jaar}`;
                 document.getElementById('dagNotitieInput').value = kalenderNotities[sleutel] || '';
                 bouwKalender();
             };
@@ -720,4 +744,56 @@
         if (meldingDiv) {
             if (meldingenVandaag.length > 0) {
                 const opgemaakteTekst = meldingenVandaag.join('\n\n');
-                meldingDiv.innerText = `🔔
+                meldingDiv.innerText = `🔔 Herinnering voor vandaag:\n${opgemaakteTekst}`;
+            } else {
+                meldingDiv.innerText = `💡 Tip: Klik op een dag in de kalender om hieronder een notitie of verjaardag in te voeren.`;
+            }
+        }
+    }
+
+    function slaDagNotitieOp() {
+        if (!geselecteerdeSleutel) {
+            alert("Tik eerst op een dag in de kalender!");
+            return;
+        }
+        const tekst = document.getElementById('dagNotitieInput').value;
+        if (tekst.trim() === "") {
+            delete kalenderNotities[geselecteerdeSleutel];
+        } else {
+            kalenderNotities[geselecteerdeSleutel] = tekst;
+        }
+        localStorage.setItem('menaMuriaKalenderNotities', JSON.stringify(kalenderNotities));
+        bouwKalender();
+        alert("Notitie opgeslagen!");
+    }
+
+    function gaNaarVandaag() {
+        const vandaag = new Date();
+        const maandSelect = document.getElementById('maandSelect');
+        const jaarInput = document.getElementById('jaarInput');
+        if (maandSelect) maandSelect.value = vandaag.getMonth();
+        if (jaarInput) jaarInput.value = vandaag.getFullYear();
+        bouwKalender();
+    }
+
+    // Automatisch instellen op heden bij opstarten
+    const huidigeDatum = new Date();
+    const mSelect = document.getElementById('maandSelect');
+    const jInput = document.getElementById('jaarInput');
+    if (mSelect) mSelect.value = huidigeDatum.getMonth();
+    if (jInput) jInput.value = huidigeDatum.getFullYear();
+    bouwKalender();
+</script>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                registration.unregister();
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
