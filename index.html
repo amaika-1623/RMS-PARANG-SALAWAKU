@@ -233,10 +233,12 @@
             margin-top: 8px;
         }
 
-        /* Zorgt dat lange meldingen automatisch afbreken en netjes onder elkaar komen */
+        /* Forceert dat lange tekstblokken netjes binnen het scherm afbreken en onder elkaar vallen */
         #kalenderMelding {
-            word-break: break-word;
+            width: 100%;
+            word-break: break-all;
             overflow-wrap: break-word;
+            white-space: pre-wrap;
         }
     </style>
 </head>
@@ -362,7 +364,7 @@
         <button onclick="bouwKalender()" style="margin-top: 6px;">Ga naar jaar / maand</button>
         
         <div class="calendar-grid" id="kalenderGrid"></div>
-        <div id="kalenderMelding" style="font-size: 0.75rem; color: var(--text-gold); margin-top: 10px; font-style: italic; text-align: left; line-height: 1.4;"></div>
+        <div id="kalenderMelding" style="font-size: 0.75rem; color: var(--text-gold); margin-top: 10px; font-style: italic; text-align: left; line-height: 1.5;"></div>
     </div>
 </div>
 
@@ -733,7 +735,8 @@
         const meldingDiv = document.getElementById('kalenderMelding');
         if (meldingDiv) {
             if (meldingenVandaag.length > 0) {
-                const opgemaakteTekst = meldingenVandaag.join('<br>').replace(/,/g, '<br>');
+                // Zet elk stukje netjes op een nieuwe regel onder elkaar
+                const opgemaakteTekst = meldingenVandaag.join('<br><br>');
                 meldingDiv.innerHTML = `🔔 <b>Herinnering voor vandaag:</b><br>${opgemaakteTekst}`;
             } else {
                 meldingDiv.innerHTML = `💡 Tip: Klik op een dag in de kalender om een verjaardag of afspraak toe te voegen.`;
