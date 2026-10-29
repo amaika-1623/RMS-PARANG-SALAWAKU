@@ -232,6 +232,12 @@
             display: none;
             margin-top: 8px;
         }
+
+        /* Zorgt dat lange meldingen automatisch afbreken en netjes onder elkaar komen */
+        #kalenderMelding {
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
     </style>
 </head>
 <body>
@@ -356,7 +362,6 @@
         <button onclick="bouwKalender()" style="margin-top: 6px;">Ga naar jaar / maand</button>
         
         <div class="calendar-grid" id="kalenderGrid"></div>
-        <!-- Meldingen worden hieronder netjes onder elkaar getoond -->
         <div id="kalenderMelding" style="font-size: 0.75rem; color: var(--text-gold); margin-top: 10px; font-style: italic; text-align: left; line-height: 1.4;"></div>
     </div>
 </div>
@@ -728,7 +733,6 @@
         const meldingDiv = document.getElementById('kalenderMelding');
         if (meldingDiv) {
             if (meldingenVandaag.length > 0) {
-                // Vervang eventuele komma's of losse tekst door nette regels onder elkaar (<br>)
                 const opgemaakteTekst = meldingenVandaag.join('<br>').replace(/,/g, '<br>');
                 meldingDiv.innerHTML = `🔔 <b>Herinnering voor vandaag:</b><br>${opgemaakteTekst}`;
             } else {
