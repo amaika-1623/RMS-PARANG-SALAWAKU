@@ -770,4 +770,31 @@
 
     function gaNaarVandaag() {
         const vandaag = new Date();
-        const
+        const maandSelect = document.getElementById('maandSelect');
+        const jaarInput = document.getElementById('jaarInput');
+        if (maandSelect) maandSelect.value = vandaag.getMonth();
+        if (jaarInput) jaarInput.value = vandaag.getFullYear();
+        bouwKalender();
+    }
+
+    // Automatisch instellen op heden bij opstarten
+    const huidigeDatum = new Date();
+    const mSelect = document.getElementById('maandSelect');
+    const jInput = document.getElementById('jaarInput');
+    if (mSelect) mSelect.value = huidigeDatum.getMonth();
+    if (jInput) jInput.value = huidigeDatum.getFullYear();
+    bouwKalender();
+</script>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                registration.unregister();
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
