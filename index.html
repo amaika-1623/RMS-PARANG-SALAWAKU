@@ -210,7 +210,11 @@
         }
 
         .calendar-cell:hover {
-            background: rgba(212, 175, 55, 0.2);
+            background: rgba(212, 175, 55, 0.3);
+        }
+
+        .calendar-cell.selected {
+            border: 2px solid #ffffff;
         }
 
         .calendar-cell.empty {
@@ -233,12 +237,10 @@
             margin-top: 8px;
         }
 
-        /* Forceert dat lange tekstblokken netjes binnen het scherm afbreken en onder elkaar vallen */
         #kalenderMelding {
-            width: 100%;
-            word-break: break-all;
-            overflow-wrap: break-word;
-            white-space: pre-wrap;
+            white-space: pre-line;
+            text-align: left;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -340,9 +342,9 @@
         </div>
     </div>
 
-    <!-- EEUWKALENDER MET NOTITIES & HERINNERINGEN -->
+    <!-- EEUWKALENDER MET VASTE INVOERBOX -->
     <div class="section">
-        <div class="calendar-header">📅 EEUWKALENDER & HERINNERINGEN</div>
+        <div class="calendar-header">📅 EEUWKALENDER & NOTITIES</div>
         <button onclick="gaNaarVandaag()">Vandaag</button>
         <div class="btn-row" style="margin-top: 6px;">
             <select id="maandSelect" onchange="bouwKalender()">
@@ -364,7 +366,15 @@
         <button onclick="bouwKalender()" style="margin-top: 6px;">Ga naar jaar / maand</button>
         
         <div class="calendar-grid" id="kalenderGrid"></div>
-        <div id="kalenderMelding" style="font-size: 0.75rem; color: var(--text-gold); margin-top: 10px; font-style: italic; text-align: left; line-height: 1.5;"></div>
+
+        <!-- VASTE NOTITIE INVOER VELD -->
+        <div id="notitieSectie" style="margin-top: 12px; background: rgba(0,0,0,0.6); padding: 10px; border-radius: 6px; border: 1px solid var(--border-gold); text-align: left;">
+            <div id="geselecteerdeDatumTitel" style="font-size: 0.8rem; color: var(--text-gold); font-weight: bold; margin-bottom: 4px;">Tik op een dag hierboven om notitie te bewerken:</div>
+            <textarea id="dagNotitieInput" rows="3" placeholder="Typ hier je verjaardag of afspraak (je kunt gewoon op enter drukken voor nieuwe regels)..." style="width:100%; box-sizing:border-box;"></textarea>
+            <button onclick="slaDagNotitieOp()" style="background: linear-gradient(to bottom, #28a745, #1e7e34); color: white; margin-top: 4px;">💾 Bewaar Notitie voor deze dag</button>
+        </div>
+
+        <div id="kalenderMelding" style="font-size: 0.75rem; color: var(--text-gold); margin-top: 10px; font-style: italic;"></div>
     </div>
 </div>
 
@@ -651,13 +661,15 @@
         }
     }
 
-    // --- EEUWKALENDER MET VERJAARDAGEN & HERINNERINGEN ---
+    // --- EEUWKALENDER MET VASTE INVOERBOX ---
     let kalenderNotities = {};
     if (localStorage.getItem('menaMuriaKalenderNotities')) {
         try {
             kalenderNotities = JSON.parse(localStorage.getItem('menaMuriaKalenderNotities'));
         } catch(e) {}
     }
+
+    let geselecteerdeSleutel = null;
 
     function bouwKalender() {
         const maandSelect = document.getElementById('maandSelect');
@@ -709,20 +721,17 @@
                 cel.classList.add('today');
             }
 
+            if (sleutel === geselecteerdeSleutel) {
+                cel.classList.add('selected');
+            }
+
+            // Klik op een dag om het tekstvak te vullen voor die dag
             cel.onclick = function() {
-                const huidigeTekst = kalenderNotities[sleutel] || '';
+                geselecteerdeSleutel = sleutel;
                 const maandNaam = maandSelect.options[maand].text;
-                const nieuweNotitie = prompt(`Voer verjaardag of afspraak in voor ${dag} ${maandNaam} ${jaar}:`, huidigeTekst);
-                
-                if (nieuweNotitie !== null) {
-                    if (nieuweNotitie.trim() === "") {
-                        delete kalenderNotities[sleutel];
-                    } else {
-                        kalenderNotities[sleutel] = nieuweNotitie.trim();
-                    }
-                    localStorage.setItem('menaMuriaKalenderNotities', JSON.stringify(kalenderNotities));
-                    bouwKalender();
-                }
+                document.getElementById('geselecteerdeDatumTitel').innerText = `Geselecteerde dag: ${dag} ${maandNaam} ${jaar}`;
+                document.getElementById('dagNotitieInput').value = kalenderNotities[sleutel] || '';
+                bouwKalender();
             };
 
             if (dag === vandaag.getDate() && maand === vandaag.getMonth() && jaar === vandaag.getFullYear() && heeftNotitie) {
@@ -735,42 +744,30 @@
         const meldingDiv = document.getElementById('kalenderMelding');
         if (meldingDiv) {
             if (meldingenVandaag.length > 0) {
-                // Zet elk stukje netjes op een nieuwe regel onder elkaar
-                const opgemaakteTekst = meldingenVandaag.join('<br><br>');
-                meldingDiv.innerHTML = `🔔 <b>Herinnering voor vandaag:</b><br>${opgemaakteTekst}`;
+                const opgemaakteTekst = meldingenVandaag.join('\n\n');
+                meldingDiv.innerText = `🔔 Herinnering voor vandaag:\n${opgemaakteTekst}`;
             } else {
-                meldingDiv.innerHTML = `💡 Tip: Klik op een dag in de kalender om een verjaardag of afspraak toe te voegen.`;
+                meldingDiv.innerText = `💡 Tip: Klik op een dag in de kalender om hieronder een notitie of verjaardag in te voeren.`;
             }
         }
     }
 
+    function slaDagNotitieOp() {
+        if (!geselecteerdeSleutel) {
+            alert("Tik eerst op een dag in de kalender!");
+            return;
+        }
+        const tekst = document.getElementById('dagNotitieInput').value;
+        if (tekst.trim() === "") {
+            delete kalenderNotities[geselecteerdeSleutel];
+        } else {
+            kalenderNotities[geselecteerdeSleutel] = tekst;
+        }
+        localStorage.setItem('menaMuriaKalenderNotities', JSON.stringify(kalenderNotities));
+        bouwKalender();
+        alert("Notitie opgeslagen!");
+    }
+
     function gaNaarVandaag() {
         const vandaag = new Date();
-        const maandSelect = document.getElementById('maandSelect');
-        const jaarInput = document.getElementById('jaarInput');
-        if (maandSelect) maandSelect.value = vandaag.getMonth();
-        if (jaarInput) jaarInput.value = vandaag.getFullYear();
-        bouwKalender();
-    }
-
-    // Automatisch instellen op heden bij opstarten
-    const huidigeDatum = new Date();
-    const mSelect = document.getElementById('maandSelect');
-    const jInput = document.getElementById('jaarInput');
-    if (mSelect) mSelect.value = huidigeDatum.getMonth();
-    if (jInput) jInput.value = huidigeDatum.getFullYear();
-    bouwKalender();
-</script>
-
-<script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-            for(let registration of registrations) {
-                registration.unregister();
-            }
-        });
-    }
-</script>
-
-</body>
-</html>
+        const
