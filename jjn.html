@@ -4,6 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mena Muria Klok & Radio</title>
+    
+    <!-- APP ICOON VOOR STARTSCHERM -->
+    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <link rel="manifest" data-inline="true" href="data:application/manifest+json,{
+        &quot;name&quot;: &quot;Mena Muria Klok&quot;,
+        &quot;short_name&quot;: &quot;Mena Muria&quot;,
+        &quot;start_url&quot;: &quot;.&quot;,
+        &quot;display&quot;: &quot;standalone&quot;,
+        &quot;background_color&quot;: &quot;#0d0b07&quot;,
+        &quot;theme_color&quot;: &quot;#d4af37&quot;,
+        &quot;icons&quot;: [{
+            &quot;src&quot;: &quot;logo.png&quot;,
+            &quot;sizes&quot;: &quot;512x512&quot;,
+            &quot;type&quot;: &quot;image/png&quot;
+        }]
+    }">
+
+    <!-- Importeer klassiek gotisch lettertype -->
+    <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #0d0b07;
@@ -128,10 +149,19 @@
             transform-origin: bottom center;
         }
 
+        .location-title {
+            font-family: 'UnifrakturMaguntia', cursive;
+            font-size: 1.4rem;
+            color: var(--text-gold);
+            margin-top: 6px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+        }
+
         .digital-date {
             font-size: 0.9rem;
             color: var(--text-gold);
-            margin-top: 5px;
+            margin-top: 3px;
         }
 
         .digital-time {
@@ -139,6 +169,55 @@
             font-weight: bold;
             letter-spacing: 1px;
             color: var(--text-light);
+        }
+
+        /* WERELDKLOK STIJL */
+        .world-clock-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .world-clock-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 6px;
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .world-city {
+            text-align: left;
+        }
+
+        .world-city-name {
+            font-size: 0.9rem;
+            color: var(--text-gold);
+            font-weight: bold;
+        }
+
+        .world-city-info {
+            font-size: 0.65rem;
+            opacity: 0.7;
+        }
+
+        .world-city-right {
+            text-align: right;
+        }
+
+        .world-city-time {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--text-light);
+            font-family: monospace;
+        }
+
+        .world-city-temp {
+            font-size: 0.75rem;
+            color: var(--text-gold);
         }
 
         /* KNOPPEN EN INPUTS */
@@ -210,7 +289,11 @@
         }
 
         .calendar-cell:hover {
-            background: rgba(212, 175, 55, 0.2);
+            background: rgba(212, 175, 55, 0.3);
+        }
+
+        .calendar-cell.selected {
+            border: 2px solid #ffffff;
         }
 
         .calendar-cell.empty {
@@ -232,6 +315,12 @@
             display: none;
             margin-top: 8px;
         }
+
+        #kalenderMelding {
+            white-space: pre-line;
+            text-align: left;
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
@@ -239,7 +328,7 @@
 <div class="app-container">
     <header>
         <h1>MENA MURIA</h1>
-        <p>KLOK • RADIO STREAM • EEUWKALENDER</p>
+        <p>KLOK • TICKETS • WERELDKLOK</p>
     </header>
 
     <!-- KLOK SECTIE -->
@@ -250,9 +339,32 @@
             <div class="hand second-hand" id="secondHand"></div>
             <div class="clock-center-dot"></div>
         </div>
-        <div style="font-size: 0.85rem; color: var(--text-gold); margin-top: 4px; font-weight: bold;">ABORU</div>
+        <div class="location-title">Aboru Manis É</div>
         <div class="digital-date" id="digitalDate">Laden...</div>
         <div class="digital-time" id="digitalTime">00:00:00</div>
+    </div>
+
+    <!-- TOEGANGSKAARTEN & PDF SECTIE -->
+    <div class="section">
+        <div style="font-size: 0.8rem; color: var(--text-gold); font-weight: bold; margin-bottom: 6px;">🎫 TOEGANGSKAARTEN & TICKETS</div>
+        <input type="text" id="ticketUrlInput" placeholder="Plak hier je OneDrive PDF-link of ticket-link..." style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:6px;">
+        <input type="text" id="ticketNaamInput" placeholder="Naam van het ticket (bijv. Concert / Vliegticket)..." style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:6px;">
+        <button onclick="slaTicketOp()" style="background: linear-gradient(to bottom, #28a745, #1e7e34); color: white;">💾 Sla Ticket Op</button>
+        <div id="opgeslagenTicketsLijst" style="margin-top: 10px; text-align: left;"></div>
+    </div>
+
+    <!-- WERELDKLOK & WEER SECTIE -->
+    <div class="section">
+        <div style="font-size: 0.8rem; color: var(--text-gold); font-weight: bold; margin-bottom: 6px;">🌍 WERELDKLOK & TEMPERATUUR</div>
+        <div class="world-clock-grid" id="wereldKlokLijst">
+            <!-- Wordt dynamisch ingeladen -->
+        </div>
+
+        <!-- NIEUWE PLAATS TOEVOEGEN -->
+        <div style="margin-top: 10px; display: flex; gap: 6px;">
+            <input type="text" id="nieuwePlaatsInput" placeholder="Typ plaatsnaam (bijv. Den Haag)..." style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin:0;">
+            <button onclick="voegPlaatsToe()" style="width: auto; padding: 6px 12px; margin:0; background: linear-gradient(to bottom, #28a745, #1e7e34); color: white;">+ Voeg toe</button>
+        </div>
     </div>
 
     <!-- DAGELIJKS WOORD -->
@@ -332,9 +444,9 @@
         </div>
     </div>
 
-    <!-- EEUWKALENDER MET NOTITIES & HERINNERINGEN -->
+    <!-- EEUWKALENDER MET VASTE INVOERBOX -->
     <div class="section">
-        <div class="calendar-header">📅 EEUWKALENDER & HERINNERINGEN</div>
+        <div class="calendar-header">📅 EEUWKALENDER & NOTITIES</div>
         <button onclick="gaNaarVandaag()">Vandaag</button>
         <div class="btn-row" style="margin-top: 6px;">
             <select id="maandSelect" onchange="bouwKalender()">
@@ -356,11 +468,163 @@
         <button onclick="bouwKalender()" style="margin-top: 6px;">Ga naar jaar / maand</button>
         
         <div class="calendar-grid" id="kalenderGrid"></div>
-        <div id="kalenderMelding" style="font-size: 0.75rem; color: var(--text-gold); margin-top: 8px; font-style: italic;"></div>
+
+        <!-- VASTE NOTITIE INVOER VELD -->
+        <div id="notitieSectie" style="margin-top: 12px; background: rgba(0,0,0,0.6); padding: 10px; border-radius: 6px; border: 1px solid var(--border-gold); text-align: left;">
+            <div id="geselecteerdeDatumTitel" style="font-size: 0.8rem; color: var(--text-gold); font-weight: bold; margin-bottom: 4px;">Tik op een dag hierboven om notitie te bewerken:</div>
+            <textarea id="dagNotitieInput" rows="3" placeholder="Typ hier je verjaardag of afspraak (je kunt gewoon op enter drukken voor nieuwe regels)..." style="width:100%; box-sizing:border-box;"></textarea>
+            <button onclick="slaDagNotitieOp()" style="background: linear-gradient(to bottom, #28a745, #1e7e34); color: white; margin-top: 4px;">💾 Bewaar Notitie voor deze dag</button>
+        </div>
+
+        <div id="kalenderMelding" style="font-size: 0.75rem; color: var(--text-gold); margin-top: 10px; font-style: italic;"></div>
     </div>
 </div>
 
 <script>
+    // --- WERELDKLOK & WEER LOGICA ---
+    let wereldSteden = [
+        { naam: "Ambon", land: "Molukken", tz: "Asia/Jayapura", lat: -3.695, lon: 128.181, temp: "--°C" },
+        { naam: "Jakarta", land: "Indonesië", tz: "Asia/Jakarta", lat: -6.2088, lon: 106.8456, temp: "--°C" },
+        { naam: "Amsterdam", land: "Nederland", tz: "Europe/Amsterdam", lat: 52.3676, lon: 4.9041, temp: "--°C" },
+        { naam: "Toronto", land: "Canada", tz: "America/Toronto", lat: 43.6532, lon: -79.3832, temp: "--°C" }
+    ];
+
+    if (localStorage.getItem('menaMuriaSteden')) {
+        try {
+            wereldSteden = JSON.parse(localStorage.getItem('menaMuriaSteden'));
+        } catch(e) {}
+    }
+
+    async function laadWeerVoorSteden() {
+        for (let s of wereldSteden) {
+            if (!s.lat || !s.lon) continue;
+            try {
+                let res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${s.lat}&longitude=${s.lon}&current_weather=true`);
+                let data = await res.json();
+                if (data && data.current_weather) {
+                    s.temp = Math.round(data.current_weather.temperature) + "°C";
+                }
+            } catch(e) {
+                s.temp = "--°C";
+            }
+        }
+        toonWereldKlok();
+    }
+
+    function toonWereldKlok() {
+        const container = document.getElementById('wereldKlokLijst');
+        if (!container) return;
+        let html = '';
+        wereldSteden.forEach((s, idx) => {
+            let tijdStr = "00:00";
+            try {
+                tijdStr = new Intl.DateTimeFormat('nl-NL', { timeZone: s.tz, hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date());
+            } catch(e) {}
+
+            html += `<div class="world-clock-item">
+                <div class="world-city">
+                    <div class="world-city-name">${s.naam}</div>
+                    <div class="world-city-info">${s.land}</div>
+                </div>
+                <div class="world-city-right">
+                    <div class="world-city-time" id="wc-tijd-${idx}">${tijdStr}</div>
+                    <div class="world-city-temp">${s.temp}</div>
+                </div>
+                ${idx >= 4 ? `<button onclick="verwijderStad(${idx})" style="background:#d9534f; color:#fff; width:auto; padding:2px 6px; font-size:0.6rem; margin-left:6px;">X</button>` : ''}
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    async function voegPlaatsToe() {
+        const input = document.getElementById('nieuwePlaatsInput');
+        const query = input.value.trim();
+        if (!query) return;
+
+        try {
+            let res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&language=nl&format=json`);
+            let data = await res.json();
+            if (data && data.results && data.results.length > 0) {
+                let r = data.results[0];
+                let tijdzone = r.timezone || 'UTC';
+                wereldSteden.push({
+                    naam: r.name,
+                    land: r.country || r.admin1 || 'Wereld',
+                    tz: tijdzone,
+                    lat: r.latitude,
+                    lon: r.longitude,
+                    temp: "--°C"
+                });
+                localStorage.setItem('menaMuriaSteden', JSON.stringify(wereldSteden));
+                input.value = '';
+                laadWeerVoorSteden();
+                alert(`Plaats ${r.name} succesvol toegevoegd!`);
+            } else {
+                alert("Plaats niet gevonden. Probeer een andere spelling.");
+            }
+        } catch(e) {
+            alert("Kon geen verbinding maken om de plaats op te zoeken.");
+        }
+    }
+
+    function verwijderStad(index) {
+        wereldSteden.splice(index, 1);
+        localStorage.setItem('menaMuriaSteden', JSON.stringify(wereldSteden));
+        toonWereldKlok();
+    }
+
+    toonWereldKlok();
+    laadWeerVoorSteden();
+    // Vernieuw weer elke 15 minuten
+    setInterval(laadWeerVoorSteden, 15 * 60 * 1000);
+
+    // --- TICKETS / PDF OPSLAG LOGICA ---
+    let opgeslagenTickets = [];
+    if (localStorage.getItem('menaMuriaTickets')) {
+        try {
+            opgeslagenTickets = JSON.parse(localStorage.getItem('menaMuriaTickets'));
+        } catch(e) {}
+    }
+
+    function slaTicketOp() {
+        const url = document.getElementById('ticketUrlInput').value.trim();
+        const naam = document.getElementById('ticketNaamInput').value.trim();
+        if (!url || !naam) {
+            alert("Vul zowel de link als de naam van het ticket in!");
+            return;
+        }
+        opgeslagenTickets.push({ naam: naam, url: url });
+        localStorage.setItem('menaMuriaTickets', JSON.stringify(opgeslagenTickets));
+        document.getElementById('ticketUrlInput').value = '';
+        document.getElementById('ticketNaamInput').value = '';
+        toonTickets();
+        alert("Ticket succesvol opgeslagen!");
+    }
+
+    function verwijderTicket(index) {
+        opgeslagenTickets.splice(index, 1);
+        localStorage.setItem('menaMuriaTickets', JSON.stringify(opgeslagenTickets));
+        toonTickets();
+    }
+
+    function toonTickets() {
+        const lijstDiv = document.getElementById('opgeslagenTicketsLijst');
+        if (!lijstDiv) return;
+        if (opgeslagenTickets.length === 0) {
+            lijstDiv.innerHTML = '<div style="font-size: 0.7rem; opacity: 0.6; font-style: italic;">Nog geen tickets opgeslagen.</div>';
+            return;
+        }
+        let html = '';
+        opgeslagenTickets.forEach((t, i) => {
+            html += `<div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 6px 8px; margin-top: 4px; border-radius: 4px;">
+                <a href="${t.url}" target="_blank" style="color: var(--text-gold); font-size: 0.75rem; text-decoration: underline; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 240px;">🎫 ${t.naam}</a>
+                <button onclick="verwijderTicket(${i})" style="background: #d9534f; color: white; width: auto; padding: 2px 6px; font-size: 0.65rem; margin:0;">X</button>
+            </div>`;
+        });
+        lijstDiv.innerHTML = html;
+    }
+    toonTickets();
+
     // --- DAGELIJKKS WOORD LOGICA ---
     const bijbelVerzen = [
         { tekst: "De HEERE is mijn Herder, mij zal niets ontbreken.", ref: "Psalm 23:1" },
@@ -394,7 +658,7 @@
         } catch(e) {}
     }
 
-    // --- KLOK LOGICA ---
+    // --- KLOK & WERELDKLOK LIVE TICK LOGICA ---
     let activeAlarm = null;
 
     function updateKlok() {
@@ -422,6 +686,14 @@
 
             const timeElem = document.getElementById('digitalTime');
             if (timeElem) timeElem.innerText = String(uren).padStart(2, '0') + ':' + String(minuten).padStart(2, '0') + ':' + String(seconden).padStart(2, '0');
+
+            // Wereldklok tijden live bijwerken per seconde
+            wereldSteden.forEach((s, idx) => {
+                const tElem = document.getElementById(`wc-tijd-${idx}`);
+                if (tElem) {
+                    tElem.innerText = new Intl.DateTimeFormat('nl-NL', { timeZone: s.tz, hour: '2-digit', minute: '2-digit', hour12: false }).format(nu);
+                }
+            });
 
             if (activeAlarm) {
                 const currentAlarmStr = String(uren).padStart(2, '0') + ':' + String(minuten).padStart(2, '0');
@@ -643,13 +915,15 @@
         }
     }
 
-    // --- EEUWKALENDER MET VERJAARDAGEN & HERINNERINGEN ---
+    // --- EEUWKALENDER MET VASTE INVOERBOX ---
     let kalenderNotities = {};
     if (localStorage.getItem('menaMuriaKalenderNotities')) {
         try {
             kalenderNotities = JSON.parse(localStorage.getItem('menaMuriaKalenderNotities'));
         } catch(e) {}
     }
+
+    let geselecteerdeSleutel = null;
 
     function bouwKalender() {
         const maandSelect = document.getElementById('maandSelect');
@@ -701,20 +975,16 @@
                 cel.classList.add('today');
             }
 
+            if (sleutel === geselecteerdeSleutel) {
+                cel.classList.add('selected');
+            }
+
             cel.onclick = function() {
-                const huidigeTekst = kalenderNotities[sleutel] || '';
+                geselecteerdeSleutel = sleutel;
                 const maandNaam = maandSelect.options[maand].text;
-                const nieuweNotitie = prompt(`Voer verjaardag of afspraak in voor ${dag} ${maandNaam} ${jaar}:`, huidigeTekst);
-                
-                if (nieuweNotitie !== null) {
-                    if (nieuweNotitie.trim() === "") {
-                        delete kalenderNotities[sleutel];
-                    } else {
-                        kalenderNotities[sleutel] = nieuweNotitie.trim();
-                    }
-                    localStorage.setItem('menaMuriaKalenderNotities', JSON.stringify(kalenderNotities));
-                    bouwKalender();
-                }
+                document.getElementById('geselecteerdeDatumTitel').innerText = `Geselecteerde dag: ${dag} ${maandNaam} ${jaar}`;
+                document.getElementById('dagNotitieInput').value = kalenderNotities[sleutel] || '';
+                bouwKalender();
             };
 
             if (dag === vandaag.getDate() && maand === vandaag.getMonth() && jaar === vandaag.getFullYear() && heeftNotitie) {
@@ -727,11 +997,28 @@
         const meldingDiv = document.getElementById('kalenderMelding');
         if (meldingDiv) {
             if (meldingenVandaag.length > 0) {
-                meldingDiv.innerHTML = `🔔 **Herinnering voor vandaag:** ${meldingenVandaag.join(' | ')}`;
+                const opgemaakteTekst = meldingenVandaag.join('\n\n');
+                meldingDiv.innerText = `🔔 Herinnering voor vandaag:\n${opgemaakteTekst}`;
             } else {
-                meldingDiv.innerHTML = `💡 Tip: Klik op een dag in de kalender om een verjaardag of afspraak toe te voegen.`;
+                meldingDiv.innerText = `💡 Tip: Klik op een dag in de kalender om hieronder een notitie of verjaardag in te voeren.`;
             }
         }
+    }
+
+    function slaDagNotitieOp() {
+        if (!geselecteerdeSleutel) {
+            alert("Tik eerst op een dag in de kalender!");
+            return;
+        }
+        const tekst = document.getElementById('dagNotitieInput').value;
+        if (tekst.trim() === "") {
+            delete kalenderNotities[geselecteerdeSleutel];
+        } else {
+            kalenderNotities[geselecteerdeSleutel] = tekst;
+        }
+        localStorage.setItem('menaMuriaKalenderNotities', JSON.stringify(kalenderNotities));
+        bouwKalender();
+        alert("Notitie opgeslagen!");
     }
 
     function gaNaarVandaag() {
