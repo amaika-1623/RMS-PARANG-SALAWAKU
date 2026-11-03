@@ -204,11 +204,20 @@
             opacity: 0.7;
         }
 
+        .world-city-right {
+            text-align: right;
+        }
+
         .world-city-time {
             font-size: 1.1rem;
             font-weight: bold;
             color: var(--text-light);
             font-family: monospace;
+        }
+
+        .world-city-temp {
+            font-size: 0.75rem;
+            color: var(--text-gold);
         }
 
         /* KNOPPEN EN INPUTS */
@@ -344,38 +353,17 @@
         <div id="opgeslagenTicketsLijst" style="margin-top: 10px; text-align: left;"></div>
     </div>
 
-    <!-- WERELDKLOK SECTIE -->
+    <!-- WERELDKLOK & WEER SECTIE -->
     <div class="section">
-        <div style="font-size: 0.8rem; color: var(--text-gold); font-weight: bold; margin-bottom: 6px;">🌍 WERELDKLOK</div>
-        <div class="world-clock-grid">
-            <div class="world-clock-item">
-                <div class="world-city">
-                    <div class="world-city-name">Ambon</div>
-                    <div class="world-city-info">Molukken</div>
-                </div>
-                <div class="world-city-time" id="timeAmbon">00:00</div>
-            </div>
-            <div class="world-clock-item">
-                <div class="world-city">
-                    <div class="world-city-name">Jakarta</div>
-                    <div class="world-city-info">Indonesië</div>
-                </div>
-                <div class="world-city-time" id="timeJakarta">00:00</div>
-            </div>
-            <div class="world-clock-item">
-                <div class="world-city">
-                    <div class="world-city-name">Amsterdam</div>
-                    <div class="world-city-info">Nederland</div>
-                </div>
-                <div class="world-city-time" id="timeAmsterdam">00:00</div>
-            </div>
-            <div class="world-clock-item">
-                <div class="world-city">
-                    <div class="world-city-name">Toronto</div>
-                    <div class="world-city-info">Canada</div>
-                </div>
-                <div class="world-city-time" id="timeToronto">00:00</div>
-            </div>
+        <div style="font-size: 0.8rem; color: var(--text-gold); font-weight: bold; margin-bottom: 6px;">🌍 WERELDKLOK & TEMPERATUUR</div>
+        <div class="world-clock-grid" id="wereldKlokLijst">
+            <!-- Wordt dynamisch ingeladen -->
+        </div>
+
+        <!-- NIEUWE PLAATS TOEVOEGEN -->
+        <div style="margin-top: 10px; display: flex; gap: 6px;">
+            <input type="text" id="nieuwePlaatsInput" placeholder="Typ plaatsnaam (bijv. Den Haag)..." style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin:0;">
+            <button onclick="voegPlaatsToe()" style="width: auto; padding: 6px 12px; margin:0; background: linear-gradient(to bottom, #28a745, #1e7e34); color: white;">+ Voeg toe</button>
         </div>
     </div>
 
@@ -493,6 +481,103 @@
 </div>
 
 <script>
+    // --- WERELDKLOK & WEER LOGICA ---
+    let wereldSteden = [
+        { naam: "Ambon", land: "Molukken", tz: "Asia/Jayapura", lat: -3.695, lon: 128.181, temp: "--°C" },
+        { naam: "Jakarta", land: "Indonesië", tz: "Asia/Jakarta", lat: -6.2088, lon: 106.8456, temp: "--°C" },
+        { naam: "Amsterdam", land: "Nederland", tz: "Europe/Amsterdam", lat: 52.3676, lon: 4.9041, temp: "--°C" },
+        { naam: "Toronto", land: "Canada", tz: "America/Toronto", lat: 43.6532, lon: -79.3832, temp: "--°C" }
+    ];
+
+    if (localStorage.getItem('menaMuriaSteden')) {
+        try {
+            wereldSteden = JSON.parse(localStorage.getItem('menaMuriaSteden'));
+        } catch(e) {}
+    }
+
+    async function laadWeerVoorSteden() {
+        for (let s of wereldSteden) {
+            if (!s.lat || !s.lon) continue;
+            try {
+                let res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${s.lat}&longitude=${s.lon}&current_weather=true`);
+                let data = await res.json();
+                if (data && data.current_weather) {
+                    s.temp = Math.round(data.current_weather.temperature) + "°C";
+                }
+            } catch(e) {
+                s.temp = "--°C";
+            }
+        }
+        toonWereldKlok();
+    }
+
+    function toonWereldKlok() {
+        const container = document.getElementById('wereldKlokLijst');
+        if (!container) return;
+        let html = '';
+        wereldSteden.forEach((s, idx) => {
+            let tijdStr = "00:00";
+            try {
+                tijdStr = new Intl.DateTimeFormat('nl-NL', { timeZone: s.tz, hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date());
+            } catch(e) {}
+
+            html += `<div class="world-clock-item">
+                <div class="world-city">
+                    <div class="world-city-name">${s.naam}</div>
+                    <div class="world-city-info">${s.land}</div>
+                </div>
+                <div class="world-city-right">
+                    <div class="world-city-time" id="wc-tijd-${idx}">${tijdStr}</div>
+                    <div class="world-city-temp">${s.temp}</div>
+                </div>
+                ${idx >= 4 ? `<button onclick="verwijderStad(${idx})" style="background:#d9534f; color:#fff; width:auto; padding:2px 6px; font-size:0.6rem; margin-left:6px;">X</button>` : ''}
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    async function voegPlaatsToe() {
+        const input = document.getElementById('nieuwePlaatsInput');
+        const query = input.value.trim();
+        if (!query) return;
+
+        try {
+            let res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&language=nl&format=json`);
+            let data = await res.json();
+            if (data && data.results && data.results.length > 0) {
+                let r = data.results[0];
+                let tijdzone = r.timezone || 'UTC';
+                wereldSteden.push({
+                    naam: r.name,
+                    land: r.country || r.admin1 || 'Wereld',
+                    tz: tijdzone,
+                    lat: r.latitude,
+                    lon: r.longitude,
+                    temp: "--°C"
+                });
+                localStorage.setItem('menaMuriaSteden', JSON.stringify(wereldSteden));
+                input.value = '';
+                laadWeerVoorSteden();
+                alert(`Plaats ${r.name} succesvol toegevoegd!`);
+            } else {
+                alert("Plaats niet gevonden. Probeer een andere spelling.");
+            }
+        } catch(e) {
+            alert("Kon geen verbinding maken om de plaats op te zoeken.");
+        }
+    }
+
+    function verwijderStad(index) {
+        wereldSteden.splice(index, 1);
+        localStorage.setItem('menaMuriaSteden', JSON.stringify(wereldSteden));
+        toonWereldKlok();
+    }
+
+    toonWereldKlok();
+    laadWeerVoorSteden();
+    // Vernieuw weer elke 15 minuten
+    setInterval(laadWeerVoorSteden, 15 * 60 * 1000);
+
     // --- TICKETS / PDF OPSLAG LOGICA ---
     let opgeslagenTickets = [];
     if (localStorage.getItem('menaMuriaTickets')) {
@@ -573,7 +658,7 @@
         } catch(e) {}
     }
 
-    // --- KLOK & WERELDKLOK LOGICA ---
+    // --- KLOK & WERELDKLOK LIVE TICK LOGICA ---
     let activeAlarm = null;
 
     function updateKlok() {
@@ -602,26 +687,13 @@
             const timeElem = document.getElementById('digitalTime');
             if (timeElem) timeElem.innerText = String(uren).padStart(2, '0') + ':' + String(minuten).padStart(2, '0') + ':' + String(seconden).padStart(2, '0');
 
-            // Wereldklok updaten met veilige timeZone strings
-            const tAmbon = document.getElementById('timeAmbon');
-            if (tAmbon) {
-                tAmbon.innerText = new Intl.DateTimeFormat('nl-NL', { timeZone: 'Asia/Jayapura', hour: '2-digit', minute: '2-digit', hour12: false }).format(nu);
-            }
-
-            const tJakarta = document.getElementById('timeJakarta');
-            if (tJakarta) {
-                tJakarta.innerText = new Intl.DateTimeFormat('nl-NL', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hour12: false }).format(nu);
-            }
-
-            const tAmsterdam = document.getElementById('timeAmsterdam');
-            if (tAmsterdam) {
-                tAmsterdam.innerText = new Intl.DateTimeFormat('nl-NL', { timeZone: 'Europe/Amsterdam', hour: '2-digit', minute: '2-digit', hour12: false }).format(nu);
-            }
-
-            const tToronto = document.getElementById('timeToronto');
-            if (tToronto) {
-                tToronto.innerText = new Intl.DateTimeFormat('nl-NL', { timeZone: 'America/Toronto', hour: '2-digit', minute: '2-digit', hour12: false }).format(nu);
-            }
+            // Wereldklok tijden live bijwerken per seconde
+            wereldSteden.forEach((s, idx) => {
+                const tElem = document.getElementById(`wc-tijd-${idx}`);
+                if (tElem) {
+                    tElem.innerText = new Intl.DateTimeFormat('nl-NL', { timeZone: s.tz, hour: '2-digit', minute: '2-digit', hour12: false }).format(nu);
+                }
+            });
 
             if (activeAlarm) {
                 const currentAlarmStr = String(uren).padStart(2, '0') + ':' + String(minuten).padStart(2, '0');
