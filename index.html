@@ -4,7 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mena Muria Klok & Radio</title>
-    <!-- Importeer een klassiek gotisch lettertype voor de sfeer -->
+    
+    <!-- APP ICOON VOOR STARTCHERM (Plaats een bestand genaamd logo.png in je GitHub map) -->
+    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <!-- Manifest instelling voor mobiele telefoons -->
+    <link rel="manifest" data-inline="true" href="data:application/manifest+json,{
+        &quot;name&quot;: &quot;Mena Muria Klok&quot;,
+        &quot;short_name&quot;: &quot;Mena Muria&quot;,
+        &quot;start_url&quot;: &quot;.&quot;,
+        &quot;display&quot;: &quot;standalone&quot;,
+        &quot;background_color&quot;: &quot;#0d0b07&quot;,
+        &quot;theme_color&quot;: &quot;#d4af37&quot;,
+        &quot;icons&quot;: [{
+            &quot;src&quot;: &quot;logo.png&quot;,
+            &quot;sizes&quot;: &quot;512x512&quot;,
+            &quot;type&quot;: &quot;image/png&quot;
+        }]
+    }">
+
+    <!-- Importeer klassiek gotisch lettertype -->
     <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap" rel="stylesheet">
     <style>
         :root {
