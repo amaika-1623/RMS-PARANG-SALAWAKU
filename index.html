@@ -319,7 +319,7 @@
 <div class="app-container">
     <header>
         <h1>MENA MURIA</h1>
-        <p>KLOK • RADIO STREAM • WERELDKLOK</p>
+        <p>KLOK • TICKETS • WERELDKLOK</p>
     </header>
 
     <!-- KLOK SECTIE -->
@@ -333,6 +333,15 @@
         <div class="location-title">Aboru Manis É</div>
         <div class="digital-date" id="digitalDate">Laden...</div>
         <div class="digital-time" id="digitalTime">00:00:00</div>
+    </div>
+
+    <!-- TOEGANGSKAARTEN & PDF SECTIE -->
+    <div class="section">
+        <div style="font-size: 0.8rem; color: var(--text-gold); font-weight: bold; margin-bottom: 6px;">🎫 TOEGANGSKAARTEN & TICKETS</div>
+        <input type="text" id="ticketUrlInput" placeholder="Plak hier je OneDrive PDF-link of ticket-link..." style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:6px;">
+        <input type="text" id="ticketNaamInput" placeholder="Naam van het ticket (bijv. Concert / Vliegticket)..." style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:6px;">
+        <button onclick="slaTicketOp()" style="background: linear-gradient(to bottom, #28a745, #1e7e34); color: white;">💾 Sla Ticket Op</button>
+        <div id="opgeslagenTicketsLijst" style="margin-top: 10px; text-align: left;"></div>
     </div>
 
     <!-- WERELDKLOK SECTIE -->
@@ -484,6 +493,53 @@
 </div>
 
 <script>
+    // --- TICKETS / PDF OPSLAG LOGICA ---
+    let opgeslagenTickets = [];
+    if (localStorage.getItem('menaMuriaTickets')) {
+        try {
+            opgeslagenTickets = JSON.parse(localStorage.getItem('menaMuriaTickets'));
+        } catch(e) {}
+    }
+
+    function slaTicketOp() {
+        const url = document.getElementById('ticketUrlInput').value.trim();
+        const naam = document.getElementById('ticketNaamInput').value.trim();
+        if (!url || !naam) {
+            alert("Vul zowel de link als de naam van het ticket in!");
+            return;
+        }
+        opgeslagenTickets.push({ naam: naam, url: url });
+        localStorage.setItem('menaMuriaTickets', JSON.stringify(opgeslagenTickets));
+        document.getElementById('ticketUrlInput').value = '';
+        document.getElementById('ticketNaamInput').value = '';
+        toonTickets();
+        alert("Ticket succesvol opgeslagen!");
+    }
+
+    function verwijderTicket(index) {
+        opgeslagenTickets.splice(index, 1);
+        localStorage.setItem('menaMuriaTickets', JSON.stringify(opgeslagenTickets));
+        toonTickets();
+    }
+
+    function toonTickets() {
+        const lijstDiv = document.getElementById('opgeslagenTicketsLijst');
+        if (!lijstDiv) return;
+        if (opgeslagenTickets.length === 0) {
+            lijstDiv.innerHTML = '<div style="font-size: 0.7rem; opacity: 0.6; font-style: italic;">Nog geen tickets opgeslagen.</div>';
+            return;
+        }
+        let html = '';
+        opgeslagenTickets.forEach((t, i) => {
+            html += `<div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 6px 8px; margin-top: 4px; border-radius: 4px;">
+                <a href="${t.url}" target="_blank" style="color: var(--text-gold); font-size: 0.75rem; text-decoration: underline; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 240px;">🎫 ${t.naam}</a>
+                <button onclick="verwijderTicket(${i})" style="background: #d9534f; color: white; width: auto; padding: 2px 6px; font-size: 0.65rem; margin:0;">X</button>
+            </div>`;
+        });
+        lijstDiv.innerHTML = html;
+    }
+    toonTickets();
+
     // --- DAGELIJKKS WOORD LOGICA ---
     const bijbelVerzen = [
         { tekst: "De HEERE is mijn Herder, mij zal niets ontbreken.", ref: "Psalm 23:1" },
