@@ -546,24 +546,26 @@
             const timeElem = document.getElementById('digitalTime');
             if (timeElem) timeElem.innerText = String(uren).padStart(2, '0') + ':' + String(minuten).padStart(2, '0') + ':' + String(seconden).padStart(2, '0');
 
-            // Wereldklok updaten
-            const optiesTijd = { timeZone: '', hour: '2-digit', minute: '2-digit', hour12: false };
-
-            optiesTijd.timeZone = 'Asia/Jayapura'; // Ambon (WIT / GMT+9)
+            // Wereldklok updaten met veilige timeZone strings
             const tAmbon = document.getElementById('timeAmbon');
-            if (tAmbon) tAmbon.innerText = nu.toLocaleTimeString('nl-NL', optiesTijd);
+            if (tAmbon) {
+                tAmbon.innerText = new Intl.DateTimeFormat('nl-NL', { timeZone: 'Asia/Jayapura', hour: '2-digit', minute: '2-digit', hour12: false }).format(nu);
+            }
 
-            optiesTijd.timeZone = 'Asia/Jakarta'; // Jakarta (WIB / GMT+7)
             const tJakarta = document.getElementById('timeJakarta');
-            if (tJakarta) tJakarta.innerText = nu.toLocaleTimeString('nl-NL', optiesTijd);
+            if (tJakarta) {
+                tJakarta.innerText = new Intl.DateTimeFormat('nl-NL', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hour12: false }).format(nu);
+            }
 
-            optiesTijd.timeZone = 'Europe/Amsterdam'; // Amsterdam (CET/CEST)
             const tAmsterdam = document.getElementById('timeAmsterdam');
-            if (tAmsterdam) tAmsterdam.innerText = nu.toLocaleTimeString('nl-NL', optiesTijd);
+            if (tAmsterdam) {
+                tAmsterdam.innerText = new Intl.DateTimeFormat('nl-NL', { timeZone: 'Europe/Amsterdam', hour: '2-digit', minute: '2-digit', hour12: false }).format(nu);
+            }
 
-            optiesTijd.timeZone = 'America/Toronto'; // Toronto
             const tToronto = document.getElementById('timeToronto');
-            if (tToronto) tToronto.innerText = nu.toLocaleTimeString('nl-NL', optiesTijd);
+            if (tToronto) {
+                tToronto.innerText = new Intl.DateTimeFormat('nl-NL', { timeZone: 'America/Toronto', hour: '2-digit', minute: '2-digit', hour12: false }).format(nu);
+            }
 
             if (activeAlarm) {
                 const currentAlarmStr = String(uren).padStart(2, '0') + ':' + String(minuten).padStart(2, '0');
@@ -703,4 +705,221 @@
         
         let embedUrl = converteerYouTubeLink(urlInput.value);
         container.style.display = 'block';
-        let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1'
+        let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
+        iframe.src = playUrl;
+    }
+
+    function stopMusic() {
+        const iframe = document.getElementById('youtubePlayer');
+        const container = document.getElementById('playerContainer');
+        if (iframe) iframe.src = "";
+        if (container) container.style.display = 'none';
+    }
+
+    // --- MINI TV LOGICA ---
+    function toggleMiniTV() {
+        const container = document.getElementById('miniTvContainer');
+        const player = document.getElementById('miniTvPlayer');
+        const videoElem = document.getElementById('miniTvVideo');
+        if (!container) return;
+
+        if (container.style.display === 'block') {
+            container.style.display = 'none';
+            if (player) player.src = "";
+            if (videoElem) videoElem.pause();
+        } else {
+            container.style.display = 'block';
+            if (miniTvPlaylist.length > 0) {
+                const urlInput = document.getElementById('miniTvUrl');
+                if (urlInput) urlInput.value = miniTvPlaylist[huidigePlaylistIndex];
+                const select = document.getElementById('miniTvSelect');
+                if (select) select.selectedIndex = huidigePlaylistIndex + 1;
+            }
+            startMiniTV();
+        }
+    }
+
+    function startMiniTV() {
+        const urlInput = document.getElementById('miniTvUrl');
+        const iframe = document.getElementById('miniTvPlayer');
+        const videoElement = document.getElementById('miniTvVideo');
+        if (!urlInput || !iframe || !videoElement) return;
+
+        let urlVal = urlInput.value.trim();
+
+        if (urlVal.includes('onedrive.live.com') || urlVal.includes('.mp4')) {
+            iframe.style.display = 'none';
+            iframe.src = "";
+            videoElement.style.display = 'block';
+            
+            let directUrl = urlVal;
+            if (directUrl.includes('onedrive.live.com') && !directUrl.includes('download=1')) {
+                directUrl += (directUrl.includes('?') ? '&' : '?') + 'download=1';
+            }
+            
+            videoElement.src = directUrl;
+            videoElement.play().catch(e => console.log("Autoplay vereist interactie"));
+        } else {
+            videoElement.style.display = 'none';
+            videoElement.pause();
+            videoElement.src = "";
+            
+            iframe.style.display = 'block';
+            let embedUrl = converteerYouTubeLink(urlVal);
+            let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
+            iframe.src = playUrl;
+        }
+    }
+
+    // --- WEKKER FUNCTIE ---
+    function zetWekker() {
+        const tijdElem = document.getElementById('alarmTijd');
+        const statusElem = document.getElementById('alarmStatus');
+        if (!tijdElem || !statusElem) return;
+
+        const tijd = tijdElem.value;
+        if(tijd) {
+            activeAlarm = tijd;
+            statusElem.innerText = `Wekker ingesteld om ${tijd} uur`;
+        } else {
+            activeAlarm = null;
+            statusElem.innerText = `Geen wekker ingesteld`;
+        }
+    }
+
+    // --- EEUWKALENDER MET VASTE INVOERBOX ---
+    let kalenderNotities = {};
+    if (localStorage.getItem('menaMuriaKalenderNotities')) {
+        try {
+            kalenderNotities = JSON.parse(localStorage.getItem('menaMuriaKalenderNotities'));
+        } catch(e) {}
+    }
+
+    let geselecteerdeSleutel = null;
+
+    function bouwKalender() {
+        const maandSelect = document.getElementById('maandSelect');
+        const jaarInput = document.getElementById('jaarInput');
+        const grid = document.getElementById('kalenderGrid');
+        if (!maandSelect || !jaarInput || !grid) return;
+
+        const maand = parseInt(maandSelect.value);
+        const jaar = parseInt(jaarInput.value);
+        grid.innerHTML = '';
+
+        const dNamen = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
+        dNamen.forEach(d => {
+            const div = document.createElement('div');
+            div.className = 'calendar-day-name';
+            div.innerText = d;
+            grid.appendChild(div);
+        });
+
+        let eersteDagIndex = new Date(jaar, maand, 1).getDay();
+        eersteDagIndex = (eersteDagIndex === 0) ? 6 : eersteDagIndex - 1;
+
+        const aantalDagen = new Date(jaar, maand + 1, 0).getDate();
+
+        for (let i = 0; i < eersteDagIndex; i++) {
+            const leeg = document.createElement('div');
+            leeg.className = 'calendar-cell empty';
+            grid.appendChild(leeg);
+        }
+
+        const vandaag = new Date();
+        let meldingenVandaag = [];
+
+        for (let dag = 1; dag <= aantalDagen; dag++) {
+            const cel = document.createElement('div');
+            cel.className = 'calendar-cell';
+            
+            const sleutel = `${jaar}-${maand}-${dag}`;
+            let heeftNotitie = kalenderNotities[sleutel] ? true : false;
+
+            cel.innerHTML = `<span>${dag}</span>${heeftNotitie ? '<span style="font-size:0.6rem; color:#ffcc00;">⭐</span>' : ''}`;
+
+            if (heeftNotitie) {
+                cel.classList.add('has-note');
+                cel.title = kalenderNotities[sleutel];
+            }
+
+            if (dag === vandaag.getDate() && maand === vandaag.getMonth() && jaar === vandaag.getFullYear()) {
+                cel.classList.add('today');
+            }
+
+            if (sleutel === geselecteerdeSleutel) {
+                cel.classList.add('selected');
+            }
+
+            cel.onclick = function() {
+                geselecteerdeSleutel = sleutel;
+                const maandNaam = maandSelect.options[maand].text;
+                document.getElementById('geselecteerdeDatumTitel').innerText = `Geselecteerde dag: ${dag} ${maandNaam} ${jaar}`;
+                document.getElementById('dagNotitieInput').value = kalenderNotities[sleutel] || '';
+                bouwKalender();
+            };
+
+            if (dag === vandaag.getDate() && maand === vandaag.getMonth() && jaar === vandaag.getFullYear() && heeftNotitie) {
+                meldingenVandaag.push(kalenderNotities[sleutel]);
+            }
+
+            grid.appendChild(cel);
+        }
+
+        const meldingDiv = document.getElementById('kalenderMelding');
+        if (meldingDiv) {
+            if (meldingenVandaag.length > 0) {
+                const opgemaakteTekst = meldingenVandaag.join('\n\n');
+                meldingDiv.innerText = `🔔 Herinnering voor vandaag:\n${opgemaakteTekst}`;
+            } else {
+                meldingDiv.innerText = `💡 Tip: Klik op een dag in de kalender om hieronder een notitie of verjaardag in te voeren.`;
+            }
+        }
+    }
+
+    function slaDagNotitieOp() {
+        if (!geselecteerdeSleutel) {
+            alert("Tik eerst op een dag in de kalender!");
+            return;
+        }
+        const tekst = document.getElementById('dagNotitieInput').value;
+        if (tekst.trim() === "") {
+            delete kalenderNotities[geselecteerdeSleutel];
+        } else {
+            kalenderNotities[geselecteerdeSleutel] = tekst;
+        }
+        localStorage.setItem('menaMuriaKalenderNotities', JSON.stringify(kalenderNotities));
+        bouwKalender();
+        alert("Notitie opgeslagen!");
+    }
+
+    function gaNaarVandaag() {
+        const vandaag = new Date();
+        const maandSelect = document.getElementById('maandSelect');
+        const jaarInput = document.getElementById('jaarInput');
+        if (maandSelect) maandSelect.value = vandaag.getMonth();
+        if (jaarInput) jaarInput.value = vandaag.getFullYear();
+        bouwKalender();
+    }
+
+    // Automatisch instellen op heden bij opstarten
+    const huidigeDatum = new Date();
+    const mSelect = document.getElementById('maandSelect');
+    const jInput = document.getElementById('jaarInput');
+    if (mSelect) mSelect.value = huidigeDatum.getMonth();
+    if (jInput) jInput.value = huidigeDatum.getFullYear();
+    bouwKalender();
+</script>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                registration.unregister();
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
