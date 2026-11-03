@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mena Muria Klok & Radio</title>
     
-    <!-- APP ICOON VOOR STARTCHERM (Plaats een bestand genaamd logo.png in je GitHub map) -->
+    <!-- APP ICOON VOOR STARTSCHERM -->
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="icon" type="image/png" href="logo.png">
     
-    <!-- Manifest instelling voor mobiele telefoons -->
     <link rel="manifest" data-inline="true" href="data:application/manifest+json,{
         &quot;name&quot;: &quot;Mena Muria Klok&quot;,
         &quot;short_name&quot;: &quot;Mena Muria&quot;,
@@ -172,6 +171,46 @@
             color: var(--text-light);
         }
 
+        /* WERELDKLOK STIJL */
+        .world-clock-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .world-clock-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 6px;
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .world-city {
+            text-align: left;
+        }
+
+        .world-city-name {
+            font-size: 0.9rem;
+            color: var(--text-gold);
+            font-weight: bold;
+        }
+
+        .world-city-info {
+            font-size: 0.65rem;
+            opacity: 0.7;
+        }
+
+        .world-city-time {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--text-light);
+            font-family: monospace;
+        }
+
         /* KNOPPEN EN INPUTS */
         select, button, input, textarea {
             background: linear-gradient(to bottom, #d4af37, #aa8c2c);
@@ -280,7 +319,7 @@
 <div class="app-container">
     <header>
         <h1>MENA MURIA</h1>
-        <p>KLOK • RADIO STREAM • EEUWKALENDER</p>
+        <p>KLOK • RADIO STREAM • WERELDKLOK</p>
     </header>
 
     <!-- KLOK SECTIE -->
@@ -294,6 +333,41 @@
         <div class="location-title">Aboru Manis É</div>
         <div class="digital-date" id="digitalDate">Laden...</div>
         <div class="digital-time" id="digitalTime">00:00:00</div>
+    </div>
+
+    <!-- WERELDKLOK SECTIE -->
+    <div class="section">
+        <div style="font-size: 0.8rem; color: var(--text-gold); font-weight: bold; margin-bottom: 6px;">🌍 WERELDKLOK</div>
+        <div class="world-clock-grid">
+            <div class="world-clock-item">
+                <div class="world-city">
+                    <div class="world-city-name">Ambon</div>
+                    <div class="world-city-info">Molukken</div>
+                </div>
+                <div class="world-city-time" id="timeAmbon">00:00</div>
+            </div>
+            <div class="world-clock-item">
+                <div class="world-city">
+                    <div class="world-city-name">Jakarta</div>
+                    <div class="world-city-info">Indonesië</div>
+                </div>
+                <div class="world-city-time" id="timeJakarta">00:00</div>
+            </div>
+            <div class="world-clock-item">
+                <div class="world-city">
+                    <div class="world-city-name">Amsterdam</div>
+                    <div class="world-city-info">Nederland</div>
+                </div>
+                <div class="world-city-time" id="timeAmsterdam">00:00</div>
+            </div>
+            <div class="world-clock-item">
+                <div class="world-city">
+                    <div class="world-city-name">Toronto</div>
+                    <div class="world-city-info">Canada</div>
+                </div>
+                <div class="world-city-time" id="timeToronto">00:00</div>
+            </div>
+        </div>
     </div>
 
     <!-- DAGELIJKS WOORD -->
@@ -443,7 +517,7 @@
         } catch(e) {}
     }
 
-    // --- KLOK LOGICA ---
+    // --- KLOK & WERELDKLOK LOGICA ---
     let activeAlarm = null;
 
     function updateKlok() {
@@ -471,6 +545,25 @@
 
             const timeElem = document.getElementById('digitalTime');
             if (timeElem) timeElem.innerText = String(uren).padStart(2, '0') + ':' + String(minuten).padStart(2, '0') + ':' + String(seconden).padStart(2, '0');
+
+            // Wereldklok updaten
+            const optiesTijd = { timeZone: '', hour: '2-digit', minute: '2-digit', hour12: false };
+
+            optiesTijd.timeZone = 'Asia/Jayapura'; // Ambon (WIT / GMT+9)
+            const tAmbon = document.getElementById('timeAmbon');
+            if (tAmbon) tAmbon.innerText = nu.toLocaleTimeString('nl-NL', optiesTijd);
+
+            optiesTijd.timeZone = 'Asia/Jakarta'; // Jakarta (WIB / GMT+7)
+            const tJakarta = document.getElementById('timeJakarta');
+            if (tJakarta) tJakarta.innerText = nu.toLocaleTimeString('nl-NL', optiesTijd);
+
+            optiesTijd.timeZone = 'Europe/Amsterdam'; // Amsterdam (CET/CEST)
+            const tAmsterdam = document.getElementById('timeAmsterdam');
+            if (tAmsterdam) tAmsterdam.innerText = nu.toLocaleTimeString('nl-NL', optiesTijd);
+
+            optiesTijd.timeZone = 'America/Toronto'; // Toronto
+            const tToronto = document.getElementById('timeToronto');
+            if (tToronto) tToronto.innerText = nu.toLocaleTimeString('nl-NL', optiesTijd);
 
             if (activeAlarm) {
                 const currentAlarmStr = String(uren).padStart(2, '0') + ':' + String(minuten).padStart(2, '0');
@@ -610,221 +703,4 @@
         
         let embedUrl = converteerYouTubeLink(urlInput.value);
         container.style.display = 'block';
-        let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
-        iframe.src = playUrl;
-    }
-
-    function stopMusic() {
-        const iframe = document.getElementById('youtubePlayer');
-        const container = document.getElementById('playerContainer');
-        if (iframe) iframe.src = "";
-        if (container) container.style.display = 'none';
-    }
-
-    // --- MINI TV LOGICA ---
-    function toggleMiniTV() {
-        const container = document.getElementById('miniTvContainer');
-        const player = document.getElementById('miniTvPlayer');
-        const videoElem = document.getElementById('miniTvVideo');
-        if (!container) return;
-
-        if (container.style.display === 'block') {
-            container.style.display = 'none';
-            if (player) player.src = "";
-            if (videoElem) videoElem.pause();
-        } else {
-            container.style.display = 'block';
-            if (miniTvPlaylist.length > 0) {
-                const urlInput = document.getElementById('miniTvUrl');
-                if (urlInput) urlInput.value = miniTvPlaylist[huidigePlaylistIndex];
-                const select = document.getElementById('miniTvSelect');
-                if (select) select.selectedIndex = huidigePlaylistIndex + 1;
-            }
-            startMiniTV();
-        }
-    }
-
-    function startMiniTV() {
-        const urlInput = document.getElementById('miniTvUrl');
-        const iframe = document.getElementById('miniTvPlayer');
-        const videoElement = document.getElementById('miniTvVideo');
-        if (!urlInput || !iframe || !videoElement) return;
-
-        let urlVal = urlInput.value.trim();
-
-        if (urlVal.includes('onedrive.live.com') || urlVal.includes('.mp4')) {
-            iframe.style.display = 'none';
-            iframe.src = "";
-            videoElement.style.display = 'block';
-            
-            let directUrl = urlVal;
-            if (directUrl.includes('onedrive.live.com') && !directUrl.includes('download=1')) {
-                directUrl += (directUrl.includes('?') ? '&' : '?') + 'download=1';
-            }
-            
-            videoElement.src = directUrl;
-            videoElement.play().catch(e => console.log("Autoplay vereist interactie"));
-        } else {
-            videoElement.style.display = 'none';
-            videoElement.pause();
-            videoElement.src = "";
-            
-            iframe.style.display = 'block';
-            let embedUrl = converteerYouTubeLink(urlVal);
-            let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
-            iframe.src = playUrl;
-        }
-    }
-
-    // --- WEKKER FUNCTIE ---
-    function zetWekker() {
-        const tijdElem = document.getElementById('alarmTijd');
-        const statusElem = document.getElementById('alarmStatus');
-        if (!tijdElem || !statusElem) return;
-
-        const tijd = tijdElem.value;
-        if(tijd) {
-            activeAlarm = tijd;
-            statusElem.innerText = `Wekker ingesteld om ${tijd} uur`;
-        } else {
-            activeAlarm = null;
-            statusElem.innerText = `Geen wekker ingesteld`;
-        }
-    }
-
-    // --- EEUWKALENDER MET VASTE INVOERBOX ---
-    let kalenderNotities = {};
-    if (localStorage.getItem('menaMuriaKalenderNotities')) {
-        try {
-            kalenderNotities = JSON.parse(localStorage.getItem('menaMuriaKalenderNotities'));
-        } catch(e) {}
-    }
-
-    let geselecteerdeSleutel = null;
-
-    function bouwKalender() {
-        const maandSelect = document.getElementById('maandSelect');
-        const jaarInput = document.getElementById('jaarInput');
-        const grid = document.getElementById('kalenderGrid');
-        if (!maandSelect || !jaarInput || !grid) return;
-
-        const maand = parseInt(maandSelect.value);
-        const jaar = parseInt(jaarInput.value);
-        grid.innerHTML = '';
-
-        const dNamen = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
-        dNamen.forEach(d => {
-            const div = document.createElement('div');
-            div.className = 'calendar-day-name';
-            div.innerText = d;
-            grid.appendChild(div);
-        });
-
-        let eersteDagIndex = new Date(jaar, maand, 1).getDay();
-        eersteDagIndex = (eersteDagIndex === 0) ? 6 : eersteDagIndex - 1;
-
-        const aantalDagen = new Date(jaar, maand + 1, 0).getDate();
-
-        for (let i = 0; i < eersteDagIndex; i++) {
-            const leeg = document.createElement('div');
-            leeg.className = 'calendar-cell empty';
-            grid.appendChild(leeg);
-        }
-
-        const vandaag = new Date();
-        let meldingenVandaag = [];
-
-        for (let dag = 1; dag <= aantalDagen; dag++) {
-            const cel = document.createElement('div');
-            cel.className = 'calendar-cell';
-            
-            const sleutel = `${jaar}-${maand}-${dag}`;
-            let heeftNotitie = kalenderNotities[sleutel] ? true : false;
-
-            cel.innerHTML = `<span>${dag}</span>${heeftNotitie ? '<span style="font-size:0.6rem; color:#ffcc00;">⭐</span>' : ''}`;
-
-            if (heeftNotitie) {
-                cel.classList.add('has-note');
-                cel.title = kalenderNotities[sleutel];
-            }
-
-            if (dag === vandaag.getDate() && maand === vandaag.getMonth() && jaar === vandaag.getFullYear()) {
-                cel.classList.add('today');
-            }
-
-            if (sleutel === geselecteerdeSleutel) {
-                cel.classList.add('selected');
-            }
-
-            cel.onclick = function() {
-                geselecteerdeSleutel = sleutel;
-                const maandNaam = maandSelect.options[maand].text;
-                document.getElementById('geselecteerdeDatumTitel').innerText = `Geselecteerde dag: ${dag} ${maandNaam} ${jaar}`;
-                document.getElementById('dagNotitieInput').value = kalenderNotities[sleutel] || '';
-                bouwKalender();
-            };
-
-            if (dag === vandaag.getDate() && maand === vandaag.getMonth() && jaar === vandaag.getFullYear() && heeftNotitie) {
-                meldingenVandaag.push(kalenderNotities[sleutel]);
-            }
-
-            grid.appendChild(cel);
-        }
-
-        const meldingDiv = document.getElementById('kalenderMelding');
-        if (meldingDiv) {
-            if (meldingenVandaag.length > 0) {
-                const opgemaakteTekst = meldingenVandaag.join('\n\n');
-                meldingDiv.innerText = `🔔 Herinnering voor vandaag:\n${opgemaakteTekst}`;
-            } else {
-                meldingDiv.innerText = `💡 Tip: Klik op een dag in de kalender om hieronder een notitie of verjaardag in te voeren.`;
-            }
-        }
-    }
-
-    function slaDagNotitieOp() {
-        if (!geselecteerdeSleutel) {
-            alert("Tik eerst op een dag in de kalender!");
-            return;
-        }
-        const tekst = document.getElementById('dagNotitieInput').value;
-        if (tekst.trim() === "") {
-            delete kalenderNotities[geselecteerdeSleutel];
-        } else {
-            kalenderNotities[geselecteerdeSleutel] = tekst;
-        }
-        localStorage.setItem('menaMuriaKalenderNotities', JSON.stringify(kalenderNotities));
-        bouwKalender();
-        alert("Notitie opgeslagen!");
-    }
-
-    function gaNaarVandaag() {
-        const vandaag = new Date();
-        const maandSelect = document.getElementById('maandSelect');
-        const jaarInput = document.getElementById('jaarInput');
-        if (maandSelect) maandSelect.value = vandaag.getMonth();
-        if (jaarInput) jaarInput.value = vandaag.getFullYear();
-        bouwKalender();
-    }
-
-    // Automatisch instellen op heden bij opstarten
-    const huidigeDatum = new Date();
-    const mSelect = document.getElementById('maandSelect');
-    const jInput = document.getElementById('jaarInput');
-    if (mSelect) mSelect.value = huidigeDatum.getMonth();
-    if (jInput) jInput.value = huidigeDatum.getFullYear();
-    bouwKalender();
-</script>
-
-<script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-            for(let registration of registrations) {
-                registration.unregister();
-            }
-        });
-    }
-</script>
-
-</body>
-</html>
+        let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1'
