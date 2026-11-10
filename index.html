@@ -344,13 +344,22 @@
         <div class="digital-time" id="digitalTime">00:00:00</div>
     </div>
 
-    <!-- TOEGANGSKAARTEN & PDF SECTIE -->
+    <!-- TOEGANGSKAARTEN & ONEDRIVE TICKETS -->
     <div class="section">
-        <div style="font-size: 0.8rem; color: var(--text-gold); font-weight: bold; margin-bottom: 6px;">🎫 TOEGANGSKAARTEN & TICKETS</div>
-        <input type="text" id="ticketUrlInput" placeholder="Plak hier je OneDrive PDF-link of ticket-link..." style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:6px;">
+        <div style="font-size: 0.8rem; color: var(--text-gold); font-weight: bold; margin-bottom: 6px;">🎫 ONEDRIVE TOEGANGSKAARTEN</div>
+        <input type="text" id="ticketUrlInput" placeholder="Plak hier je OneDrive deel-link (URL)..." style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:6px;">
         <input type="text" id="ticketNaamInput" placeholder="Naam van het ticket (bijv. Concert / Vliegticket)..." style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:6px;">
         <button onclick="slaTicketOp()" style="background: linear-gradient(to bottom, #28a745, #1e7e34); color: white;">💾 Sla Ticket Op</button>
         <div id="opgeslagenTicketsLijst" style="margin-top: 10px; text-align: left;"></div>
+        
+        <!-- INGEBOUWD TICKET WEERGAVE VENSTER -->
+        <div id="ticketViewerContainer" class="media-frame" style="background: rgba(0,0,0,0.6); padding: 8px; border-radius: 6px; border: 1px solid var(--border-gold);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span id="actieveTicketTitel" style="font-size: 0.75rem; color: var(--text-gold); font-weight: bold;">Ticket Weergave</span>
+                <button onclick="sluitTicketViewer()" style="background: #d9534f; color: white; width: auto; padding: 2px 6px; font-size: 0.65rem; margin:0;">Sluiten</button>
+            </div>
+            <iframe id="ticketIframe" width="100%" height="220" src="" frameborder="0" style="background:#fff; border-radius:4px;"></iframe>
+        </div>
     </div>
 
     <!-- WERELDKLOK & WEER SECTIE -->
@@ -481,6 +490,84 @@
 </div>
 
 <script>
+    // --- ONEDRIVE TICKETS & PDF LOGICA ---
+    let opgeslagenTickets = [];
+    if (localStorage.getItem('menaMuriaTickets')) {
+        try {
+            opgeslagenTickets = JSON.parse(localStorage.getItem('menaMuriaTickets'));
+        } catch(e) {}
+    }
+
+    function slaTicketOp() {
+        let url = document.getElementById('ticketUrlInput').value.trim();
+        const naam = document.getElementById('ticketNaamInput').value.trim();
+        if (!url || !naam) {
+            alert("Vul zowel de link als de naam van het ticket in!");
+            return;
+        }
+
+        // Automatisch omzetten van OneDrive links zodat ze direct in een venster/iframe laden indien mogelijk
+        if (url.includes('onedrive.live.com') && !url.includes('embed=')) {
+            url += (url.includes('?') ? '&' : '?') + 'embed=1';
+        }
+
+        opgeslagenTickets.push({ naam: naam, url: url });
+        localStorage.setItem('menaMuriaTickets', JSON.stringify(opgeslagenTickets));
+        document.getElementById('ticketUrlInput').value = '';
+        document.getElementById('ticketNaamInput').value = '';
+        toonTickets();
+        alert("Ticket succesvol opgeslagen!");
+    }
+
+    function verwijderTicket(index) {
+        opgeslagenTickets.splice(index, 1);
+        localStorage.setItem('menaMuriaTickets', JSON.stringify(opgeslagenTickets));
+        toonTickets();
+        sluitTicketViewer();
+    }
+
+    function toonTickets() {
+        const lijstDiv = document.getElementById('opgeslagenTicketsLijst');
+        if (!lijstDiv) return;
+        if (opgeslagenTickets.length === 0) {
+            lijstDiv.innerHTML = '<div style="font-size: 0.7rem; opacity: 0.6; font-style: italic;">Nog geen tickets opgeslagen.</div>';
+            return;
+        }
+        let html = '';
+        opgeslagenTickets.forEach((t, i) => {
+            html += `<div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 6px 8px; margin-top: 4px; border-radius: 4px;">
+                <span style="color: var(--text-gold); font-size: 0.75rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 170px;">🎫 ${t.naam}</span>
+                <div style="display: flex; gap: 4px;">
+                    <button onclick="bekijkTicket(${i})" style="background: linear-gradient(to bottom, #d9534f, #c9302c); color: white; width: auto; padding: 2px 6px; font-size: 0.65rem; margin:0;">👁️ Bekijk</button>
+                    <button onclick="window.open('${t.url}', '_blank')" style="background: linear-gradient(to bottom, #0078d4, #005a9e); color: white; width: auto; padding: 2px 6px; font-size: 0.65rem; margin:0;">📂 Open</button>
+                    <button onclick="verwijderTicket(${i})" style="background: #333; color: #fff; width: auto; padding: 2px 6px; font-size: 0.65rem; margin:0;">X</button>
+                </div>
+            </div>`;
+        });
+        lijstDiv.innerHTML = html;
+    }
+
+    function bekijkTicket(index) {
+        const t = opgeslagenTickets[index];
+        const container = document.getElementById('ticketViewerContainer');
+        const iframe = document.getElementById('ticketIframe');
+        const titel = document.getElementById('actieveTicketTitel');
+        if (!container || !iframe || !titel) return;
+
+        titel.innerText = `🎫 ${t.naam}`;
+        iframe.src = t.url;
+        container.style.display = 'block';
+    }
+
+    function sluitTicketViewer() {
+        const container = document.getElementById('ticketViewerContainer');
+        const iframe = document.getElementById('ticketIframe');
+        if (container) container.style.display = 'none';
+        if (iframe) iframe.src = '';
+    }
+
+    toonTickets();
+
     // --- WERELDKLOK & WEER LOGICA ---
     let wereldSteden = [
         { naam: "Ambon", land: "Molukken", tz: "Asia/Jayapura", lat: -3.695, lon: 128.181, temp: "--°C" },
@@ -575,55 +662,7 @@
 
     toonWereldKlok();
     laadWeerVoorSteden();
-    // Vernieuw weer elke 15 minuten
     setInterval(laadWeerVoorSteden, 15 * 60 * 1000);
-
-    // --- TICKETS / PDF OPSLAG LOGICA ---
-    let opgeslagenTickets = [];
-    if (localStorage.getItem('menaMuriaTickets')) {
-        try {
-            opgeslagenTickets = JSON.parse(localStorage.getItem('menaMuriaTickets'));
-        } catch(e) {}
-    }
-
-    function slaTicketOp() {
-        const url = document.getElementById('ticketUrlInput').value.trim();
-        const naam = document.getElementById('ticketNaamInput').value.trim();
-        if (!url || !naam) {
-            alert("Vul zowel de link als de naam van het ticket in!");
-            return;
-        }
-        opgeslagenTickets.push({ naam: naam, url: url });
-        localStorage.setItem('menaMuriaTickets', JSON.stringify(opgeslagenTickets));
-        document.getElementById('ticketUrlInput').value = '';
-        document.getElementById('ticketNaamInput').value = '';
-        toonTickets();
-        alert("Ticket succesvol opgeslagen!");
-    }
-
-    function verwijderTicket(index) {
-        opgeslagenTickets.splice(index, 1);
-        localStorage.setItem('menaMuriaTickets', JSON.stringify(opgeslagenTickets));
-        toonTickets();
-    }
-
-    function toonTickets() {
-        const lijstDiv = document.getElementById('opgeslagenTicketsLijst');
-        if (!lijstDiv) return;
-        if (opgeslagenTickets.length === 0) {
-            lijstDiv.innerHTML = '<div style="font-size: 0.7rem; opacity: 0.6; font-style: italic;">Nog geen tickets opgeslagen.</div>';
-            return;
-        }
-        let html = '';
-        opgeslagenTickets.forEach((t, i) => {
-            html += `<div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 6px 8px; margin-top: 4px; border-radius: 4px;">
-                <a href="${t.url}" target="_blank" style="color: var(--text-gold); font-size: 0.75rem; text-decoration: underline; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 240px;">🎫 ${t.naam}</a>
-                <button onclick="verwijderTicket(${i})" style="background: #d9534f; color: white; width: auto; padding: 2px 6px; font-size: 0.65rem; margin:0;">X</button>
-            </div>`;
-        });
-        lijstDiv.innerHTML = html;
-    }
-    toonTickets();
 
     // --- DAGELIJKKS WOORD LOGICA ---
     const bijbelVerzen = [
@@ -687,7 +726,6 @@
             const timeElem = document.getElementById('digitalTime');
             if (timeElem) timeElem.innerText = String(uren).padStart(2, '0') + ':' + String(minuten).padStart(2, '0') + ':' + String(seconden).padStart(2, '0');
 
-            // Wereldklok tijden live bijwerken per seconde
             wereldSteden.forEach((s, idx) => {
                 const tElem = document.getElementById(`wc-tijd-${idx}`);
                 if (tElem) {
