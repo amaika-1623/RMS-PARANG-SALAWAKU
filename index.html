@@ -351,15 +351,6 @@
         <input type="text" id="ticketNaamInput" placeholder="Naam van het ticket (bijv. Concert / Vliegticket)..." style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:6px;">
         <button onclick="slaTicketOp()" style="background: linear-gradient(to bottom, #28a745, #1e7e34); color: white;">💾 Sla Ticket Op</button>
         <div id="opgeslagenTicketsLijst" style="margin-top: 10px; text-align: left;"></div>
-        
-        <!-- INGEBOUWD TICKET WEERGAVE VENSTER -->
-        <div id="ticketViewerContainer" class="media-frame" style="background: rgba(0,0,0,0.6); padding: 8px; border-radius: 6px; border: 1px solid var(--border-gold);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                <span id="actieveTicketTitel" style="font-size: 0.75rem; color: var(--text-gold); font-weight: bold;">Ticket Weergave</span>
-                <button onclick="sluitTicketViewer()" style="background: #d9534f; color: white; width: auto; padding: 2px 6px; font-size: 0.65rem; margin:0;">Sluiten</button>
-            </div>
-            <iframe id="ticketIframe" width="100%" height="220" src="" frameborder="0" style="background:#fff; border-radius:4px;"></iframe>
-        </div>
     </div>
 
     <!-- WERELDKLOK & WEER SECTIE -->
@@ -499,16 +490,11 @@
     }
 
     function slaTicketOp() {
-        let url = document.getElementById('ticketUrlInput').value.trim();
+        const url = document.getElementById('ticketUrlInput').value.trim();
         const naam = document.getElementById('ticketNaamInput').value.trim();
         if (!url || !naam) {
             alert("Vul zowel de link als de naam van het ticket in!");
             return;
-        }
-
-        // Automatisch omzetten van OneDrive links zodat ze direct in een venster/iframe laden indien mogelijk
-        if (url.includes('onedrive.live.com') && !url.includes('embed=')) {
-            url += (url.includes('?') ? '&' : '?') + 'embed=1';
         }
 
         opgeslagenTickets.push({ naam: naam, url: url });
@@ -523,7 +509,6 @@
         opgeslagenTickets.splice(index, 1);
         localStorage.setItem('menaMuriaTickets', JSON.stringify(opgeslagenTickets));
         toonTickets();
-        sluitTicketViewer();
     }
 
     function toonTickets() {
@@ -536,34 +521,14 @@
         let html = '';
         opgeslagenTickets.forEach((t, i) => {
             html += `<div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 6px 8px; margin-top: 4px; border-radius: 4px;">
-                <span style="color: var(--text-gold); font-size: 0.75rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 170px;">🎫 ${t.naam}</span>
+                <span style="color: var(--text-gold); font-size: 0.75rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px;">🎫 ${t.naam}</span>
                 <div style="display: flex; gap: 4px;">
-                    <button onclick="bekijkTicket(${i})" style="background: linear-gradient(to bottom, #d9534f, #c9302c); color: white; width: auto; padding: 2px 6px; font-size: 0.65rem; margin:0;">👁️ Bekijk</button>
-                    <button onclick="window.open('${t.url}', '_blank')" style="background: linear-gradient(to bottom, #0078d4, #005a9e); color: white; width: auto; padding: 2px 6px; font-size: 0.65rem; margin:0;">📂 Open</button>
-                    <button onclick="verwijderTicket(${i})" style="background: #333; color: #fff; width: auto; padding: 2px 6px; font-size: 0.65rem; margin:0;">X</button>
+                    <button onclick="window.open('${t.url}', '_blank')" style="background: linear-gradient(to bottom, #0078d4, #005a9e); color: white; width: auto; padding: 4px 10px; font-size: 0.7rem; margin:0;">📂 Open</button>
+                    <button onclick="verwijderTicket(${i})" style="background: #333; color: #fff; width: auto; padding: 4px 8px; font-size: 0.7rem; margin:0;">X</button>
                 </div>
             </div>`;
         });
         lijstDiv.innerHTML = html;
-    }
-
-    function bekijkTicket(index) {
-        const t = opgeslagenTickets[index];
-        const container = document.getElementById('ticketViewerContainer');
-        const iframe = document.getElementById('ticketIframe');
-        const titel = document.getElementById('actieveTicketTitel');
-        if (!container || !iframe || !titel) return;
-
-        titel.innerText = `🎫 ${t.naam}`;
-        iframe.src = t.url;
-        container.style.display = 'block';
-    }
-
-    function sluitTicketViewer() {
-        const container = document.getElementById('ticketViewerContainer');
-        const iframe = document.getElementById('ticketIframe');
-        if (container) container.style.display = 'none';
-        if (iframe) iframe.src = '';
     }
 
     toonTickets();
