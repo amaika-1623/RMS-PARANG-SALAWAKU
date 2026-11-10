@@ -448,7 +448,7 @@
         <!-- MINI TV SCHERM 2 (EXTRA TV) -->
         <div id="miniTvContainer2" class="media-frame">
             <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 4px; font-weight: bold;">📺 Extra TV Scherm (Mini 2)</div>
-            <input type="text" id="miniTvUrl2" value="https://youtu.be/v_sTi3mHYew" placeholder="Plak YouTube of video link..." style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:4px;">
+            <input type="text" id="miniTvUrl2" value="https://youtu.be/v_sTi3mHYew" placeholder="Plak gewone YouTube link..." style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:4px;">
             <div class="btn-row">
                 <button onclick="startMiniTV2()">Laad Extra TV</button>
                 <button onclick="toggleMiniTV2()" style="background: #d9534f; color:white;">Sluit Extra TV</button>
@@ -487,7 +487,7 @@
         <!-- VASTE NOTITIE INVOER VELD -->
         <div id="notitieSectie" style="margin-top: 12px; background: rgba(0,0,0,0.6); padding: 10px; border-radius: 6px; border: 1px solid var(--border-gold); text-align: left;">
             <div id="geselecteerdeDatumTitel" style="font-size: 0.8rem; color: var(--text-gold); font-weight: bold; margin-bottom: 4px;">Tik op een dag hierboven om notitie te bewerken:</div>
-            <textarea id="dagNotitieInput" rows="3" placeholder="Typ hier je verjaardag of afspraak (je kunt gewoon op enter drukken voor nieuwe regels)..." style="width:100%; box-sizing:border-box;"></textarea>
+            <textarea id="dagNotitieInput" rows="3" placeholder="Typ hier je verjaardag of afspraak..." style="width:100%; box-sizing:border-box;"></textarea>
             <button onclick="slaDagNotitieOp()" style="background: linear-gradient(to bottom, #28a745, #1e7e34); color: white; margin-top: 4px;">💾 Bewaar Notitie voor deze dag</button>
         </div>
 
@@ -799,6 +799,18 @@
 
     function converteerYouTubeLink(url) {
         if (!url) return '';
+        
+        // Als het een YouTube Music link is, waarschuw en probeer te converteren of schoon te maken
+        if (url.includes('music.youtube.com')) {
+            if (url.includes('v=')) {
+                let videoId = url.split('v=').pop().split('&')[0];
+                return `https://www.youtube.com/embed/${videoId}`;
+            } else {
+                alert("Let op: YouTube Music lijsten/pagina's kunnen niet direct getoond worden. Gebruik een gewone YouTube video-link!");
+                return '';
+            }
+        }
+
         let videoId = '';
         if (url.includes('youtu.be/')) {
             videoId = url.split('youtu.be/')[1].split('?')[0].split('&')[0];
@@ -912,6 +924,7 @@
             
             iframe.style.display = 'block';
             let embedUrl = converteerYouTubeLink(urlVal);
+            if (!embedUrl) return;
             let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
             iframe.src = playUrl;
         }
@@ -939,6 +952,7 @@
 
         let urlVal = urlInput.value.trim();
         let embedUrl = converteerYouTubeLink(urlVal);
+        if (!embedUrl) return;
         let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
         iframe.src = playUrl;
     }
