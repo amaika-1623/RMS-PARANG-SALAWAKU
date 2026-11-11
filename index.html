@@ -448,10 +448,17 @@
         <!-- MINI TV SCHERM 2 (EXTRA TV) -->
         <div id="miniTvContainer2" class="media-frame">
             <div style="font-size: 0.75rem; color: var(--text-gold); margin-bottom: 4px; font-weight: bold;">📺 Extra TV Scherm (Mini 2)</div>
+            <select id="miniTvSelect2" onchange="kiesExcelNummer2()" style="margin-bottom:4px;">
+                <option value="">📂 Kies uit je geladen favorieten...</option>
+            </select>
             <input type="text" id="miniTvUrl2" value="https://youtu.be/v_sTi3mHYew" placeholder="Plak gewone YouTube link..." style="background:#1f1910; color:var(--text-gold); border:1px solid var(--border-gold); font-size:0.75rem; margin-bottom:4px;">
             <div class="btn-row">
                 <button onclick="startMiniTV2()">Laad Extra TV</button>
                 <button onclick="toggleMiniTV2()" style="background: #d9534f; color:white;">Sluit Extra TV</button>
+            </div>
+            <div class="btn-row" style="margin-top: 6px;">
+                <button onclick="vorigNummer2()" style="background: linear-gradient(to bottom, #c9a227, #997512);">⏮ Vorige</button>
+                <button onclick="volgendNummer2()" style="background: linear-gradient(to bottom, #c9a227, #997512);">Volgende ⏭</button>
             </div>
             <div id="mediaPlayerWrapper2" style="margin-top:6px;">
                 <iframe id="miniTvPlayer2" width="100%" height="180" src="" frameborder="0" allow="autoplay" style="display:block;"></iframe>
@@ -734,6 +741,7 @@
         "https://youtu.be/v_sTi3mHYew"
     ];
     let huidigePlaylistIndex = 0;
+    let huidigePlaylistIndex2 = 0;
 
     if (localStorage.getItem('menaMuriaPlaylist')) {
         try {
@@ -745,20 +753,42 @@
         huidigePlaylistIndex = parseInt(localStorage.getItem('menaMuriaLastIndex')) || 0;
     }
 
+    if (localStorage.getItem('menaMuriaLastIndex2')) {
+        huidigePlaylistIndex2 = parseInt(localStorage.getItem('menaMuriaLastIndex2')) || 0;
+    }
+
     function vulExcelDropdown() {
         const select = document.getElementById('miniTvSelect');
-        if (!select) return;
-        select.innerHTML = '<option value="">📂 Kies uit je geladen favorieten...</option>';
-        miniTvPlaylist.forEach((link, index) => {
-            const opt = document.createElement('option');
-            opt.value = link;
-            opt.text = `Favoriet #${index + 1} (${link.substring(8, 35)}...)`;
-            select.appendChild(opt);
-        });
-        if (miniTvPlaylist.length > 0 && huidigePlaylistIndex < miniTvPlaylist.length) {
-            select.selectedIndex = huidigePlaylistIndex + 1;
-            const urlInput = document.getElementById('miniTvUrl');
-            if (urlInput) urlInput.value = miniTvPlaylist[huidigePlaylistIndex];
+        const select2 = document.getElementById('miniTvSelect2');
+        
+        if (select) {
+            select.innerHTML = '<option value="">📂 Kies uit je geladen favorieten...</option>';
+            miniTvPlaylist.forEach((link, index) => {
+                const opt = document.createElement('option');
+                opt.value = link;
+                opt.text = `Favoriet #${index + 1} (${link.substring(8, 35)}...)`;
+                select.appendChild(opt);
+            });
+            if (miniTvPlaylist.length > 0 && huidigePlaylistIndex < miniTvPlaylist.length) {
+                select.selectedIndex = huidigePlaylistIndex + 1;
+                const urlInput = document.getElementById('miniTvUrl');
+                if (urlInput) urlInput.value = miniTvPlaylist[huidigePlaylistIndex];
+            }
+        }
+
+        if (select2) {
+            select2.innerHTML = '<option value="">📂 Kies uit je geladen favorieten...</option>';
+            miniTvPlaylist.forEach((link, index) => {
+                const opt = document.createElement('option');
+                opt.value = link;
+                opt.text = `Favoriet #${index + 1} (${link.substring(8, 35)}...)`;
+                select2.appendChild(opt);
+            });
+            if (miniTvPlaylist.length > 0 && huidigePlaylistIndex2 < miniTvPlaylist.length) {
+                select2.selectedIndex = huidigePlaylistIndex2 + 1;
+                const urlInput2 = document.getElementById('miniTvUrl2');
+                if (urlInput2) urlInput2.value = miniTvPlaylist[huidigePlaylistIndex2];
+            }
         }
     }
     vulExcelDropdown();
@@ -778,7 +808,9 @@
             miniTvPlaylist = gevondenLinks;
             localStorage.setItem('menaMuriaPlaylist', JSON.stringify(miniTvPlaylist));
             huidigePlaylistIndex = 0;
+            huidigePlaylistIndex2 = 0;
             localStorage.setItem('menaMuriaLastIndex', 0);
+            localStorage.setItem('menaMuriaLastIndex2', 0);
             vulExcelDropdown();
             alert(`Succes! Er zijn ${gevondenLinks.length} links opgeslagen in je app.`);
         } else {
@@ -797,10 +829,20 @@
         }
     }
 
+    function kiesExcelNummer2() {
+        const select2 = document.getElementById('miniTvSelect2');
+        const urlInput2 = document.getElementById('miniTvUrl2');
+        if (select2 && select2.value && urlInput2) {
+            urlInput2.value = select2.value;
+            huidigePlaylistIndex2 = select2.selectedIndex - 1;
+            localStorage.setItem('menaMuriaLastIndex2', huidigePlaylistIndex2);
+            startMiniTV2();
+        }
+    }
+
     function converteerYouTubeLink(url) {
         if (!url) return '';
         
-        // Als het een YouTube Music link is, waarschuw en probeer te converteren of schoon te maken
         if (url.includes('music.youtube.com')) {
             if (url.includes('v=')) {
                 let videoId = url.split('v=').pop().split('&')[0];
@@ -846,6 +888,28 @@
         const select = document.getElementById('miniTvSelect');
         if (select) select.selectedIndex = huidigePlaylistIndex + 1;
         startMiniTV();
+    }
+
+    function volgendNummer2() {
+        if (miniTvPlaylist.length === 0) return;
+        huidigePlaylistIndex2 = (huidigePlaylistIndex2 + 1) % miniTvPlaylist.length;
+        localStorage.setItem('menaMuriaLastIndex2', huidigePlaylistIndex2);
+        const urlInput2 = document.getElementById('miniTvUrl2');
+        if (urlInput2) urlInput2.value = miniTvPlaylist[huidigePlaylistIndex2];
+        const select2 = document.getElementById('miniTvSelect2');
+        if (select2) select2.selectedIndex = huidigePlaylistIndex2 + 1;
+        startMiniTV2();
+    }
+
+    function vorigNummer2() {
+        if (miniTvPlaylist.length === 0) return;
+        huidigePlaylistIndex2 = (huidigePlaylistIndex2 - 1 + miniTvPlaylist.length) % miniTvPlaylist.length;
+        localStorage.setItem('menaMuriaLastIndex2', huidigePlaylistIndex2);
+        const urlInput2 = document.getElementById('miniTvUrl2');
+        if (urlInput2) urlInput2.value = miniTvPlaylist[huidigePlaylistIndex2];
+        const select2 = document.getElementById('miniTvSelect2');
+        if (select2) select2.selectedIndex = huidigePlaylistIndex2 + 1;
+        startMiniTV2();
     }
 
     // --- MUZIEK SPELER ---
@@ -941,16 +1005,22 @@
             if (player) player.src = "";
         } else {
             container.style.display = 'block';
+            if (miniTvPlaylist.length > 0) {
+                const urlInput2 = document.getElementById('miniTvUrl2');
+                if (urlInput2) urlInput2.value = miniTvPlaylist[huidigePlaylistIndex2];
+                const select2 = document.getElementById('miniTvSelect2');
+                if (select2) select2.selectedIndex = huidigePlaylistIndex2 + 1;
+            }
             startMiniTV2();
         }
     }
 
     function startMiniTV2() {
-        const urlInput = document.getElementById('miniTvUrl2');
+        const urlInput2 = document.getElementById('miniTvUrl2');
         const iframe = document.getElementById('miniTvPlayer2');
-        if (!urlInput || !iframe) return;
+        if (!urlInput2 || !iframe) return;
 
-        let urlVal = urlInput.value.trim();
+        let urlVal = urlInput2.value.trim();
         let embedUrl = converteerYouTubeLink(urlVal);
         if (!embedUrl) return;
         let playUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
