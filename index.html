@@ -245,6 +245,7 @@
             resize: vertical;
             font-family: monospace;
             font-size: 0.75rem;
+            color: var(--text-gold);
         }
 
         .btn-row {
@@ -342,6 +343,9 @@
         <div class="location-title">Aboru Manis É</div>
         <div class="digital-date" id="digitalDate">Laden...</div>
         <div class="digital-time" id="digitalTime">00:00:00</div>
+        
+        <!-- ONZICHTBARE AUDIO VOOR UURWERK SLAG (ABORU MELODIE) -->
+        <audio id="uurAudio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="auto"></audio>
     </div>
 
     <!-- TOEGANGSKAARTEN & ONEDRIVE TICKETS -->
@@ -719,6 +723,15 @@
                     tElem.innerText = new Intl.DateTimeFormat('nl-NL', { timeZone: s.tz, hour: '2-digit', minute: '2-digit', hour12: false }).format(nu);
                 }
             });
+
+            // SPEEL AUDIO OP ELK HEEL UUR (00:00)
+            if (minuten === 0 && seconden === 0) {
+                const uurAudio = document.getElementById('uurAudio');
+                if (uurAudio) {
+                    uurAudio.currentTime = 0;
+                    uurAudio.play().catch(e => console.log("Audio afspelen vereist interactie"));
+                }
+            }
 
             if (activeAlarm) {
                 const currentAlarmStr = String(uren).padStart(2, '0') + ':' + String(minuten).padStart(2, '0');
