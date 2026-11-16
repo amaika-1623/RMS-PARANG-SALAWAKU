@@ -327,10 +327,11 @@
 <body>
 
 <div class="app-container">
-    <header>
+        <header>
         <h1>MENA MURIA</h1>
-        <p>KLOK • TICKETS • WERELDKLOK</p>
+        <p style="color: #ffffff; font-weight: bold; opacity: 1;">REPUBLIK • MALUKU • SELATAN</p>
     </header>
+
 
     <!-- KLOK SECTIE -->
     <div class="section clock-section">
@@ -655,7 +656,7 @@
     laadWeerVoorSteden();
     setInterval(laadWeerVoorSteden, 15 * 60 * 1000);
 
-    // --- DAGELIJKKS WOORD LOGICA ---
+    // --- DAGELIJKS WOORD LOGICA ---
     const bijbelVerzen = [
         { tekst: "De HEERE is mijn Herder, mij zal niets ontbreken.", ref: "Psalm 23:1" },
         { tekst: "Uw woord is een lamp voor mijn voet en een licht op mijn pad.", ref: "Psalm 119:105" },
@@ -867,12 +868,16 @@
         }
 
         let videoId = '';
-        if (url.includes('youtu.be/')) {
+        
+        // Ondersteuning voor /live/ links, youtu.be links, watch?v= links en embed links
+        if (url.includes('/live/')) {
+            videoId = url.split('/live/')[1].split('?')[0].split('&')[0];
+        } else if (url.includes('youtu.be/')) {
             videoId = url.split('youtu.be/')[1].split('?')[0].split('&')[0];
         } else if (url.includes('watch?v=')) {
             videoId = url.split('watch?v=').pop().split('&')[0];
         } else if (url.includes('/embed/')) {
-            videoId = url.split('/embed/').pop().split('?')[0];
+            videoId = url.split('/embed/').pop().split('?')[0].split('&')[0];
         }
         
         if (videoId) {
