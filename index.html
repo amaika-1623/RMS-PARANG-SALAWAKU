@@ -1195,5 +1195,60 @@
     }
 </script>
 
+<script>
+  // Functie die je aanroept zodra er een nummer/video start
+  function activeerMediaSession(titel, artiest) {
+    if ('mediaSession' in navigator) {
+      
+      // 1. Stel de metadata in voor de meldingsbalk
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: titel || 'Mena Muria Media',
+        artist: artiest || 'Molucca / Lokale Artiest',
+        album: 'Mena Muria App',
+        artwork: [
+          { src: 'icon-96.png', sizes: '96x96', type: 'image/png' },
+          { src: 'icon-512.png', sizes: '512x512', type: 'image/png' }
+        ]
+      });
+
+      // 2. Koppel de knoppen uit de meldingsbalk aan jouw bestaande functies
+      navigator.mediaSession.setActionHandler('play', function() {
+        // Zet hier jouw code om af te spelen (bijv. .play() op je iframe/audio element)
+         hervatAfspelen(); 
+      });
+
+      navigator.mediaSession.setActionHandler('pause', function() {
+        // Zet hier jouw code om te pauzeren
+        pauzeerAfspelen();
+      });
+
+      navigator.mediaSession.setActionHandler('previoustrack', function() {
+        // Koppel aan je 'Vorige' knop logica uit je app
+        if (typeof speelVorige === 'function') speelVorige();
+      });
+
+      navigator.mediaSession.setActionHandler('nexttrack', function() {
+        // Koppel aan je 'Volgende' knop logica uit je app
+        if (typeof speelVolgende === 'function') speelVolgende();
+      });
+
+      // 3. Geef aan dat de speler actief aan het spelen is
+      navigator.mediaSession.playbackState = "playing";
+    }
+  }
+
+  // Voorbeeld van functies die je in je app al hebt of hieraan koppelt:
+  function hervatAfspelen() {
+    console.log("Hervat afspelen vanuit meldingen");
+    // Voeg hier de aanroep naar je speler toe
+  }
+
+  function pauzeerAfspelen() {
+    console.log("Pauzeren vanuit meldingen");
+    // Voeg hier de pauze-aanroep toe
+  }
+</script>
+
+
 </body>
 </html>
