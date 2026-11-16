@@ -58,22 +58,36 @@
         }
 
         header h1 {
-            color: var(--text-gold);
-            font-size: 1.5rem;
-            margin: 0 0 5px 0;
-            letter-spacing: 2px;
-        }
-
-        header p {
-    font-family: 'Playfair Display', 'Cinzel', Georgia, serif; /* Sierlijke, klassieke serif stijl */
-    font-style: italic; /* Cursief / schuin */
-    font-weight: bold; /* Vetgedrukt */
-    font-size: 1.05rem; /* Perfecte balans qua grootte */
-    color: #f3d068; /* Rijke goudkleur */
-    margin: 4px 0 15px 0;
-    letter-spacing: 1.5px;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9), 0 0 8px rgba(212, 175, 55, 0.7); /* Geeft dat dikke, prominente gouden effect */
+        header {
+    background: linear-gradient(to right, #0055a5 25%, #ffffff 25%, #ffffff 50%, #008751 50%, #008751 75%, #da291c 75%);
+    border: 2px solid var(--border-gold);
+    border-radius: 8px;
+    padding: 12px 10px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
 }
+
+header h1 {
+    color: var(--text-gold);
+    font-size: 1.5rem;
+    margin: 0 0 2px 0;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
+}
+
+header p {
+    font-family: 'Playfair Display', 'Cinzel', Georgia, serif;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #ffe680; /* Heldere goudkleur zodat het mooi afsteekt op de vlag */
+    margin: 2px 0 0 0;
+    letter-spacing: 1.5px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.95), 0 0 8px rgba(0, 0, 0, 0.8);
+}
+
 
 
 
